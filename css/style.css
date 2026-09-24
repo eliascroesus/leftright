@@ -1,0 +1,866 @@
+/* ==========================================================================
+   LEFT RIGHT — styles
+   1. Tokens          5. Buttons           9. Milestones
+   2. Base            6. Speech bubbles   10. Marquee
+   3. Type            7. Icon buttons     11. Toast, flash, legal
+   4. Paper grain     8. Battle bar       12. Cursor + motion prefs
+   Flat fills, ink outlines, hard shadows. No gradients except the hard-stop
+   stripes that mark local-only punches on the battle bar.
+   ========================================================================== */
+
+/* 1. Tokens ================================================================ */
+
+:root {
+  /* Sides. Backgrounds are matched in OKLCH lightness + chroma so neither
+     half is heavier: red oklch(.47 .175 27) / blue oklch(.47 .175 262). */
+  --red-bg: #a71a1b;
+  --red-bg-2: #8a0f12;
+  --red: #e03931;
+  --red-dark: #b7191c;
+  --red-light: #f5a69f;
+
+  --blue-bg: #1d52bb;
+  --blue-bg-2: #13419b;
+  --blue: #3577f8;
+  --blue-dark: #1e59cd;
+  --blue-light: #9cbefc;
+
+  /* Neutrals */
+  --ink: #1b1412;
+  --paper: #fef5e3;
+  --paper-2: #f0e1c6;
+
+  /* Characters */
+  --skin: #f5c6a4;
+  --skin-dark: #e29f81;
+  --flush: #e9504b;
+  --vein: #b9334b;
+  --mouth: #52151c;
+  --tongue: #e77687;
+  --pants: #353342;
+
+  /* Effects */
+  --star: #ffd337;
+  --star-dark: #e19b1b;
+  --dust: #efe3cf;
+  --dust-2: #d4c1a8;
+  --locked: #918b86;
+  --locked-2: #6d6863;
+
+  /* Accent: neutral referee-yellow until a side is picked (see [data-team]). */
+  --accent: var(--star);
+  --accent-light: var(--paper);
+  --accent-bg: var(--ink);
+  --accent-ink: var(--ink);
+
+  /* Type */
+  --font-display: "Bowlby One", "Arial Black", Impact, sans-serif;
+  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --fs-mega: clamp(2.6rem, 1.4rem + 5.4vw, 6rem);
+  --fs-xl: clamp(2rem, 1.3rem + 2.9vw, 3.6rem);
+  --fs-lg: clamp(1.35rem, 1.05rem + 1.2vw, 2rem);
+  --fs-md: clamp(1.05rem, 0.98rem + 0.35vw, 1.3rem);
+  --fs-body: 1rem;
+  --fs-sm: 0.875rem;
+  --fs-xs: 0.75rem;
+
+  /* Shape */
+  --line: 4px;                   /* UI outline; characters use 5 viewBox px */
+  --shadow: 0 6px 0 var(--ink);  /* hard cartoon shadow, never blurred */
+  --shadow-sm: 0 4px 0 var(--ink);
+  --r-blob: 22px 15px 24px 14px / 16px 24px 14px 22px;  /* cut-paper corners */
+  --r-blob-sm: 12px 9px 14px 8px / 9px 14px 8px 12px;
+  /* Ink rim so cream text holds up on red/blue at any size. */
+  --rim: 0 2px 0 var(--ink), 2px 0 0 var(--ink), 0 -2px 0 var(--ink), -2px 0 0 var(--ink),
+    2px 2px 0 var(--ink), -2px 2px 0 var(--ink), 2px -2px 0 var(--ink), -2px -2px 0 var(--ink);
+
+  /* Space */
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 1rem;
+  --s-4: 1.5rem;
+  --s-5: 2.25rem;
+  --s-6: 3.5rem;
+
+  /* Motion */
+  --ease-elastic: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Layers */
+  --z-stage: 1;
+  --z-ui: 10;
+  --z-legal: 60;
+  --z-flash: 70;
+  --z-grain: 80;
+  --z-toast: 90;
+}
+
+[data-team="left"] {
+  --accent: var(--red);
+  --accent-light: var(--red-light);
+  --accent-bg: var(--red-bg);
+  --accent-ink: var(--paper);
+}
+
+[data-team="right"] {
+  --accent: var(--blue);
+  --accent-light: var(--blue-light);
+  --accent-bg: var(--blue-bg);
+  --accent-ink: var(--paper);
+}
+
+/* 2. Base =================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: 1.5;
+  color: var(--paper);
+  background: var(--ink);
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+a {
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 4px solid var(--star);
+  outline-offset: 3px;
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* 3. Type =================================================================== */
+
+.display {
+  font-family: var(--font-display);
+  font-weight: 400; /* Bowlby One ships one weight; never faux-bold it */
+  text-transform: uppercase;
+  line-height: 0.95;
+  letter-spacing: 0.01em;
+}
+
+/* Cream letters, ink outline, hard drop: the sticker look for headlines. */
+.sticker-text {
+  color: var(--paper);
+  -webkit-text-stroke: 0.14em var(--ink);
+  paint-order: stroke fill;
+  text-shadow: 0.04em 0.07em 0 var(--ink);
+}
+
+.c-left { color: var(--red); }
+.c-right { color: var(--blue); }
+
+/* 4. Paper grain ============================================================= */
+/* One static noise tile over everything, soft-light blended: specks go
+   lighter and darker, so every flat fill reads as construction paper. */
+
+.grain::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-grain);
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='p' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.78' numOctaves='3' seed='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncR type='linear' slope='1.7' intercept='-.35'/%3E%3CfeFuncG type='linear' slope='1.7' intercept='-.35'/%3E%3CfeFuncB type='linear' slope='1.7' intercept='-.35'/%3E%3CfeFuncA type='linear' slope='0' intercept='1'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)'/%3E%3C/svg%3E");
+  background-size: 240px 240px;
+  mix-blend-mode: soft-light;
+  opacity: 0.55;
+}
+
+/* 5. Buttons ================================================================ */
+
+.btn {
+  --btn-bg: var(--paper);
+  --btn-fg: var(--ink);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  min-height: 48px;
+  padding: 0.78em 1.3em 0.72em;
+  border: var(--line) solid var(--ink);
+  border-radius: var(--r-blob);
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  box-shadow: var(--shadow);
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: var(--fs-md);
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform 0.4s var(--ease-elastic),
+    box-shadow 0.15s ease;
+}
+
+.btn:hover {
+  transform: scale(1.05) rotate(-1.2deg);
+}
+
+/* Squash on press (GSAP adds the stretch-back on release). */
+.btn:active,
+.btn.is-pressed {
+  transform: translateY(4px) scale(1.07, 0.88);
+  box-shadow: 0 2px 0 var(--ink);
+  transition-duration: 0.06s;
+}
+
+.btn:focus-visible {
+  outline: 4px solid var(--star);
+  outline-offset: 5px;
+}
+
+.btn[disabled],
+.btn[aria-disabled="true"] {
+  --btn-bg: var(--locked);
+  --btn-fg: var(--ink);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: var(--shadow-sm);
+}
+
+.btn__icon {
+  width: 1.15em;
+  height: 1.15em;
+  flex: none;
+}
+
+/* Paper-on-colour labels get an ink rim for contrast. */
+.btn--left,
+.btn--right,
+.btn--accent {
+  text-shadow: var(--rim);
+}
+
+.btn--left {
+  --btn-bg: var(--red);
+  --btn-fg: var(--paper);
+}
+
+.btn--right {
+  --btn-bg: var(--blue);
+  --btn-fg: var(--paper);
+}
+
+.btn--accent {
+  --btn-bg: var(--accent);
+  --btn-fg: var(--accent-ink);
+}
+
+/* Neutral accent (no side yet) is yellow, so drop the rim there. */
+:root:not([data-team]) .btn--accent {
+  text-shadow: none;
+}
+
+.btn--xl {
+  min-height: 64px;
+  padding: 0.62em 1.35em 0.56em;
+  font-size: var(--fs-lg);
+}
+
+.btn--sm {
+  min-height: 40px;
+  padding: 0.6em 1em 0.55em;
+  font-size: var(--fs-sm);
+  box-shadow: var(--shadow-sm);
+}
+
+/* 5b. Chips, logo, side label =============================================== */
+
+.chip {
+  display: inline-block;
+  padding: 0.2em 0.42em 0.14em;
+  border: var(--line) solid var(--ink);
+  border-radius: var(--r-blob-sm);
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 4px 0 var(--ink);
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.chip--left,
+.chip--right,
+.chip--accent {
+  color: var(--paper);
+  text-shadow: var(--rim);
+}
+
+.chip--left { background: var(--red); }
+.chip--right { background: var(--blue); }
+.chip--accent { background: var(--accent); color: var(--accent-ink); }
+
+/* Wordmark: two chips leaning into each other like the two guys. */
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.14em;
+  font-size: var(--logo-size, 1.5rem);
+  text-decoration: none;
+}
+
+.logo .chip--left { transform: rotate(4deg); }
+.logo .chip--right { transform: rotate(-4deg); }
+
+.ticker {
+  display: inline-block;
+  padding: 0.28em 0.6em 0.22em;
+  border: 3px solid var(--ink);
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--star);
+  font-family: var(--font-display);
+  font-size: var(--fs-sm);
+  line-height: 1;
+  letter-spacing: 0.03em;
+}
+
+.side-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  font-size: var(--fs-xs);
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.side-label .chip {
+  font-size: var(--fs-md);
+  letter-spacing: 0.02em;
+}
+
+/* 5c. Split background ======================================================
+   The host paints red; js/fx.js split() adds the blue side + seam as one
+   pixel-space SVG, so the fill and the hand-cut seam always line up. */
+
+.split {
+  position: relative;
+  isolation: isolate;
+  background: var(--red-bg);
+}
+
+.split-art {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.split-art__blue {
+  fill: var(--blue-bg);
+}
+
+.split-art__seam {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: var(--seam-w, 6px);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* 6. Speech bubbles ========================================================= */
+/* Tail: --tail-x places it along the bottom edge, --tail-tip aims the point
+   (0% = far left of the tail's base, 100% = far right). */
+
+.bubble {
+  --tail-x: 22%;
+  --tail-tip: 8%;
+  position: relative;
+  display: inline-block;
+  padding: 0.55em 0.85em 0.5em;
+  border: var(--line) solid var(--ink);
+  border-radius: 26px 20px 28px 18px / 20px 28px 18px 26px;
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 5px 0 var(--ink);
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: var(--fs-lg);
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.bubble::before,
+.bubble::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  clip-path: polygon(0 0, 100% 0, var(--tail-tip) 100%);
+}
+
+.bubble::before {
+  left: var(--tail-x);
+  width: 36px;
+  height: 30px;
+  margin-top: calc(var(--line) * -1);
+  background: var(--ink);
+}
+
+.bubble::after {
+  left: calc(var(--tail-x) + var(--line) * 1.75);
+  width: calc(36px - var(--line) * 3.5);
+  height: calc(30px - var(--line) * 2.6);
+  margin-top: calc(var(--line) * -1.25);
+  background: var(--paper);
+}
+
+.bubble--tail-right {
+  --tail-x: calc(78% - 36px);
+  --tail-tip: 92%;
+}
+
+/* 7. Icon buttons =========================================================== */
+
+.icon-btn {
+  display: inline-grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  padding: 0;
+  border: var(--line) solid var(--ink);
+  border-radius: 48% 52% 50% 50% / 52% 48% 52% 48%;
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  text-decoration: none;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.4s var(--ease-elastic);
+}
+
+.icon-btn:hover {
+  transform: scale(1.1) rotate(6deg);
+}
+
+.icon-btn:active {
+  transform: translateY(3px) scale(1.08, 0.9);
+  transition-duration: 0.06s;
+}
+
+.icon-btn svg {
+  width: 26px;
+  height: 26px;
+}
+
+.icon-btn[aria-pressed="true"] {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+/* 8. Battle bar ============================================================= */
+/* --share-left: LEFT's share of TEAM_STATE (0–1). --mine-from/--mine-to:
+   the striped slice your local punches add (0–1 along the bar). */
+
+.battle {
+  --share-left: 0.5;
+  --mine-from: 0.5;
+  --mine-to: 0.5;
+  width: 100%;
+  max-width: 640px;
+  color: var(--paper);
+}
+
+.battle__head {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: end;
+  gap: var(--s-2);
+  margin-bottom: var(--s-2);
+  font-family: var(--font-display);
+  font-size: var(--fs-md);
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.battle__team {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35em;
+  text-shadow: 0 3px 0 var(--ink);
+}
+
+.battle__team:last-child {
+  justify-content: flex-end;
+}
+
+.battle__num {
+  font-weight: 400;
+  font-size: 1.35em;
+  font-variant-numeric: tabular-nums;
+}
+
+.battle__title {
+  font-family: var(--font-body);
+  font-weight: 800;
+  font-size: var(--fs-xs);
+  letter-spacing: 0.14em;
+  opacity: 0.85;
+}
+
+.battle__track {
+  position: relative;
+}
+
+.battle__bar {
+  position: relative;
+  height: 34px;
+  overflow: hidden;
+  border: var(--line) solid var(--ink);
+  border-radius: 16px 11px 18px 10px / 11px 18px 10px 16px;
+  background: var(--blue);
+  box-shadow: var(--shadow-sm);
+}
+
+.battle__fill {
+  position: absolute;
+  inset: 0;
+  background: var(--red);
+  transform-origin: 0 50%;
+  transform: scaleX(var(--share-left));
+  transition: transform 0.7s var(--ease-elastic);
+}
+
+.battle__mine {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(-45deg, var(--mine-a, var(--red)) 0 7px, var(--mine-b, var(--red-light)) 7px 14px);
+  clip-path: inset(0 calc((1 - var(--mine-to)) * 100%) 0 calc(var(--mine-from) * 100%));
+  transition: clip-path 0.35s var(--ease-out);
+}
+
+.battle--mine-right .battle__mine {
+  --mine-a: var(--blue);
+  --mine-b: var(--blue-light);
+}
+
+/* The clash marker rides the seam: a full-width layer shifted by the share. */
+.battle__edge {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transform: translateX(calc((var(--share-left) - 0.5) * 100%));
+  transition: transform 0.7s var(--ease-elastic);
+}
+
+.battle__edge::before {
+  content: "";
+  position: absolute;
+  left: calc(50% - var(--line) / 2);
+  top: var(--line);
+  bottom: var(--line);
+  width: var(--line);
+  background: var(--ink);
+}
+
+.battle__clash {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 52px;
+  height: 52px;
+  margin: -26px 0 0 -26px;
+}
+
+.battle__note {
+  margin: var(--s-2) 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.25em 1em;
+  font-size: var(--fs-xs);
+  line-height: 1.35;
+  opacity: 0.92;
+}
+
+.battle__local b {
+  font-variant-numeric: tabular-nums;
+}
+
+/* 9. Milestones ============================================================= */
+
+.milestones {
+  display: flex;
+  justify-content: center;
+  gap: clamp(6px, 1.6vw, 14px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ms {
+  position: relative;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  outline-offset: 2px;
+}
+
+.ms__star {
+  width: 100%;
+  height: 100%;
+  transition: transform 0.4s var(--ease-elastic);
+}
+
+.ms__star path {
+  fill: var(--locked);
+  stroke: var(--ink);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.ms__n {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding-top: 4px;
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  color: var(--ink);
+  pointer-events: none;
+}
+
+.ms.is-locked .ms__n {
+  color: var(--locked-2);
+}
+
+.ms.is-unlocked .ms__star path {
+  fill: var(--star);
+}
+
+.ms.is-unlocked:hover .ms__star,
+.ms.is-unlocked:focus-visible .ms__star {
+  transform: scale(1.18) rotate(-10deg);
+}
+
+.ms__tip {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 12px);
+  z-index: 2;
+  min-width: max-content;
+  max-width: 220px;
+  padding: 0.5em 0.7em;
+  border: 3px solid var(--ink);
+  border-radius: var(--r-blob-sm);
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 4px 0 var(--ink);
+  font-size: var(--fs-xs);
+  line-height: 1.3;
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 6px) scale(0.9);
+  transition:
+    opacity 0.15s ease,
+    transform 0.3s var(--ease-elastic);
+}
+
+.ms__tip b {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: var(--fs-sm);
+  text-transform: uppercase;
+}
+
+.ms__tip time {
+  font-weight: 600;
+}
+
+.ms:hover .ms__tip,
+.ms:focus-visible .ms__tip,
+.ms.is-tip-open .ms__tip {
+  opacity: 1;
+  transform: translate(-50%, 0) scale(1);
+}
+
+/* 10. Marquee =============================================================== */
+
+.marquee {
+  overflow: hidden;
+  border-block: var(--line) solid var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.marquee__track {
+  display: flex;
+  width: max-content;
+  animation: marquee 22s linear infinite;
+}
+
+.marquee__group {
+  display: flex;
+  align-items: center;
+  flex: none;
+}
+
+.marquee__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55em;
+  padding: 0.45em 0.55em 0.4em;
+  font-family: var(--font-display);
+  font-size: var(--fs-md);
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.marquee__star {
+  width: 1em;
+  height: 1em;
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* 11. Toast, flash, legal =================================================== */
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(var(--legal-h, 0px) + 28px);
+  z-index: var(--z-toast);
+  padding: 0.55em 1.1em 0.5em;
+  border: var(--line) solid var(--ink);
+  border-radius: var(--r-blob);
+  background: var(--star);
+  color: var(--ink);
+  box-shadow: var(--shadow);
+  font-family: var(--font-display);
+  font-size: var(--fs-lg);
+  line-height: 1;
+  text-transform: uppercase;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, 24px) scale(0.6) rotate(-4deg);
+  transition:
+    opacity 0.18s ease,
+    transform 0.45s var(--ease-elastic);
+}
+
+.toast.is-on {
+  opacity: 1;
+  transform: translate(-50%, 0) scale(1) rotate(-2deg);
+}
+
+/* Full-screen team-colour flash (opacity only). */
+.flash {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-flash);
+  pointer-events: none;
+  background: var(--accent);
+  opacity: 0;
+}
+
+/* The disclaimer is always on screen. */
+.legal {
+  position: fixed;
+  inset: auto 0 0;
+  z-index: var(--z-legal);
+  margin: 0;
+  padding: 0.5rem 1rem calc(0.5rem + env(safe-area-inset-bottom, 0px));
+  background: var(--ink);
+  color: var(--paper-2);
+  font-size: 0.72rem;
+  line-height: 1.35;
+  text-align: center;
+  text-wrap: balance;
+}
+
+/* 12. Cursor + motion prefs ================================================== */
+/* A tiny cartoon fist in your team colour (SVG, 32px; hotspot on the knuckles). */
+
+.fist-cursor,
+.fist-cursor * {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2232%22 height=%2232%22 viewBox=%220 0 64 64%22%3E%3Cg transform=%22rotate%28-32 32 32%29%22 stroke=%22%231b1412%22 stroke-width=%224%22 stroke-linejoin=%22round%22 stroke-linecap=%22round%22%3E%3Cpath fill=%22%23f0e1c6%22 d=%22M20 44H44L45 59H19Z%22/%3E%3Cpath fill=%22%23fef5e3%22 d=%22M14 40V22C14 12 23 12 23 20C23 11 32 11 32 20C32 11 41 11 41 20C41 12 50 13 50 22V36C50 42 46 45 40 45H22C17 45 14 43 14 40Z%22/%3E%3Cpath fill=%22none%22 stroke-width=%223%22 d=%22M23 20V27M32 20V27M41 20V27%22/%3E%3Cpath fill=%22%23f0e1c6%22 d=%22M11 32C17 28 30 29 36 33C35 38 26 40 18 39C14 38 11 36 11 32Z%22/%3E%3C/g%3E%3C/svg%3E") 8 8, auto;
+}
+
+.fist-cursor[data-team="left"],
+.fist-cursor[data-team="left"] * {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2232%22 height=%2232%22 viewBox=%220 0 64 64%22%3E%3Cg transform=%22rotate%28-32 32 32%29%22 stroke=%22%231b1412%22 stroke-width=%224%22 stroke-linejoin=%22round%22 stroke-linecap=%22round%22%3E%3Cpath fill=%22%23b7191c%22 d=%22M20 44H44L45 59H19Z%22/%3E%3Cpath fill=%22%23e03931%22 d=%22M14 40V22C14 12 23 12 23 20C23 11 32 11 32 20C32 11 41 11 41 20C41 12 50 13 50 22V36C50 42 46 45 40 45H22C17 45 14 43 14 40Z%22/%3E%3Cpath fill=%22none%22 stroke-width=%223%22 d=%22M23 20V27M32 20V27M41 20V27%22/%3E%3Cpath fill=%22%23f5a69f%22 d=%22M11 32C17 28 30 29 36 33C35 38 26 40 18 39C14 38 11 36 11 32Z%22/%3E%3C/g%3E%3C/svg%3E") 8 8, auto;
+}
+
+.fist-cursor[data-team="right"],
+.fist-cursor[data-team="right"] * {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2232%22 height=%2232%22 viewBox=%220 0 64 64%22%3E%3Cg transform=%22rotate%28-32 32 32%29%22 stroke=%22%231b1412%22 stroke-width=%224%22 stroke-linejoin=%22round%22 stroke-linecap=%22round%22%3E%3Cpath fill=%22%231e59cd%22 d=%22M20 44H44L45 59H19Z%22/%3E%3Cpath fill=%22%233577f8%22 d=%22M14 40V22C14 12 23 12 23 20C23 11 32 11 32 20C32 11 41 11 41 20C41 12 50 13 50 22V36C50 42 46 45 40 45H22C17 45 14 43 14 40Z%22/%3E%3Cpath fill=%22none%22 stroke-width=%223%22 d=%22M23 20V27M32 20V27M41 20V27%22/%3E%3Cpath fill=%22%239cbefc%22 d=%22M11 32C17 28 30 29 36 33C35 38 26 40 18 39C14 38 11 36 11 32Z%22/%3E%3C/g%3E%3C/svg%3E") 8 8, auto;
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .marquee__track {
+    animation: none;
+  }
+}

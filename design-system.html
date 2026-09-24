@@ -1,0 +1,689 @@
+<!doctype html>
+<html lang="en" class="fist-cursor">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LEFT RIGHT · Design system</title>
+    <meta name="robots" content="noindex" />
+    <meta name="description" content="Design system for LEFT RIGHT: the two characters in every pose, colour tokens, type and components." />
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+      /* Documentation layout only; every component below comes from css/style.css. */
+      .ds { background: var(--paper); color: var(--ink); }
+      .ds a { color: inherit; }
+      .ds-wrap { width: min(1180px, 100% - 32px); margin-inline: auto; }
+
+      .ds-hero { color: var(--paper); padding: 20px 0 0; overflow: hidden; }
+      .ds-hero__top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px; }
+      .ds-hero__meta { font-size: var(--fs-sm); font-weight: 600; text-shadow: 0 2px 0 var(--ink); }
+      .ds-hero h1 { margin: 26px 0 0; font-size: var(--fs-mega); text-align: center; }
+      .ds-hero__sub { margin: 10px 0 0; text-align: center; font-size: var(--fs-md); font-weight: 600; text-shadow: 0 2px 0 var(--ink); }
+      .faceoff { display: flex; justify-content: center; align-items: flex-end; margin-top: 8px; }
+      .faceoff > div { width: min(38vw, 360px); margin-inline: 1%; }
+      @media (max-width: 640px) { .faceoff { gap: 5vw; } .faceoff > div { width: 40vw; margin-inline: 0; } }
+
+      .ds-nav { position: sticky; top: 0; z-index: 20; background: var(--ink); border-bottom: 4px solid var(--ink); }
+      .ds-nav ul { display: flex; gap: 6px; overflow-x: auto; margin: 0 auto; padding: 10px 16px; list-style: none; width: min(1180px, 100%); scrollbar-width: none; }
+      .ds-nav a { display: block; padding: 6px 12px 5px; border-radius: 999px; color: var(--paper); font-family: var(--font-display); font-size: .85rem; text-decoration: none; text-transform: uppercase; white-space: nowrap; }
+      .ds-nav a:hover { background: var(--paper); color: var(--ink); }
+
+      .ds-section { padding: 56px 0 8px; scroll-margin-top: 56px; }
+      .ds-section > .ds-wrap > h2 { margin: 0; font-size: var(--fs-xl); }
+      .ds-lede { max-width: 70ch; margin: 10px 0 26px; font-size: 1.02rem; }
+      .ds-h3 { margin: 34px 0 14px; font-family: var(--font-display); font-weight: 400; font-size: 1.15rem; text-transform: uppercase; letter-spacing: .02em; }
+      .ds-note { font-size: var(--fs-sm); color: #5e544d; }
+      .ds code { font-size: .88em; background: var(--paper-2); padding: .08em .35em; border-radius: 6px; }
+
+      .panel { border: var(--line) solid var(--ink); border-radius: var(--r-blob); box-shadow: var(--shadow); overflow: hidden; }
+      .panel--ink { background: var(--ink); color: var(--paper); }
+      .panel--pad { padding: clamp(16px, 3vw, 28px); }
+
+      .checklist { display: grid; gap: 8px; margin: 0; padding: 18px 22px 18px 42px; background: var(--star); color: var(--ink); font-weight: 600; }
+      .checklist li::marker { font-family: var(--font-display); }
+
+      /* Fighters */
+      .fighters { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+      .fighter { position: relative; display: grid; grid-template-rows: auto 1fr; padding: 22px 22px 0; color: var(--paper); }
+      .fighter--left { background: var(--red-bg); }
+      .fighter--right { background: var(--blue-bg); }
+      .fighter h3 { margin: 0; font-size: var(--fs-lg); }
+      .fighter p { margin: 6px 0 0; max-width: 36ch; font-weight: 600; text-shadow: 0 2px 0 var(--ink); }
+      .fighter__art { width: min(320px, 86%); margin: 6px auto 0; }
+      .fighter--right .fighter__art { transform: translateX(4%); }
+      .fighter--left .fighter__art { transform: translateX(-4%); }
+
+      /* Poses */
+      .poses { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 22px; }
+      .pose-card { margin: 0; }
+      .pose-stage { display: flex; justify-content: center; align-items: flex-end; aspect-ratio: 16 / 11; padding: 0 0 2%; overflow: hidden; }
+      .pose-char { width: 44%; margin-inline: -1%; }
+      .pose-card figcaption { padding: 10px 2px 0; font-size: var(--fs-sm); line-height: 1.4; }
+      .pose-card figcaption b { display: block; font-family: var(--font-display); font-weight: 400; font-size: 1rem; text-transform: uppercase; }
+
+      /* Rage strip */
+      .rage { display: grid; grid-template-columns: repeat(6, 1fr); overflow: hidden; }
+      .rage__row { display: contents; }
+      .rage__cell { position: relative; padding: 8px 4px 0; text-align: center; }
+      .rage__cell--left { background: var(--red-bg); }
+      .rage__cell--right { background: var(--blue-bg); }
+      .rage__cell span { position: absolute; top: 6px; left: 8px; color: var(--paper); font: 800 .7rem/1 var(--font-body); letter-spacing: .08em; text-shadow: 0 2px 0 var(--ink); }
+      .rage__cell > div { width: 100%; max-width: 170px; margin: 12px auto 0; }
+      @media (max-width: 640px) { .rage { grid-template-columns: repeat(3, 1fr); } }
+
+      /* Rig map */
+      .rig-map { display: grid; grid-template-columns: minmax(260px, 420px) 1fr; gap: 28px; align-items: start; }
+      .rig-map__art { background: var(--red-bg); padding: 18px 18px 0; }
+      .rig-map__art .pivot circle { fill: var(--star); stroke: var(--ink); stroke-width: 3px; vector-effect: non-scaling-stroke; }
+      .rig-map__art .pivot text { font: 400 15px/1 var(--font-display); fill: var(--ink); }
+      .parts { width: 100%; border-collapse: collapse; font-size: var(--fs-sm); }
+      .parts th, .parts td { padding: 7px 10px; border-bottom: 2px solid var(--paper-2); text-align: left; vertical-align: top; }
+      .parts th { font-family: var(--font-display); font-weight: 400; text-transform: uppercase; font-size: .78rem; }
+      .parts td:first-child { white-space: nowrap; }
+      .pin { display: inline-grid; place-items: center; width: 22px; height: 22px; border: 2px solid var(--ink); border-radius: 50%; background: var(--star); font-family: var(--font-display); font-size: .7rem; }
+      @media (max-width: 760px) { .rig-map { grid-template-columns: 1fr; } }
+
+      /* Swatches */
+      .swatch-group { margin-bottom: 28px; }
+      .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; }
+      .swatch { border: 3px solid var(--ink); border-radius: var(--r-blob-sm); overflow: hidden; background: #fff; box-shadow: 0 4px 0 var(--ink); }
+      .swatch__chip { height: 74px; display: grid; place-items: center; font-family: var(--font-display); font-size: .95rem; border-bottom: 3px solid var(--ink); }
+      .swatch__meta { padding: 8px 10px 10px; font-size: .78rem; line-height: 1.35; }
+      .swatch__meta code { display: block; margin-bottom: 2px; background: none; padding: 0; font-weight: 700; }
+      .swatch__meta small { display: block; color: #5e544d; }
+
+      /* Type */
+      .type-row { display: grid; grid-template-columns: 110px 1fr; gap: 16px; align-items: baseline; padding: 12px 0; border-bottom: 2px solid var(--paper-2); }
+      .type-row > span:first-child { font-size: .75rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: #5e544d; }
+      .specimen { padding: clamp(18px, 3vw, 30px); color: var(--paper); }
+      .glyphs { margin: 0; font-size: clamp(1.1rem, 2.4vw, 1.7rem); line-height: 1.3; word-break: break-all; }
+      @media (max-width: 560px) { .type-row { grid-template-columns: 1fr; gap: 4px; } }
+
+      /* Component stages */
+      .stage-demo { padding: clamp(18px, 3.5vw, 36px); display: flex; flex-wrap: wrap; gap: 22px 18px; align-items: center; justify-content: center; }
+      .demo-label { width: 100%; margin: 0; color: var(--paper); font: 800 .72rem/1 var(--font-body); letter-spacing: .12em; text-transform: uppercase; text-align: center; text-shadow: 0 2px 0 var(--ink); }
+      .state-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 18px; justify-items: center; }
+      .state-grid figure { margin: 0; display: grid; gap: 12px; justify-items: center; }
+      .state-grid figcaption { font-size: .75rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--paper); text-shadow: 0 2px 0 var(--ink); }
+      .btn.is-hover { transform: scale(1.05) rotate(-1.2deg); }
+      .btn.is-focus { outline: 4px solid var(--star); outline-offset: 5px; }
+      .bubbles { display: flex; flex-wrap: wrap; gap: 44px 22px; justify-content: center; padding: 26px 20px 50px; }
+      .toast.is-demo { position: relative; left: auto; bottom: auto; opacity: 1; transform: rotate(-2deg); }
+      .legal.is-demo { position: relative; inset: auto; border-radius: var(--r-blob-sm); }
+
+      /* FX */
+      .fx-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 22px; }
+      .fx-tile { display: grid; place-items: center; min-height: 240px; padding: 18px; }
+      .fx-tile--wide { grid-column: 1 / -1; }
+      .fx-caption { margin: 10px 2px 0; font-size: var(--fs-sm); }
+      .confetti-row { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+      .confetti-row svg { width: 44px; }
+      .cursor-row { display: flex; gap: 28px; justify-content: center; }
+      .cursor-row img { width: 64px; height: 64px; image-rendering: pixelated; }
+      .cursor-row figure { margin: 0; display: grid; gap: 6px; justify-items: center; font-size: .75rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+      .split-demos { display: flex; gap: 18px; justify-content: center; align-items: center; }
+      .split-demos .split { border: 3px solid var(--ink); border-radius: 12px; overflow: hidden; --seam-w: 4px; }
+      .split-demos figure { margin: 0; display: grid; gap: 6px; justify-items: center; font-size: .75rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+      .flash-demo { display: flex; gap: 14px; }
+      .flash-demo span { width: 90px; height: 90px; border: 3px solid var(--ink); border-radius: var(--r-blob-sm); opacity: .6; }
+
+      /* PFP mock (the canvas generator in stage 4 draws exactly this) */
+      .pfps { display: flex; flex-wrap: wrap; gap: 26px; justify-content: center; }
+      .pfp { position: relative; width: min(300px, 80vw); aspect-ratio: 1; overflow: hidden; }
+      .pfp__rays { position: absolute; inset: 0; width: 100%; height: 100%; }
+      .pfp__char { position: absolute; left: 0; right: 0; bottom: 0; }
+      .pfp__badge { position: absolute; left: 50%; bottom: 5%; transform: translateX(-50%) rotate(-3deg); font-size: clamp(1.4rem, 5vw, 2rem); }
+
+      footer.ds-foot { padding: 40px 0 120px; }
+    </style>
+  </head>
+  <body class="ds grain">
+    <!-- ============================== HERO ============================== -->
+    <header class="ds-hero split">
+      <div class="ds-wrap">
+        <div class="ds-hero__top">
+          <span class="logo" aria-label="LEFT RIGHT"><span class="chip chip--left">Left</span><span class="chip chip--right">Right</span></span>
+          <span class="ds-hero__meta">Design system · stage 1 of 6 · for review</span>
+        </div>
+        <h1 class="display sticker-text">Pick a side.</h1>
+        <p class="ds-hero__sub">The fight never ends.</p>
+      </div>
+      <div class="faceoff" aria-label="LEFTY and RIGHTY yelling at each other" role="img">
+        <div data-char="left" data-pose="yell"></div>
+        <div data-char="right" data-pose="yell"></div>
+      </div>
+    </header>
+
+    <nav class="ds-nav" aria-label="Sections">
+      <ul>
+        <li><a href="#review">Review</a></li>
+        <li><a href="#fighters">Fighters</a></li>
+        <li><a href="#poses">Poses</a></li>
+        <li><a href="#rage">Rage</a></li>
+        <li><a href="#rig">Rig</a></li>
+        <li><a href="#colour">Colour</a></li>
+        <li><a href="#type">Type</a></li>
+        <li><a href="#ui">UI</a></li>
+        <li><a href="#fx">FX</a></li>
+        <li><a href="#pfp">PFP</a></li>
+      </ul>
+    </nav>
+
+    <main>
+      <!-- ============================== REVIEW ============================== -->
+      <section class="ds-section" id="review">
+        <div class="ds-wrap">
+          <h2 class="display">What to check</h2>
+          <p class="ds-lede">Everything on this page is built from the real site files (<code>css/style.css</code>, <code>js/rig.js</code>, <code>js/fx.js</code>). Animation arrives in stage 2; here everything is a static pose.</p>
+          <ol class="checklist panel">
+            <li>LEFTY and RIGHTY look like one build, mirrored: same body, face, size and detail. Only colour and hat differ.</li>
+            <li>Neither reads as smarter, stronger or the joke. The beanie and the cap carry the same visual weight.</li>
+            <li>Every pose reads at a glance, and fists stay visible in all of them.</li>
+            <li>The red and blue halves feel equally heavy. Cream text stays readable on both.</li>
+            <li>The paper grain is visible but subtle, with no gradients anywhere.</li>
+            <li>Hover the page: your cursor is the fist (neutral until a side is picked).</li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- ============================== FIGHTERS ============================== -->
+      <section class="ds-section" id="fighters">
+        <div class="ds-wrap">
+          <h2 class="display">The fighters</h2>
+          <p class="ds-lede">One SVG rig, drawn facing right. RIGHTY is the same rig mirrored and recoloured. Big round heads, tiny bodies, stubby limbs, small angry eyes, one brow higher than the other, forehead veins, the same forward lean. Funny and pathetic, never menacing.</p>
+          <div class="fighters">
+            <article class="fighter fighter--left panel">
+              <h3 class="display sticker-text">Lefty</h3>
+              <p>Red beanie, red jacket, permanently mid-shout. Always on the left.</p>
+              <div class="fighter__art" data-char="left" data-pose="idle"></div>
+            </article>
+            <article class="fighter fighter--right panel">
+              <h3 class="display sticker-text">Righty</h3>
+              <p>Blue cap, blue jacket, permanently mid-shout. Always on the right.</p>
+              <div class="fighter__art" data-char="right" data-pose="idle"></div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================== POSES ============================== -->
+      <section class="ds-section" id="poses">
+        <div class="ds-wrap">
+          <h2 class="display">Every pose</h2>
+          <p class="ds-lede">Poses are plain data (<code>LR.rig.POSES</code> in <code>js/rig.js</code>): partial states merged over the base. The idle loop, the fight and the easter egg all animate between them.</p>
+          <div class="poses" id="pose-grid"></div>
+        </div>
+      </section>
+
+      <!-- ============================== RAGE ============================== -->
+      <section class="ds-section" id="rage">
+        <div class="ds-wrap">
+          <h2 class="display">Rage build</h2>
+          <p class="ds-lede">The longer the page is open, the redder the face and the bigger the veins. Every 30 seconds it resets with a puff of steam from both ears. Only opacity and scale change, so it stays at 60fps.</p>
+          <div class="rage panel" id="rage-strip"></div>
+        </div>
+      </section>
+
+      <!-- ============================== RIG ============================== -->
+      <section class="ds-section" id="rig">
+        <div class="ds-wrap">
+          <h2 class="display">The rig</h2>
+          <p class="ds-lede">Parts carry their transform origin in the markup (<code>data-pivot="x y"</code>, viewBox units), so rotations stay correct when the rig is mirrored. The yellow pins mark each origin on the base pose.</p>
+          <div class="rig-map">
+            <div class="rig-map__art panel" data-char="left" data-pose="idle" data-map></div>
+            <div class="panel panel--pad" style="background:#fff">
+              <table class="parts">
+                <thead><tr><th>Part</th><th>Origin</th><th>Moves</th></tr></thead>
+                <tbody id="parts-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================== COLOUR ============================== -->
+      <section class="ds-section" id="colour">
+        <div class="ds-wrap">
+          <h2 class="display">Colour tokens</h2>
+          <p class="ds-lede">Defined once on <code>:root</code> in <code>css/style.css</code> and read live here. The two backgrounds share the same OKLCH lightness and chroma, so neither half is heavier. <code>--accent</code> is referee yellow until a side is picked, then the whole page leans red or blue.</p>
+          <div id="swatches"></div>
+        </div>
+      </section>
+
+      <!-- ============================== TYPE ============================== -->
+      <section class="ds-section" id="type">
+        <div class="ds-wrap">
+          <h2 class="display">Type</h2>
+          <p class="ds-lede"><b>Bowlby One</b> for everything shouted, <b>Inter</b> for everything read. Both load from Google Fonts, and both were checked for every glyph the copy uses. Neither font has a ★, so every star on the site is drawn as SVG.</p>
+          <div class="panel">
+            <div class="specimen split">
+              <p class="display sticker-text" style="font-size:var(--fs-mega);margin:0">Pick a side.</p>
+              <p style="margin:12px 0 0;font-size:var(--fs-md);font-weight:600;text-shadow:0 2px 0 var(--ink)">The fight never ends.</p>
+            </div>
+          </div>
+          <div style="margin-top:22px">
+            <div class="type-row"><span>--fs-mega</span><span class="display" style="font-size:var(--fs-mega)">Fight</span></div>
+            <div class="type-row"><span>--fs-xl</span><span class="display" style="font-size:var(--fs-xl)">How to buy</span></div>
+            <div class="type-row"><span>--fs-lg</span><span class="display" style="font-size:var(--fs-lg)">Download your PFP</span></div>
+            <div class="type-row"><span>--fs-md</span><span class="display" style="font-size:var(--fs-md)">Copy contract</span></div>
+            <div class="type-row"><span>Body 16</span><span>Inter 400. The characters argue about nothing. No parties, no politicians, no issues.</span></div>
+            <div class="type-row"><span>Body 600</span><span style="font-weight:600">Inter 600. Your punches are only counted in this browser.</span></div>
+            <div class="type-row"><span>Label 800</span><span style="font-weight:800;font-size:var(--fs-xs);letter-spacing:.14em;text-transform:uppercase">Your side · Standings · Local only</span></div>
+            <div class="type-row"><span>Small</span><span style="font-size:.72rem">Legal line, 11.5px. Always on screen.</span></div>
+          </div>
+          <h3 class="ds-h3">Glyph check</h3>
+          <div class="panel panel--pad" style="background:#fff">
+            <p class="glyphs display">ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789 .,!?'’"-:;()$#@%&amp;*+/</p>
+            <p class="glyphs" style="font-weight:600;margin-top:10px">ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 0123456789 .,!?'’"-–—:;()$#@%&amp;*+/</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================== UI ============================== -->
+      <section class="ds-section" id="ui">
+        <div class="ds-wrap">
+          <h2 class="display">Components</h2>
+          <p class="ds-lede">Thick ink outlines, hard shadows, cut-paper corners. Hover scales up with elastic easing, press squashes (GSAP adds the stretch-back from stage 4). All tap targets are at least 48px.</p>
+
+          <h3 class="ds-h3">Logo + ticker</h3>
+          <div class="panel stage-demo split">
+            <span class="logo" style="--logo-size:2.4rem" aria-label="LEFT RIGHT"><span class="chip chip--left">Left</span><span class="chip chip--right">Right</span></span>
+            <span class="ticker">${{TICKER}}</span>
+            <button class="btn btn--sm" type="button">
+              <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8.5" y="8.5" width="11.5" height="11.5" rx="2.5" /><path d="M15.5 8.5V6A2 2 0 0 0 13.5 4H6A2 2 0 0 0 4 6v7.5A2 2 0 0 0 6 15.5h2.5" /></svg>
+              Copy contract
+            </button>
+          </div>
+
+          <h3 class="ds-h3">Pick a side → your side → fight</h3>
+          <div class="panel stage-demo split">
+            <p class="demo-label">Before picking</p>
+            <button class="btn btn--left btn--xl" type="button">
+              <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 5 7.5 12l7 7" /></svg>
+              Left
+            </button>
+            <button class="btn btn--right btn--xl" type="button">
+              Right
+              <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9.5 5 7 7-7 7" /></svg>
+            </button>
+          </div>
+          <div class="panel stage-demo split" style="margin-top:18px">
+            <p class="demo-label">After picking (accent follows your side)</p>
+            <div data-team="left" style="display:grid;gap:14px;justify-items:center">
+              <span class="side-label">Your side <span class="chip chip--accent">Left</span></span>
+              <button class="btn btn--accent btn--xl" type="button">Fight!</button>
+              <button class="btn btn--sm" type="button">
+                <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10.5l5 5 5-5M5 20h14" /></svg>
+                Download your PFP
+              </button>
+            </div>
+            <div data-team="right" style="display:grid;gap:14px;justify-items:center">
+              <span class="side-label">Your side <span class="chip chip--accent">Right</span></span>
+              <button class="btn btn--accent btn--xl" type="button">Fight!</button>
+              <button class="btn btn--sm" type="button">
+                <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10.5l5 5 5-5M5 20h14" /></svg>
+                Download your PFP
+              </button>
+            </div>
+          </div>
+
+          <h3 class="ds-h3">Button states</h3>
+          <div class="panel stage-demo" style="background:var(--ink)">
+            <div class="state-grid" style="width:100%">
+              <figure><button class="btn btn--left" type="button" tabindex="-1">Left</button><figcaption>Default</figcaption></figure>
+              <figure><button class="btn btn--left is-hover" type="button" tabindex="-1">Left</button><figcaption>Hover</figcaption></figure>
+              <figure><button class="btn btn--left is-pressed" type="button" tabindex="-1">Left</button><figcaption>Pressed</figcaption></figure>
+              <figure><button class="btn btn--left is-focus" type="button" tabindex="-1">Left</button><figcaption>Focus</figcaption></figure>
+              <figure><button class="btn" type="button" tabindex="-1" disabled>Fight!</button><figcaption>Disabled</figcaption></figure>
+            </div>
+          </div>
+
+          <h3 class="ds-h3">Speech bubbles</h3>
+          <p class="ds-note">Content-free bickering. Both sides draw from the same pool, and the tail points at whoever is talking.</p>
+          <div class="panel split">
+            <div class="bubbles" id="bubbles"></div>
+          </div>
+
+          <h3 class="ds-h3">Battle bar + milestones</h3>
+          <p class="ds-note">The solid fill is <code>TEAM_STATE</code> (edited by hand, or a real endpoint later). The striped slice is your own local punches, labelled as local and never mixed into the standings. Milestones: grey = locked, yellow = unlocked (hover for label and date).</p>
+          <div class="panel stage-demo split">
+            <div class="battle" style="--share-left:.52;--mine-from:.52;--mine-to:.58">
+              <div class="battle__head">
+                <span class="battle__team">Left <b class="battle__num">52</b></span>
+                <span class="battle__title">Standings</span>
+                <span class="battle__team"><b class="battle__num">48</b> Right</span>
+              </div>
+              <div class="battle__track">
+                <div class="battle__bar"><span class="battle__fill"></span><span class="battle__mine"></span></div>
+                <div class="battle__edge"><span class="battle__clash" data-fx="spark"></span></div>
+              </div>
+              <p class="battle__note"><span>Set by the team · not live</span><span class="battle__local">Your punches: <b>37</b> · only counted in this browser</span></p>
+            </div>
+            <ol class="milestones" id="ms-demo" aria-label="Milestones"></ol>
+          </div>
+          <div class="panel stage-demo split" style="margin-top:18px">
+            <div class="battle battle--mine-right" style="--share-left:.52;--mine-from:.45;--mine-to:.52">
+              <div class="battle__head">
+                <span class="battle__team">Left <b class="battle__num">52</b></span>
+                <span class="battle__title">Standings</span>
+                <span class="battle__team"><b class="battle__num">48</b> Right</span>
+              </div>
+              <div class="battle__track">
+                <div class="battle__bar"><span class="battle__fill"></span><span class="battle__mine"></span></div>
+                <div class="battle__edge" style="--share-left:.45"><span class="battle__clash" data-fx="spark"></span></div>
+              </div>
+              <p class="battle__note"><span>Set by the team · not live</span><span class="battle__local">Your punches: <b>41</b> · only counted in this browser</span></p>
+            </div>
+          </div>
+
+          <h3 class="ds-h3">Marquee, toast, corner buttons</h3>
+          <div class="panel" style="background:var(--red-bg)">
+            <div class="marquee" aria-label="Left, right, fight">
+              <div class="marquee__track" id="marquee-track" aria-hidden="true"></div>
+            </div>
+            <div class="stage-demo">
+              <span class="toast is-demo" role="status">Copied.</span>
+              <button class="icon-btn" type="button" aria-pressed="false" aria-label="Sound off">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 9.5h4l5-4.5v14l-5-4.5h-4z" fill="currentColor" /><path d="m16.5 9.5 5 5m0-5-5 5" /></svg>
+              </button>
+              <button class="icon-btn" type="button" aria-pressed="true" aria-label="Sound on">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 9.5h4l5-4.5v14l-5-4.5h-4z" fill="currentColor" /><path d="M16 8.5c1.6 1.9 1.6 5.1 0 7M18.7 6c3 3.3 3 8.7 0 12" /></svg>
+              </button>
+              <a class="icon-btn" href="#" aria-label="X">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" aria-hidden="true"><path d="m5.5 5 13 14m0-14-13 14" /></svg>
+              </a>
+              <a class="icon-btn" href="#" aria-label="Telegram">
+                <svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><path d="M21.5 3.8 2.8 11.2l5.7 2 1.4 5.8 3.3-3.4 4.6 3.5z" /><path d="m8.5 13.2 9.4-6.6-7.2 7.9" fill="none" stroke="var(--paper)" stroke-width="1.6" /></svg>
+              </a>
+            </div>
+          </div>
+
+          <h3 class="ds-h3">Disclaimer (fixed to the bottom of every screen)</h3>
+          <p class="legal is-demo">${{TICKER}} is a meme coin with no utility and no expectation of profit. Nothing on this site is financial advice. You can lose everything you put in. This site is not affiliated with any political party, politician or government agency.</p>
+        </div>
+      </section>
+
+      <!-- ============================== FX ============================== -->
+      <section class="ds-section" id="fx">
+        <div class="ds-wrap">
+          <h2 class="display">Effects</h2>
+          <p class="ds-lede">A classic cartoon brawl cloud (both sides' fists poke out equally), impact stars, confetti per side, the fist cursor, the split seam, and the paper grain.</p>
+          <div class="fx-grid">
+            <figure class="fx-tile fx-tile--wide panel split" style="margin:0">
+              <div data-fx="cloud" style="width:min(460px,90%)"></div>
+            </figure>
+            <figure class="panel" style="margin:0">
+              <div class="fx-tile" style="background:var(--ink);display:flex;gap:30px;justify-content:center">
+                <div data-fx="star" style="width:84px"></div>
+                <div data-fx="spark" style="width:84px"></div>
+              </div>
+              <figcaption class="fx-caption" style="padding:0 14px 12px">Impact star + spark (clash marker)</figcaption>
+            </figure>
+            <figure class="panel" style="margin:0">
+              <div class="fx-tile" style="background:var(--ink);gap:18px">
+                <div class="confetti-row" data-confetti="left"></div>
+                <div class="confetti-row" data-confetti="right"></div>
+              </div>
+              <figcaption class="fx-caption" style="padding:0 14px 12px">Confetti, in your side's colours</figcaption>
+            </figure>
+            <figure class="panel" style="margin:0">
+              <div class="fx-tile" style="background:var(--paper-2)">
+                <div class="cursor-row" id="cursors"></div>
+              </div>
+              <figcaption class="fx-caption" style="padding:0 14px 12px">Fist cursor: neutral / Left / Right</figcaption>
+            </figure>
+            <figure class="panel" style="margin:0">
+              <div class="fx-tile" style="background:var(--paper-2)">
+                <div class="split-demos">
+                  <figure><div class="split" data-split="desktop" style="width:150px;height:96px"></div>Desktop</figure>
+                  <figure><div class="split" data-split="mobile" style="width:64px;height:118px"></div>Phone</figure>
+                </div>
+              </div>
+              <figcaption class="fx-caption" style="padding:0 14px 12px">Split: a hand-cut seam. On phones the halves stack (red on top) and the seam turns to run across the screen</figcaption>
+            </figure>
+            <figure class="panel" style="margin:0">
+              <div class="fx-tile" style="background:var(--paper-2)">
+                <div class="flash-demo"><span style="background:var(--red)"></span><span style="background:var(--blue)"></span></div>
+              </div>
+              <figcaption class="fx-caption" style="padding:0 14px 12px">Screen flash on pick (opacity only)</figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================== PFP ============================== -->
+      <section class="ds-section" id="pfp">
+        <div class="ds-wrap">
+          <h2 class="display">PFP</h2>
+          <p class="ds-lede">What the generator will draw on canvas in stage 4: your side's character, hat on, mid-shout, over flat sunburst rays, with a LEFT or RIGHT badge. It will download as a PNG, made entirely in the browser.</p>
+          <div class="pfps">
+            <div class="pfp panel" data-pfp="left"></div>
+            <div class="pfp panel" data-pfp="right"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="ds-foot">
+      <div class="ds-wrap ds-note">LEFT RIGHT design system. Characters and art are original, hand-authored SVG.</div>
+    </footer>
+
+    <p class="legal">${{TICKER}} is a meme coin with no utility and no expectation of profit. Nothing on this site is financial advice. You can lose everything you put in. This site is not affiliated with any political party, politician or government agency.</p>
+
+    <script src="js/rig.js"></script>
+    <script src="js/fx.js"></script>
+    <script>
+      /* Documentation-page wiring only. */
+      (function () {
+        'use strict';
+        var rig = LR.rig, fx = LR.fx;
+
+        var POSE_NOTES = {
+          idle: 'Base shout. Also the static pose for reduced motion.',
+          yell: 'Top of the mouth flap. Spit flies.',
+          grit: 'Mouth snapping shut: clenched teeth.',
+          flail: 'Fists shaking beside the head. Idle loop.',
+          windup: 'Wind-up before a swing.',
+          punch: 'FIGHT click: rubber-hose stretch.',
+          flinch: 'The other guy, a beat after a swing.',
+          blink: 'Every 3 to 5 seconds.',
+          rage: 'After 30 seconds of shouting: red face, big veins.',
+          steam: 'Rage resets: steam from both ears, hat pops.',
+          camera: 'Type STOP: both freeze and stare at you.',
+          lookUp: 'Pupils follow your cursor…',
+          lookDown: '…in every direction.'
+        };
+
+        // Split backgrounds: the same builder the live page uses.
+        var SPLITS = { desktop: {}, mobile: { from: [1, 0.36], to: [0, 0.64], corners: [[0, 1], [1, 1]] } };
+        function addSplit(el) { fx.split(el, SPLITS[el.getAttribute('data-split') || 'desktop']); }
+        document.querySelectorAll('.split').forEach(addSplit);
+
+        // Pose gallery
+        var grid = document.getElementById('pose-grid');
+        Object.keys(rig.POSES).forEach(function (name) {
+          var fig = document.createElement('figure');
+          fig.className = 'pose-card';
+          fig.innerHTML = '<div class="pose-stage split panel"><div class="pose-char" data-char="left" data-pose="' + name + '"></div><div class="pose-char" data-char="right" data-pose="' + name + '"></div></div><figcaption><b>' + name + '</b>' + (POSE_NOTES[name] || '') + '</figcaption>';
+          grid.appendChild(fig);
+          addSplit(fig.querySelector('.split'));
+        });
+
+        // Rage strip
+        var strip = document.getElementById('rage-strip');
+        ['left', 'right'].forEach(function (team) {
+          [0, 0.25, 0.5, 0.75, 1, 'steam'].forEach(function (r) {
+            var cell = document.createElement('div');
+            cell.className = 'rage__cell rage__cell--' + team;
+            var steam = r === 'steam';
+            cell.innerHTML = '<span>' + (steam ? '30s: RESET' : 'RAGE ' + Math.round(r * 100) + '%') + '</span>';
+            var slot = document.createElement('div');
+            slot.setAttribute('data-char', team);
+            slot.setAttribute('data-pose', steam ? 'steam' : 'idle');
+            if (!steam) slot.setAttribute('data-state', JSON.stringify({ rage: r, throb: r > 0.6 ? 1 : 0, mouth: 0.45 + r * 0.5 }));
+            cell.appendChild(slot);
+            strip.appendChild(cell);
+          });
+        });
+
+        // Characters into every [data-char] slot
+        document.querySelectorAll('[data-char]').forEach(function (slot) {
+          var state = slot.getAttribute('data-state');
+          var c = rig.create(slot.getAttribute('data-char'), { pose: slot.getAttribute('data-pose') || 'idle', state: state ? JSON.parse(state) : undefined });
+          slot.appendChild(c.el);
+          if (slot.hasAttribute('data-map')) mapRig(c);
+        });
+
+        // Rig map: pins on every pivot + the parts table
+        function mapRig(c) {
+          var svg = c.el, NS = 'http://www.w3.org/2000/svg';
+          var rows = [
+            ['char-upper', 'Upper body lean, squash'],
+            ['char-head', 'Head bob and tilt (neck)'],
+            ['char-arm-l', 'Back arm: raise, flail'],
+            ['char-arm-r', 'Front arm: raise, swing, stretch'],
+            ['char-brow-l', 'Near brow: raise, tilt'],
+            ['char-brow-r', 'Far brow: raise, tilt'],
+            ['char-eyes', 'Blink (squash to a line)'],
+            ['char-mouth', 'Open/close from the top lip'],
+            ['char-hat', 'Hat pop'],
+            ['char-legs', 'Stomp, foot lift']
+          ];
+          var tbody = document.getElementById('parts-body');
+          var pins = document.createElementNS(NS, 'g');
+          rows.forEach(function (row, i) {
+            var el = svg.querySelector('[data-part="' + row[0] + '"]');
+            var p = el.getAttribute('data-pivot').split(' ').map(Number);
+            var m = svg.getScreenCTM().inverse().multiply(el.parentNode.getScreenCTM());
+            var pt = new DOMPoint(p[0], p[1]).matrixTransform(m);
+            var g = document.createElementNS(NS, 'g');
+            g.setAttribute('class', 'pivot');
+            g.innerHTML = '<circle cx="' + pt.x + '" cy="' + pt.y + '" r="11"/><text x="' + pt.x + '" y="' + (pt.y + 5.5) + '" text-anchor="middle">' + (i + 1) + '</text>';
+            pins.appendChild(g);
+            var tr = document.createElement('tr');
+            tr.innerHTML = '<td><span class="pin">' + (i + 1) + '</span> <code>#' + row[0] + '</code></td><td><code>' + p.join(' ') + '</code></td><td>' + row[1] + '</td>';
+            tbody.appendChild(tr);
+          });
+          ['char-body', 'char-pupils'].forEach(function (id) {
+            var tr = document.createElement('tr');
+            tr.innerHTML = '<td><code>#' + id + '</code></td><td>n/a</td><td>' + (id === 'char-body' ? 'Rides the lean; jacket art' : 'Track the cursor (translate only)') + '</td>';
+            tbody.appendChild(tr);
+          });
+          svg.appendChild(pins);
+        }
+
+        // Colour swatches, read live from :root
+        var GROUPS = [
+          ['Sides', [['--red-bg', 'Left half'], ['--red-bg-2', 'Left shadow'], ['--red', 'Lefty jacket, LEFT button'], ['--red-dark', 'Cuffs, hem, beanie cuff'], ['--red-light', 'Highlights, stripes'],
+                     ['--blue-bg', 'Right half'], ['--blue-bg-2', 'Right shadow'], ['--blue', 'Righty jacket, RIGHT button'], ['--blue-dark', 'Cuffs, hem, cap brim'], ['--blue-light', 'Highlights, stripes']]],
+          ['Neutrals', [['--ink', 'Every outline, shadows'], ['--paper', 'Cream text, bubbles'], ['--paper-2', 'Secondary paper']]],
+          ['Characters', [['--skin', 'Both faces'], ['--skin-dark', 'Nose'], ['--flush', 'Rage flush (opacity)'], ['--vein', 'Forehead veins'], ['--mouth', 'Mouth'], ['--tongue', 'Tongue'], ['--pants', 'Both pairs of trousers']]],
+          ['Effects', [['--star', 'Stars, unlocked, neutral accent'], ['--star-dark', 'Star shade'], ['--dust', 'Brawl cloud'], ['--dust-2', 'Cloud swirls'], ['--locked', 'Locked milestone'], ['--locked-2', 'Locked detail']]]
+        ];
+        var cs = getComputedStyle(document.documentElement);
+        function lum(hex) {
+          var v = [1, 3, 5].map(function (i) { var c = parseInt(hex.substr(i, 2), 16) / 255; return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); });
+          return 0.2126 * v[0] + 0.7152 * v[1] + 0.0722 * v[2];
+        }
+        function contrast(a, b) { var x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); }
+        var paper = cs.getPropertyValue('--paper').trim(), ink = cs.getPropertyValue('--ink').trim();
+        var wrap = document.getElementById('swatches');
+        GROUPS.forEach(function (group) {
+          var sec = document.createElement('div');
+          sec.className = 'swatch-group';
+          sec.innerHTML = '<h3 class="ds-h3">' + group[0] + '</h3><div class="swatches"></div>';
+          var list = sec.querySelector('.swatches');
+          group[1].forEach(function (t) {
+            var hex = cs.getPropertyValue(t[0]).trim();
+            var onPaper = contrast(hex, paper), onInk = contrast(hex, ink);
+            var fg = onPaper >= onInk ? paper : ink;
+            var ratio = Math.max(onPaper, onInk).toFixed(1);
+            var el = document.createElement('div');
+            el.className = 'swatch';
+            el.innerHTML = '<div class="swatch__chip" style="background:var(' + t[0] + ');color:' + fg + '">Aa ' + ratio + '</div><div class="swatch__meta"><code>' + t[0] + '</code>' + hex.toUpperCase() + '<small>' + t[1] + '</small></div>';
+            list.appendChild(el);
+          });
+          wrap.appendChild(sec);
+        });
+
+        // Speech bubbles (the live list moves into js/idle.js in stage 2)
+        var LINES = ['SOURCE?', 'TYPICAL', 'READ A BOOK', 'HAHA OKAY', "YOU DON'T GET IT", 'OH REALLY?', 'OF COURSE', 'OH COME ON'];
+        var bub = document.getElementById('bubbles');
+        LINES.forEach(function (line, i) {
+          var b = document.createElement('span');
+          b.className = 'bubble' + (i % 2 ? ' bubble--tail-right' : '');
+          b.style.transform = 'rotate(' + (i % 2 ? 2 : -2) + 'deg)';
+          b.textContent = line;
+          bub.appendChild(b);
+        });
+
+        // Milestones demo
+        var ms = document.getElementById('ms-demo');
+        var starD = fx.art.star.match(/ d="([^"]+)"/)[1];
+        [['{{MILESTONE_1_LABEL}}', 'Sep 12, 2026', 1], ['{{MILESTONE_2_LABEL}}', 'Sep 18, 2026', 1], ['{{MILESTONE_3_LABEL}}', 'Sep 23, 2026', 1], ['{{MILESTONE_4_LABEL}}', '', 0], ['{{MILESTONE_5_LABEL}}', '', 0], ['{{MILESTONE_6_LABEL}}', '', 0]].forEach(function (m, i) {
+          var li = document.createElement('li');
+          li.className = 'ms ' + (m[2] ? 'is-unlocked' : 'is-locked') + (i === 2 ? ' is-tip-open' : '');
+          li.tabIndex = 0;
+          li.setAttribute('aria-label', 'Milestone ' + (i + 1) + ': ' + (m[2] ? m[0] + ', unlocked ' + m[1] : 'locked'));
+          li.innerHTML = '<svg class="ms__star" viewBox="0 0 60 60" aria-hidden="true"><path d="' + starD + '"/></svg><span class="ms__n" aria-hidden="true">' + (i + 1) + '</span>' +
+            (m[2] ? '<span class="ms__tip" aria-hidden="true"><b>' + m[0] + '</b><time>' + m[1] + '</time></span>' : '<span class="ms__tip" aria-hidden="true"><b>Locked</b>Coming soon</span>');
+          ms.appendChild(li);
+        });
+
+        // Marquee (two identical halves so the loop is seamless)
+        var track = document.getElementById('marquee-track');
+        var starSvg = '<svg class="marquee__star" viewBox="0 0 60 60"><path d="' + starD + '" fill="var(--star)" stroke="var(--ink)" stroke-width="5" stroke-linejoin="round"/></svg>';
+        var group = '<div class="marquee__group">' + new Array(5).join('<span class="marquee__item"><span class="c-left">Left</span>' + starSvg + '<span class="c-right">Right</span>' + starSvg + '<span>Fight</span>' + starSvg + '</span>') + '</div>';
+        track.innerHTML = group + group;
+
+        // FX tiles
+        document.querySelectorAll('[data-fx]').forEach(function (slot) { slot.appendChild(fx[slot.getAttribute('data-fx')]()); });
+        document.querySelectorAll('[data-confetti]').forEach(function (row) {
+          var team = row.getAttribute('data-confetti');
+          for (var i = 0; i < 10; i++) row.appendChild(fx.confetti(i, fx.CONFETTI_COLOURS[team][i % 4]));
+        });
+
+        // Cursor previews, read straight from the CSS so they always match
+        var cur = document.getElementById('cursors');
+        [['', 'Neutral'], ['left', 'Left'], ['right', 'Right']].forEach(function (c) {
+          var probe = document.createElement('div');
+          probe.className = 'fist-cursor';
+          if (c[0]) probe.setAttribute('data-team', c[0]);
+          document.body.appendChild(probe);
+          var url = getComputedStyle(probe).cursor.match(/url\("?(.*?)"?\)/);
+          probe.remove();
+          var fig = document.createElement('figure');
+          fig.innerHTML = (url ? '<img alt="" src="' + url[1] + '">' : '') + c[1];
+          cur.appendChild(fig);
+        });
+
+        // PFP mocks: flat sunburst + bust crop + badge
+        document.querySelectorAll('[data-pfp]').forEach(function (box) {
+          var team = box.getAttribute('data-pfp');
+          var bg = team === 'left' ? 'var(--red-bg)' : 'var(--blue-bg)';
+          var bg2 = team === 'left' ? 'var(--red-bg-2)' : 'var(--blue-bg-2)';
+          var rays = '';
+          for (var i = 0; i < 16; i++) {
+            var a0 = (i / 16) * Math.PI * 2, a1 = ((i + 0.5) / 16) * Math.PI * 2;
+            rays += '<path d="M50 58L' + (50 + 90 * Math.cos(a0)).toFixed(1) + ' ' + (58 + 90 * Math.sin(a0)).toFixed(1) + 'L' + (50 + 90 * Math.cos(a1)).toFixed(1) + ' ' + (58 + 90 * Math.sin(a1)).toFixed(1) + 'Z"/>';
+          }
+          box.style.background = bg;
+          box.innerHTML = '<svg class="pfp__rays" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><g fill="' + bg2 + '">' + rays + '</g></svg>';
+          var c = rig.create(team, { pose: 'yell', state: { armL: 52, armR: 44, rage: 0.35, spit: 0 } });
+          c.el.setAttribute('viewBox', '-20 -40 440 470');
+          var holder = document.createElement('div');
+          holder.className = 'pfp__char';
+          holder.appendChild(c.el);
+          box.appendChild(holder);
+          var badge = document.createElement('span');
+          badge.className = 'chip chip--' + team + ' pfp__badge';
+          badge.textContent = team === 'left' ? 'Left' : 'Right';
+          box.appendChild(badge);
+        });
+      })();
+    </script>
+  </body>
+</html>
