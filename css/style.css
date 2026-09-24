@@ -33,7 +33,10 @@
 
   /* Characters */
   --skin: #fad6b8;
-  --hair: #5b3a2a;
+  --hair-blonde: #f2c35e;   /* Lefty's bob */
+  --hair-blonde-2: #d79a3c; /* its back layer */
+  --hair-black: #2b2731;    /* Righty's hair */
+  --hair-black-2: #535a78;  /* its shine */
   --shoe: #2a2320;
   --flush: #e9504b;
   --vein: #b9334b;
@@ -962,7 +965,7 @@ a {
 }
 
 /* The two boxes meet on the centre line: mouths ~0.57 fighter-widths apart,
-   room for the brawl cloud, and even at full lean the cap brim never covers
+   room for the brawl cloud, and even at full lean the hair never covers
    the other face. */
 .fighter--left { left: calc(50% - var(--fw)); }
 .fighter--right { left: 50%; }

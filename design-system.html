@@ -176,8 +176,8 @@
           <h2 class="display">What to check</h2>
           <p class="ds-lede">Everything on this page is built from the real site files (<code>css/style.css</code>, <code>js/rig.js</code>, <code>js/fx.js</code>, <code>js/pfp.js</code>). The poses here are frozen; <a href="index.html">index.html</a> is where they move.</p>
           <ol class="checklist panel">
-            <li>LEFTY and RIGHTY are one build, mirrored: same body, face and size. Only colour, hat and hair differ (she has bangs, lashes and a ponytail).</li>
-            <li>Neither reads as smarter, stronger or the joke. The beanie + pom-pom and the cap + ponytail carry the same visual weight.</li>
+            <li>LEFTY and RIGHTY are one build, mirrored: same body, face and size. Only colour and hair differ: she has a blonde shoulder-length bob and lashes, he has short black hair and glasses.</li>
+            <li>Neither reads as smarter, stronger or the joke. The bob and the black hair + glasses carry the same visual weight.</li>
             <li>Every pose reads at a glance, and fists stay visible in all of them.</li>
             <li>The red and blue halves feel equally heavy. Cream text stays readable on both.</li>
             <li>The paper grain sits on the flat backgrounds only (never on the characters or text), with no gradients anywhere.</li>
@@ -190,16 +190,16 @@
       <section class="ds-section" id="fighters">
         <div class="ds-wrap">
           <h2 class="display">The fighters</h2>
-          <p class="ds-lede">One SVG rig in a flat cutout-cartoon style, drawn facing right. RIGHTY is the same rig mirrored and recoloured, with the gal hair set. Wide round heads, big touching eyes, mittens, tiny legs, one brow higher than the other, temple veins, the same forward lean. Funny and pathetic, never menacing. Swap who wears the hair in <code>TEAMS</code> in <code>js/rig.js</code>.</p>
+          <p class="ds-lede">One SVG rig in a flat cutout-cartoon style, drawn facing right. RIGHTY is the same rig mirrored and recoloured, with the other hair set. Wide round heads, big touching eyes, mittens, tiny legs, one brow higher than the other, temple veins, the same forward lean. Funny and pathetic, never menacing. Swap the looks (or add a hat) in <code>TEAMS</code> in <code>js/rig.js</code>.</p>
           <div class="fighters">
             <article class="ds-fighter ds-fighter--left panel">
               <h3 class="display sticker-text">Lefty</h3>
-              <p>Red beanie with a pom-pom, red coat, permanently mid-shout. Always on the left.</p>
+              <p>Blonde bob to the shoulders, no hat, red coat, permanently mid-shout. Always on the left.</p>
               <div class="ds-fighter__art" data-char="left" data-pose="idle"></div>
             </article>
             <article class="ds-fighter ds-fighter--right panel">
               <h3 class="display sticker-text">Righty</h3>
-              <p>Blue cap, ponytail, blue coat, permanently mid-shout. Always on the right.</p>
+              <p>Black hair, glasses, blue coat, permanently mid-shout. Always on the right.</p>
               <div class="ds-fighter__art" data-char="right" data-pose="idle"></div>
             </article>
           </div>
@@ -489,7 +489,7 @@
           flinch: 'The other guy, a beat after a swing.',
           blink: 'Every 3 to 5 seconds.',
           rage: 'After 30 seconds of shouting: red face, big veins.',
-          steam: 'Rage resets: steam from both ears, hat pops.',
+          steam: 'Rage resets: steam from both ears, hair jumps.',
           camera: 'Type STOP: both freeze and stare at you.',
           ko: 'Round lost: dizzy for a second, then straight back up.',
           lookUp: 'Pupils follow your cursor…',
@@ -553,7 +553,7 @@
             ['char-brow-r', 'Far brow: raise, tilt'],
             ['char-eyes', 'Blink (squash to a line)'],
             ['char-mouth', 'Open/close from the top lip'],
-            ['char-hat', 'Hat pop'],
+            ['char-hat', 'Optional hat (off by default)'],
             ['char-legs', 'Stomp, foot lift, kick']
           ];
           var tbody = document.getElementById('parts-body');
@@ -581,10 +581,10 @@
 
         // Colour swatches, read live from :root
         var GROUPS = [
-          ['Sides', [['--red-bg', 'Left half'], ['--red-bg-2', 'Sunburst, left'], ['--red', 'Lefty coat, LEFT button'], ['--red-dark', 'Mittens, beanie cuff'], ['--red-light', 'Stripes, confetti'],
-                     ['--blue-bg', 'Right half'], ['--blue-bg-2', 'Sunburst, right'], ['--blue', 'Righty coat, RIGHT button'], ['--blue-dark', 'Mittens, cap brim'], ['--blue-light', 'Stripes, confetti']]],
+          ['Sides', [['--red-bg', 'Left half'], ['--red-bg-2', 'Sunburst, left'], ['--red', 'Lefty coat, LEFT button'], ['--red-dark', 'Mittens, buttons'], ['--red-light', 'Stripes, confetti'],
+                     ['--blue-bg', 'Right half'], ['--blue-bg-2', 'Sunburst, right'], ['--blue', 'Righty coat, RIGHT button'], ['--blue-dark', 'Mittens, buttons'], ['--blue-light', 'Stripes, confetti']]],
           ['Neutrals', [['--ink', 'Every outline, shadows'], ['--paper', 'Cream text, bubbles'], ['--paper-2', 'Secondary paper']]],
-          ['Characters', [['--skin', 'Both faces'], ['--hair', 'Both heads of hair'], ['--flush', 'Rage flush (opacity)'], ['--vein', 'Temple veins'], ['--mouth', 'Mouth'], ['--tongue', 'Tongue'], ['--pants', 'Both pairs of trousers'], ['--shoe', 'Both pairs of shoes']]],
+          ['Characters', [['--skin', 'Both faces'], ['--hair-blonde', "Lefty's bob"], ['--hair-blonde-2', 'Bob, back layer'], ['--hair-black', "Righty's hair"], ['--hair-black-2', 'Hair shine'], ['--flush', 'Rage flush (opacity)'], ['--vein', 'Temple veins'], ['--mouth', 'Mouth'], ['--tongue', 'Tongue'], ['--pants', 'Both pairs of trousers'], ['--shoe', 'Both pairs of shoes']]],
           ['Effects', [['--star', 'Stars, unlocked, neutral accent'], ['--star-dark', 'Star shade'], ['--dust', 'Brawl cloud'], ['--dust-2', 'Cloud swirls'], ['--locked', 'Locked milestone'], ['--locked-2', 'Locked detail']]]
         ];
         var cs = getComputedStyle(document.documentElement);

@@ -1,8 +1,8 @@
 # LEFT RIGHT (${{TICKER}})
 
-A one-screen cartoon meme-coin site. Two kids, **LEFTY** (red beanie, left)
-and **RIGHTY** (blue cap and ponytail, right), yell at each other forever
-about nothing. *Which side are you on?* Visitors tick a ballot and fight the
+A one-screen cartoon meme-coin site. Two kids, **LEFTY** (red, left: a
+blonde bob) and **RIGHTY** (blue, right: black hair and glasses), yell at
+each other forever about nothing. *Which side are you on?* Visitors tick a ballot and fight the
 other side in a small fighting game: combos, blocks, parries, a special,
 best-of-3 rounds and an opponent that gets harder every match you win.
 
@@ -165,7 +165,7 @@ six compact stars.
 
 | What | Where |
 | --- | --- |
-| Which fighter has the girl hair set | `TEAMS` in `js/rig.js`: swap `variant: 'guy'` / `'gal'` |
+| Which side gets which look (blonde bob / black hair and glasses), and optional hats | `TEAMS` in `js/rig.js`: swap `variant: 'gal'` / `'guy'`; `hat: 'beanie'`, `'cap'` or `null` |
 | Speech-bubble lines | `LINES` in `js/idle.js` (both sides share them) |
 | Health, round length, meter, parry window, combo window, idle pause | `GAME` in `js/fight.js` |
 | Move damage and timing | `MOVES` in `js/fight.js` (the same for both sides) |
@@ -196,8 +196,10 @@ six compact stars.
 
 The two fighters are one rig: LEFTY is drawn facing right, and RIGHTY is the
 same drawing mirrored and recoloured. Both share the same body, face, size
-and animation set. Only the colour, hat (beanie + pom-pom / cap + brim) and
-hair differ. Everything moves with transforms and opacity only.
+and animation set. Only the colour and hair differ: she has a blonde
+shoulder-length bob, he has short black hair and glasses. The rig still
+carries a beanie and a cap for anyone who wants hats back (off by
+default). Everything moves with transforms and opacity only.
 
 ## Credits and licences
 
