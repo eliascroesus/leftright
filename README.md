@@ -23,6 +23,17 @@ best-of-3 rounds and an opponent that gets harder every match you win.
   [How to play](#how-to-play). The political flavour is all debate-club
   slang (talking points, filibusters, recounts); there are no parties,
   politicians, slogans or issues anywhere.
+- **Game feel.** Every hit freezes the frame for a beat (longer for bigger
+  hits), sprays sparks the way the blow went, squashes the fighter it
+  lands on and shakes their health bar. Combos punch the camera in, flash
+  speed lines and heat the hit counter from yellow to orange to pink, with
+  streak hype ("Trending!", "Viral!", "Ratio'd!"). Knockouts land in slow
+  motion; winning a match rains confetti. Phones buzz on impact where the
+  browser allows it. With sound on, each hit in a combo climbs a scale.
+- **Uncluttered controls.** Under the fight: the four move buttons (icon +
+  word, key in the corner), three small icon buttons (moves list, switch
+  sides, PFP), the milestone stars, and a one-line standings bar. Your
+  win/loss record lives in the Moves list.
 - **Standings bar.** It shows `TEAM_STATE`, which you edit by hand, with an
   optional live endpoint. Your own hits show as a clearly labelled striped
   slice and are never sent anywhere. Levels, wins and records are counted
@@ -33,13 +44,15 @@ best-of-3 rounds and an opponent that gets harder every match you win.
   fighters throw a swing.
 - **Extras.** Fist cursor in your colour. Sound is muted by default
   (synthesised crowd murmur, punch, kick, block, parry, the filibuster
-  drone, round bell). Type **STOP** and both freeze and stare at you.
+  drone, combo blips, round bell); the speaker button wiggles once when
+  the first round starts, and never plays anything by itself. Type
+  **STOP** and both freeze and stare at you.
 - **Paper grain.** A subtle noise texture on the flat colour backgrounds
   only (the split, the sections, the footer), never over the characters or
   text. Set `--grain-opacity` in `css/style.css` to `0` to turn it off.
 - **Accessibility.** `prefers-reduced-motion` freezes everything into a
-  static pose, with no shake or flash; the game still plays (the HUD,
-  words and banners carry it). Works from 320px up: on phones the halves
+  static pose, with no shake, flash, freeze frames, slow motion or sparks;
+  the game still plays (the HUD, words and banners carry it). Works from 320px up: on phones the halves
   stack and the two face off across the diagonal. The round pauses itself
   when the Moves list is open, the tab is hidden, the fight is scrolled out
   of view, or nobody has pressed anything for 6 seconds.

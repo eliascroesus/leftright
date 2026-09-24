@@ -150,6 +150,9 @@
      @container rule in css/style.css. */
   const STACK_RATIO = 1.6;
 
+  /* Streak hype on the attacker's side, when there's no combo name to show. */
+  const HYPE = { 4: 'Trending!', 6: 'Viral!', 8: 'Breaking news!', 10: "Ratio'd!", 12: 'Unprecedented!' };
+
   const WORDS = {
     P: ['POW!', 'BAM!', 'BONK!', 'WHAP!'],
     K: ['WHAM!', 'THWACK!', 'BOOF!', 'KAPOW!'],
@@ -210,6 +213,8 @@
     picking: false,
     finishCall: null,
     finishBy: null,
+    stopUntil: 0,  // hit-stop: everything holds still until then (real time)
+    nudged: false,
     dizzy: null,
     sway: null,
     hits: 0,
@@ -627,7 +632,7 @@
   }
 
   function frame(time, dt) {
-    if (st.mode !== 'live' || pauses.size) return;
+    if (st.mode !== 'live' || pauses.size || performance.now() < st.stopUntil) return;
     const p = player();
     if (p.guardHeld) st.lastInputAt = clock.t;
     if (!TEST && clock.t - st.lastInputAt > GAME.idleMs && !p.move) {
@@ -706,6 +711,8 @@
     st.round = 1;
     st.brain = brain(st.level);
     if (st.finishCall) st.finishCall.kill();
+    st.stopUntil = 0;
+    slowmo(1, 0);
     show.reset();
     resetFighters(true);
     renderHud();
@@ -741,6 +748,7 @@
         cpu().nextThink = clock.t + 650;
         LR.idle.glare(true);
         renderPause();
+        nudgeSound();
       });
   }
 
@@ -795,6 +803,14 @@
     const landslide = w.taken === 0;
     say(`${how === 'ko' ? 'K.O.' : 'Time'}! ${w.name} takes round ${st.round}.${landslide ? ' Landslide!' : ''}`);
     if (!quiet) LR.sound.play('bell', 3);
+    if (how === 'ko') {
+      // the knockout lands in slow motion
+      slowmo(0.3, 1100);
+      zoomPunch(0.07);
+      focusLines();
+      flash(0.5, 'var(--paper)');
+      buzz(w.team === st.side ? [30, 40, 90] : [90]);
+    }
     let banner = announce(how === 'ko' ? 'K.O.!' : 'Time!', 'star', 0.8);
     if (landslide) banner = banner.then(() => seq === st.seq && announce('Landslide!', 'accent', 0.7));
 
@@ -851,6 +867,8 @@
       st.level += 1;
       store.set('wins', st.wins);
       store.set('level', st.level);
+      confettiRain(w.team);
+      buzz([20, 40, 20, 40, 60]);
     } else {
       st.losses += 1;
       store.set('losses', st.losses);
@@ -985,19 +1003,203 @@
     }
   }
 
-  function flash(strength = 0.55) {
+  function flash(strength = 0.55, colour = '') {
     if (reduced || quiet) return;
+    el.flash.style.background = colour;
     gsap.fromTo(el.flash, { opacity: strength }, { opacity: 0, duration: 0.5, ease: 'power2.out', overwrite: 'auto' });
   }
 
-  function shake(power) {
+  /* Screen shake; with a direction it kicks that way first (the way the hit went). */
+  function shake(power, dir) {
     if (reduced || quiet) return;
     const amp = 3 + power * 10;
     gsap.fromTo(
       el.arena,
-      { x: rand(-amp, amp), y: rand(-amp, amp) * 0.7, rotation: rand(-0.5, 0.5) * power },
+      {
+        x: dir ? dir.x * amp : rand(-amp, amp),
+        y: dir ? dir.y * amp + rand(-amp, amp) * 0.3 : rand(-amp, amp) * 0.7,
+        rotation: rand(-0.5, 0.5) * power,
+      },
       { x: 0, y: 0, rotation: 0, duration: 0.42, ease: 'elastic.out(1.2, 0.3)', overwrite: 'auto' },
     );
+  }
+
+  /* ---- juice: freeze frames, slow motion, bursts, buzz -------------------------
+     Hit-stop freezes every animation and the round clock for a beat on
+     impact (longer for bigger hits); knockouts land in slow motion. */
+
+  let timeBase = 1;
+  let slowToken = 0;
+  const syncTime = () => gsap.globalTimeline.timeScale(performance.now() < st.stopUntil ? 0 : timeBase);
+
+  function hitStop(ms) {
+    if (reduced || quiet || !(ms > 0)) return;
+    const until = performance.now() + ms;
+    if (until <= st.stopUntil) return;
+    st.stopUntil = until;
+    syncTime();
+    setTimeout(syncTime, ms + 4);
+  }
+
+  function slowmo(scale, ms) {
+    if (!gsap || quiet || (reduced && scale !== 1)) return;
+    const token = ++slowToken;
+    timeBase = scale;
+    syncTime();
+    if (ms > 0) {
+      setTimeout(() => {
+        if (token !== slowToken) return;
+        timeBase = 1;
+        syncTime();
+      }, ms);
+    }
+  }
+
+  /* Phones buzz on impact (where the browser allows it). */
+  function buzz(pattern) {
+    if (quiet) return;
+    try {
+      if (navigator.vibrate) navigator.vibrate(pattern);
+    } catch {
+      /* no vibration here */
+    }
+  }
+
+  function spawnAt(cls, p) {
+    const n = document.createElement('span');
+    n.className = cls;
+    n.setAttribute('aria-hidden', 'true');
+    n.style.left = `${p.x}px`;
+    n.style.top = `${p.y}px`;
+    el.arena.appendChild(n);
+    gsap.set(n, { xPercent: -50, yPercent: -50 });
+    return n;
+  }
+
+  /* Impact: a ring and a spray of sparks, flying the way the hit went. */
+  function burst(d, attackerTeam, big) {
+    if (quiet || reduced) return;
+    const p = pointOn(d.team, 0.62, 0.46);
+    const fw = fighterEl(d.team).offsetWidth;
+    const dir = awayFrom(d.team, 1);
+    const base = Math.atan2(dir.y, dir.x);
+    const ring = spawnAt('impact-ring', p);
+    gsap.fromTo(ring, { scale: 0.3, opacity: 1 }, { scale: big ? 2.8 : 1.9, opacity: 0, duration: 0.42, ease: 'power2.out', onComplete: () => ring.remove() });
+    const colours = ['var(--star)', 'var(--paper)', attackerTeam === 'left' ? 'var(--red)' : 'var(--blue)'];
+    const n = big ? 12 : 7;
+    for (let i = 0; i < n; i++) {
+      const sp = spawnAt('spark', p);
+      sp.style.background = colours[i % colours.length];
+      const a = base + rand(-1.3, 1.3) + (i % 4 === 3 ? Math.PI : 0);
+      const dist = fw * rand(0.3, big ? 0.9 : 0.6);
+      gsap.set(sp, { rotation: (a * 180) / Math.PI, scale: rand(0.8, big ? 1.7 : 1.25) });
+      gsap.to(sp, { x: Math.cos(a) * dist, y: Math.sin(a) * dist, scaleX: 0.25, opacity: 0, duration: rand(0.32, 0.55), ease: 'power3.out', onComplete: () => sp.remove() });
+    }
+  }
+
+  function makeFocusLines() {
+    const NS = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(NS, 'svg');
+    svg.setAttribute('class', 'focus-lines');
+    svg.setAttribute('viewBox', '0 0 100 100');
+    svg.setAttribute('preserveAspectRatio', 'none');
+    svg.setAttribute('aria-hidden', 'true');
+    // wedges from the edges toward the middle, clipped to the arena (a small layer)
+    let d = '';
+    const edge = (t) => {
+      const c = Math.cos(t);
+      const s = Math.sin(t);
+      const k = 50 / Math.max(Math.abs(c), Math.abs(s)); // distance to the square's edge
+      return [50 + c * k, 50 + s * k, k];
+    };
+    const pt = (x, y) => `${x.toFixed(1)} ${y.toFixed(1)}`;
+    for (let i = 0; i < 34; i++) {
+      const a = (i / 34) * Math.PI * 2 + rand(-0.05, 0.05);
+      const w = rand(0.02, 0.045);
+      const [ex, ey, k] = edge(a);
+      const inner = k * rand(0.62, 0.8);
+      const [x1, y1] = edge(a - w);
+      const [x2, y2] = edge(a + w);
+      d += `M${pt(50 + Math.cos(a) * inner, 50 + Math.sin(a) * inner)}L${pt(x1, y1)}L${pt(ex, ey)}L${pt(x2, y2)}Z`;
+    }
+    svg.innerHTML = `<path d="${d}"/>`;
+    return svg;
+  }
+
+  /* Comic speed lines flash in around the edges on the big moments. */
+  function focusLines() {
+    if (quiet || reduced || !el.focus) return;
+    gsap.fromTo(el.focus, { opacity: 1, scale: 1.08 }, { opacity: 0, scale: 1, duration: 0.36, ease: 'power2.out', overwrite: 'auto' });
+  }
+
+  /* Camera punch-in on the big ones. */
+  function zoomPunch(k) {
+    if (quiet || reduced) return;
+    gsap.fromTo(el.duel, { scale: 1 + k }, { scale: 1, duration: 0.45, ease: 'power3.out', overwrite: 'auto' });
+  }
+
+  /* A little starburst around a button (the Filibuster filling up). */
+  function sparkle(target, team) {
+    if (quiet || reduced || !target) return;
+    const r = target.getBoundingClientRect();
+    const colours = LR.fx.CONFETTI_COLOURS[team] || LR.fx.CONFETTI_COLOURS.neutral;
+    for (let i = 0; i < 16; i++) {
+      const piece = LR.fx.confetti(i, i % 2 ? '--star' : colours[i % colours.length]);
+      piece.classList.add('confetti-piece');
+      const a = (i / 16) * Math.PI * 2;
+      piece.style.left = `${r.left + r.width / 2 + Math.cos(a) * r.width * 0.4}px`;
+      piece.style.top = `${r.top + r.height / 2 + Math.sin(a) * r.height * 0.4}px`;
+      document.body.appendChild(piece);
+      gsap
+        .timeline({ onComplete: () => piece.remove() })
+        .set(piece, { x: -11, y: -8, rotation: rand(0, 360), scale: rand(0.5, 0.9) })
+        .to(piece, { x: Math.cos(a) * rand(40, 90), y: Math.sin(a) * rand(30, 70), rotation: `+=${rand(-360, 360)}`, opacity: 0, duration: rand(0.5, 0.8), ease: 'power2.out' });
+    }
+  }
+
+  /* Winning a match: confetti rains down in your colours. */
+  function confettiRain(team) {
+    if (quiet || reduced) return;
+    const colours = LR.fx.CONFETTI_COLOURS[team];
+    for (let i = 0; i < 70; i++) {
+      const piece = LR.fx.confetti(i, colours[i % colours.length]);
+      piece.classList.add('confetti-piece');
+      piece.style.left = `${rand(0, innerWidth)}px`;
+      piece.style.top = '-30px';
+      document.body.appendChild(piece);
+      gsap
+        .timeline({ delay: rand(0, 0.6), onComplete: () => piece.remove() })
+        .set(piece, { rotation: rand(0, 360), scale: rand(0.7, 1.4) })
+        .to(piece, { y: innerHeight * rand(0.7, 1.05), x: `+=${rand(-90, 90)}`, rotation: `+=${rand(-720, 720)}`, duration: rand(1.4, 2.4), ease: 'power1.in' })
+        .to(piece, { opacity: 0, duration: 0.3 }, '-=0.3');
+    }
+  }
+
+  /* A ring flies off a pad button when it fires (mouse, touch or key).
+     Web Animations on the ::after ring: restarts cleanly, no reflow. */
+  function fire(btn) {
+    if (!btn || quiet || reduced || typeof btn.animate !== 'function') return;
+    try {
+      btn.animate(
+        [
+          { opacity: 1, transform: 'scale(0.94)' },
+          { opacity: 0, transform: 'scale(1.2)' },
+        ],
+        { duration: 400, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', pseudoElement: '::after' },
+      );
+    } catch {
+      /* no pseudo-element animations here: the squash still shows */
+    }
+  }
+
+  /* Sound is off by default: the first time a round starts, the speaker
+     button gives a little wiggle (no words, no autoplay). */
+  function nudgeSound() {
+    if (st.nudged || quiet || reduced || !LR.sound || LR.sound.enabled || !el.soundBtn) return;
+    st.nudged = true;
+    const b = el.soundBtn;
+    b.classList.add('is-nudge');
+    b.addEventListener('click', () => b.classList.remove('is-nudge'), { once: true });
   }
 
   function announce(text, tone = 'star', hold = 0.6, sub = '') {
@@ -1055,13 +1257,19 @@
   function callout(team, name, hits) {
     if (quiet) return;
     const c = el.callout[team];
+    if (hits > 0 && hits <= (c.lastHits || 0) && !name) c.name.textContent = ''; // a new streak: the old name goes
+    c.lastHits = hits;
     if (name) c.name.textContent = name;
-    c.hits.textContent = hits >= 2 ? `${hits} hits` : '';
+    c.hits.innerHTML = hits >= 2 ? `<b>${hits}</b> hits` : '';
+    c.box.dataset.heat = hits >= 6 ? '3' : hits >= 4 ? '2' : '1';
     if (!c.name.textContent && !c.hits.textContent) return;
     gsap.killTweensOf(c.box);
     const lean = team === 'left' ? -1 : 1;
     if (reduced) gsap.set(c.box, { opacity: 1 });
-    else gsap.fromTo(c.box, { opacity: 1, scale: name ? 1.45 : 1.12, rotation: lean * 9 }, { scale: 1, rotation: lean * 4, duration: 0.3, ease: 'back.out(2.6)' });
+    else {
+      gsap.fromTo(c.box, { opacity: 1, scale: name ? 1.45 : 1.12, rotation: lean * 9 }, { scale: 1, rotation: lean * 4, duration: 0.3, ease: 'back.out(2.6)' });
+      if (hits >= 2) gsap.fromTo(c.hits, { scale: 1.9, rotation: rand(-14, 14) }, { scale: 1, rotation: 0, duration: 0.38, ease: 'back.out(3)', overwrite: 'auto' });
+    }
     if (c.hide) c.hide.kill();
     c.hide = gsap.delayedCall(name ? 1.3 : 0.9, () =>
       gsap.to(c.box, {
@@ -1181,7 +1389,9 @@
       { headRot: -12 - power * 6, lean: -6, x: -8 - power * 8, blink: 0.85 },
       { headRot: 0, lean: 5, x: 0, blink: 0, duration: 0.38, ease: 'power2.out', overwrite: 'auto' },
     );
-    rigTo(a.s, { armL: 50, armR: 58, reachL: 1, reachR: 1, kickR: 0, legReach: 1, y: 0, sy: 1, duration: 0.12 });
+    rigTo(a.s, { armL: 50, armR: 58, reachL: 1, reachR: 1, kickR: 0, legReach: 1, y: 0, duration: 0.12 });
+    // the whole cutout squashes from the feet and springs back
+    gsap.fromTo(a.s, { sx: 1 + 0.16 * power, sy: 1 - 0.13 * power }, { sx: 1, sy: 1, duration: 0.55, ease: 'elastic.out(1.2, 0.35)', overwrite: 'auto' });
   }
 
   const react = {
@@ -1293,12 +1503,24 @@
       }
       if (info.combo) callout(a.team, `${info.combo.name}!`, info.streak);
       else if (info.interrupt) callout(a.team, 'Interruption!', info.streak);
-      else callout(a.team, '', info.streak);
+      else callout(a.team, HYPE[info.streak] || '', info.streak);
+      const you = !a.cpu;
+      buzz(you ? (big ? 24 : key === 'K' ? 14 : 8) : 18);
+      if (you) pulseBar();
+      if (you && info.streak >= 2) LR.sound.play('combo', info.streak);
+      jiggleHud(d.team, big ? 1 : 0.5);
       if (reduced) return;
+      const heavy = big || key === 'K' || !!info.effect;
+      hitStop(key === 'S' ? (info.effect ? 90 : 24) : big ? 115 : key === 'K' ? 70 : 42);
+      burst(d, a.team, heavy);
       flinch(d.team, power);
       if (info.effect) react[info.effect](d.team);
-      shake(big ? 1.2 : power * 0.8);
-      if (big) flash(0.14);
+      shake(big ? 1.2 : power * 0.8, awayFrom(d.team, 1));
+      if (big) {
+        zoomPunch(0.045);
+        flash(0.16);
+        focusLines();
+      } else if (key === 'K') zoomPunch(0.02);
     },
     block(a, d) {
       if (quiet) return;
@@ -1313,7 +1535,12 @@
       LR.sound.play('parry');
       word(d.team, 'GOTCHA!', 'shout');
       callout(d.team, 'Gotcha!', 0);
+      buzz(d.cpu ? 20 : [15, 30, 25]);
       if (reduced) return;
+      hitStop(130);
+      burst(a, d.team, true);
+      zoomPunch(0.04);
+      focusLines();
       gsap.fromTo(el.shield[d.team], { scale: 1.5 }, { scale: 1, duration: 0.3, ease: 'back.out(3)', overwrite: 'auto' });
       flash(0.2);
       react.stagger(a.team);
@@ -1323,7 +1550,10 @@
       LR.sound.play('kick', 0.9);
       callout(d.team, 'Point of order!', 0);
       word(a.team, 'SHOVE!', 'shout');
+      buzz(30);
       if (reduced) return;
+      hitStop(100);
+      burst(a, d.team, true);
       const s = actor(d.team).s;
       actor(d.team).hold(['arms', 'body'], 560);
       gsap
@@ -1474,6 +1704,10 @@
             LR.sound.play('thwack', 1);
             shake(1.6);
             flash(0.3);
+            zoomPunch(0.08);
+            focusLines();
+            hitStop(160);
+            buzz([50, 30, 80]);
             if (st.sway) st.sway.kill();
             if (st.dizzy) st.dizzy.kill();
             st.sway = st.dizzy = null;
@@ -1547,6 +1781,10 @@
     if (!st.side) return;
     const m = player().meter / GAME.meterMax;
     el.padSpecial.style.setProperty('--meter', m.toFixed(3));
+    if (m >= 1 && !el.padSpecial.classList.contains('is-ready') && st.mode === 'live') {
+      sparkle(el.padSpecial, st.side);
+      if (!quiet) LR.sound.play('ready');
+    }
     el.padSpecial.classList.toggle('is-ready', m >= 1);
     el.padSpecial.setAttribute('aria-disabled', String(m < 1));
   }
@@ -1560,9 +1798,8 @@
   }
 
   function renderScore() {
-    el.score.innerHTML = `Won <b>${st.wins}</b> · lost <b>${st.losses}</b> · this browser only`;
     el.hudLevel.textContent = `Lv ${st.level}`;
-    el.record.textContent = `Your record (this browser only): level ${st.level} · won ${st.wins} · lost ${st.losses} · best combo ${st.best} hits.`;
+    el.record.textContent = `Your record (this browser only): level ${st.level} · won ${st.wins} · lost ${st.losses} · best combo ${st.best} ${st.best === 1 ? 'hit' : 'hits'}.`;
   }
 
   function renderStandings() {
@@ -1577,6 +1814,21 @@
 
   /* Your hits show as a striped slice pushing from your side of the seam:
      visibly separate from TEAM_STATE, and capped so it can't take over. */
+  /* The health bar of whoever got hit gives a shake. */
+  function jiggleHud(team, k) {
+    if (quiet || reduced) return;
+    const box = el.hudSide[team] && el.hudSide[team].box;
+    if (!box) return;
+    const dir = team === 'left' ? -1 : 1;
+    gsap.fromTo(box, { x: dir * 9 * k, y: -3 * k }, { x: 0, y: 0, duration: 0.4, ease: 'elastic.out(1.4, 0.3)', overwrite: 'auto' });
+  }
+
+  function pulseBar() {
+    if (quiet || reduced || !el.barClash) return;
+    gsap.fromTo(el.barClash, { scale: 1.6, rotation: rand(-30, 30) }, { scale: 1, rotation: 0, duration: 0.35, ease: 'back.out(3)', overwrite: 'auto' });
+    gsap.fromTo(el.myHits, { scale: 1.5 }, { scale: 1, duration: 0.3, ease: 'back.out(3)', overwrite: 'auto' });
+  }
+
   function renderLocal() {
     const share = parseFloat(el.battle.style.getPropertyValue('--share-left')) || 0.5;
     const boost = st.side ? Math.min(st.hits * 0.002, 0.1) : 0;
@@ -1639,9 +1891,9 @@
     store.set('side', team);
     document.documentElement.dataset.team = team;
     el.panel.dataset.mode = 'play';
+    el.hero.dataset.playing = '';
     el.play.hidden = false;
     el.hud.hidden = false;
-    el.sideChip.textContent = team === 'left' ? 'Left' : 'Right';
     F[team].cpu = false;
     F[other(team)].cpu = true;
     el.hudSide[team].tag.textContent = 'You';
@@ -1730,6 +1982,7 @@
           }
           guardDown();
         });
+        btn.addEventListener('pointerdown', () => fire(btn));
         ['pointerup', 'pointercancel', 'lostpointercapture'].forEach((type) => btn.addEventListener(type, guardUp));
         btn.addEventListener('click', (e) => {
           if (e.detail !== 0) return;
@@ -1742,6 +1995,7 @@
       btn.addEventListener('pointerdown', (e) => {
         if (e.button !== 0) return;
         squash(btn, false);
+        fire(btn);
         press(key);
       });
       btn.addEventListener('click', (e) => {
@@ -1760,7 +2014,10 @@
       if (e.metaKey || e.ctrlKey || e.altKey || !st.side || typing(e.target) || el.moves.open) return;
       const k = e.key.length === 1 ? e.key.toLowerCase() : e.key;
       if (k === 'l') {
-        if (!e.repeat) guardDown();
+        if (!e.repeat) {
+          guardDown();
+          fire(el.padBlock);
+        }
         return;
       }
       // Space is the Filibuster while the fight is on screen and nothing else has focus
@@ -1770,13 +2027,16 @@
       if (k === 'j' || k === 'f') {
         press('P');
         squash(padFor('P'), false);
+        fire(padFor('P'));
       } else if (k === 'k') {
         press('K');
         squash(padFor('K'), false);
+        fire(padFor('K'));
       } else if (spaceIsOurs) {
         lastSpace = performance.now();
         press('S');
         squash(el.padSpecial, false);
+        fire(el.padSpecial);
       }
     });
     root.addEventListener('keyup', (e) => {
@@ -1847,10 +2107,10 @@
       split = ctx.split || null;
       const $ = (id) => document.getElementById(id);
       el = {
-        arena: $('arena'), duel: $('duel'), fighterL: $('fighter-left'), fighterR: $('fighter-right'), clash: $('clash'),
+        hero: $('top'), arena: $('arena'), duel: $('duel'), fighterL: $('fighter-left'), fighterR: $('fighter-right'), clash: $('clash'),
         announceBox: $('announcer-box'), announcer: $('announcer'), announceSub: $('announcer-sub'), hint: $('hint'),
-        panel: $('panel'), play: $('panel-play'), sideChip: $('side-chip'), switchBtn: $('switch-side'),
-        pfpBtn: $('pfp-btn'), score: $('score'), pad: $('pad'), padPunch: $('pad-punch'), padBlock: $('pad-block'),
+        panel: $('panel'), play: $('panel-play'), switchBtn: $('switch-side'),
+        pfpBtn: $('pfp-btn'), soundBtn: $('sound-btn'), barClash: $('battle-clash'), pad: $('pad'), padPunch: $('pad-punch'), padBlock: $('pad-block'),
         padSpecial: $('pad-special'), movesBtn: $('moves-btn'), moves: $('moves'), movesCombos: $('moves-combos'),
         record: $('moves-record'), hud: $('hud'), timer: $('hud-timer'), hudLevel: $('hud-level'),
         battle: $('battle'), numL: $('num-left'), numR: $('num-right'), bar: $('battle-bar'),
@@ -1890,6 +2150,8 @@
 
       cloud = LR.fx.cloud();
       el.clash.appendChild(cloud);
+      el.focus = makeFocusLines();
+      el.arena.appendChild(el.focus);
       $('battle-clash').appendChild(LR.fx.spark());
 
       renderMoves();

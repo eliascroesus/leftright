@@ -8,6 +8,8 @@
      block       dull tock of a blocked hit
      parry       two-note ping
      filibuster  rising buzz for the special
+     combo       a blip that climbs the scale with each hit in a row (`n`)
+     ready       little arpeggio: the special is charged
      bell        round bell ("ding"); `times` repeats it
      whoosh      swing
    ========================================================================== */
@@ -273,7 +275,34 @@
     lfo.stop(t + 1);
   }
 
-  const SOUNDS = { thwack, kick, block, parry, filibuster, bell, whoosh };
+  /* Combo blip: each hit in a row is one step up a major pentatonic scale. */
+  const PENTA = [0, 2, 4, 7, 9];
+  function note(freq, t, len, type = 'triangle', gain = 0.16) {
+    const o = ctx.createOscillator();
+    o.type = type;
+    o.frequency.value = freq;
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(gain, t + 0.005);
+    g.gain.exponentialRampToValueAtTime(0.001, t + len);
+    o.connect(g);
+    g.connect(master);
+    o.start(t);
+    o.stop(t + len + 0.02);
+  }
+
+  function combo(n = 2) {
+    const k = Math.max(0, Math.min(14, n - 2));
+    const semis = PENTA[k % 5] + 12 * Math.floor(k / 5);
+    note(523.25 * Math.pow(2, semis / 12), ctx.currentTime + 0.02, 0.12, 'square', 0.07);
+  }
+
+  function ready() {
+    const t = ctx.currentTime;
+    [0, 4, 7, 12].forEach((s, i) => note(659.25 * Math.pow(2, s / 12), t + i * 0.06, 0.18, 'triangle', 0.14));
+  }
+
+  const SOUNDS = { thwack, kick, block, parry, filibuster, combo, ready, bell, whoosh };
 
   LR.sound = {
     get enabled() {
