@@ -83,7 +83,8 @@
      hand-cut path in pixel space, so they can never drift apart, and the
      wobble stays the same size on any screen. The seam runs from `from` to
      `to` (fractions of the host box); `corners` lists the box corners on
-     the blue side, in path order. */
+     the blue side, in path order. Pass `geometry: (w, h) => ({from, to,
+     corners})` to recompute them from the live layout on every redraw. */
   const NS = 'http://www.w3.org/2000/svg';
 
   function catmull(pts) {
@@ -116,8 +117,10 @@
     function draw(w, h) {
       if (!w || !h) return;
       size = [w, h];
-      const pad = 48;
-      const ax = o.from[0] * w, ay = o.from[1] * h, bx = o.to[0] * w, by = o.to[1] * h;
+      const geo = typeof o.geometry === 'function' ? o.geometry(w, h) : o;
+      const pad = 160; // seam runs well past the edges, so push + shake never show an end
+      const far = Math.max(w, h);
+      const ax = geo.from[0] * w, ay = geo.from[1] * h, bx = geo.to[0] * w, by = geo.to[1] * h;
       const len = Math.hypot(bx - ax, by - ay) || 1;
       const ux = (bx - ax) / len, uy = (by - ay) / len; // along the seam
       const nx = -uy, ny = ux;                           // across the seam
@@ -130,10 +133,10 @@
         pts.push([ax + ux * t + nx * off, ay + uy * t + ny * off]);
       }
       const d = catmull(pts);
-      const far = o.corners.map(([cx, cy]) => `L${cx ? w + pad : -pad} ${cy ? h + pad : -pad}`).join('');
+      const corners = geo.corners.map(([cx, cy]) => `L${cx ? w + far : -far} ${cy ? h + far : -far}`).join('');
       svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
       seam.setAttribute('d', d);
-      fill.setAttribute('d', `${d}${far}Z`);
+      fill.setAttribute('d', `${d}${corners}Z`);
     }
 
     let ro = null;

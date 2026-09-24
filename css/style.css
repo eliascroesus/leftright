@@ -31,8 +31,9 @@
   --paper-2: #f0e1c6;
 
   /* Characters */
-  --skin: #f5c6a4;
-  --skin-dark: #e29f81;
+  --skin: #fad6b8;
+  --hair: #5b3a2a;
+  --shoe: #2a2320;
   --flush: #e9504b;
   --vein: #b9334b;
   --mouth: #52151c;
@@ -153,6 +154,10 @@ a {
 :focus-visible {
   outline: 4px solid var(--star);
   outline-offset: 3px;
+}
+
+[hidden] {
+  display: none !important;
 }
 
 .visually-hidden {
@@ -593,7 +598,7 @@ a {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  transform: translateX(calc((var(--share-left) - 0.5) * 100%));
+  transform: translateX(calc((var(--edge, var(--share-left)) - 0.5) * 100%));
   transition: transform 0.7s var(--ease-elastic);
 }
 
@@ -850,6 +855,770 @@ a {
 }
 
 
+/* 13. Hero (one screen) ====================================================== */
+/* The hero fills the viewport above the fixed disclaimer (--legal-h is
+   measured by main.js). Its background is the split: .hero__bg paints red
+   and fx.split() adds the blue side + seam, oversized so shake never shows
+   an edge. */
+
+.hero {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - var(--legal-h, 48px));
+  height: calc(100svh - var(--legal-h, 48px));
+  min-height: 540px;
+  overflow: hidden;
+  color: var(--paper);
+}
+
+.hero__bg {
+  position: absolute;
+  inset: -40px;
+  z-index: -1;
+  background: var(--red-bg);
+}
+
+.topbar {
+  position: relative;
+  z-index: var(--z-ui);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: clamp(10px, 1.5vw, 18px) clamp(14px, 2.4vw, 28px) 4px;
+}
+
+.topbar__brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-right: auto;
+  min-width: 0;
+}
+
+.topbar__brand .logo {
+  flex: none;
+}
+
+.topbar__brand .ticker {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.topbar > .btn {
+  flex: none;
+}
+
+.topbar .logo {
+  --logo-size: clamp(1rem, 0.8rem + 0.9vw, 1.55rem);
+}
+
+/* 14. Arena, fighters, overlays ============================================== */
+
+.arena {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 190px;
+  container: arena / size;
+  --fw: min(33cqw, 76cqh); /* fighter width; height = --fw * 1.15 */
+}
+
+.duel {
+  position: absolute;
+  inset: 0;
+  will-change: transform;
+}
+
+.fighter {
+  position: absolute;
+  bottom: 1.5%;
+  width: var(--fw);
+  aspect-ratio: 400 / 460;
+  will-change: transform;
+}
+
+.fighter > svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* The two boxes meet on the centre line: mouths ~0.57 fighter-widths apart,
+   room for the brawl cloud, and even at full lean the cap brim never covers
+   the other face. */
+.fighter--left { left: calc(50% - var(--fw)); }
+.fighter--right { left: 50%; }
+.fighter.is-front { z-index: 2; }
+
+/* Speech bubbles ride above each head, leaning toward the middle. */
+.fighter .bubble {
+  position: absolute;
+  bottom: 95%;
+  right: 26%;
+  z-index: 3;
+  --tail-x: calc(80% - 36px);
+  --tail-tip: 92%;
+  font-size: clamp(0.85rem, 1.9cqw + 0.2rem, 1.5rem);
+  opacity: 0;
+  transform-origin: 84% 120%;
+  pointer-events: none;
+}
+
+.fighter--right .bubble {
+  right: auto;
+  left: 26%;
+  --tail-x: 20%;
+  --tail-tip: 8%;
+  transform-origin: 16% 120%;
+}
+
+/* Brawl cloud, impact stars, combo counter: centred on the clash. */
+.clash {
+  position: absolute;
+  left: 50%;
+  bottom: calc(1.5% + var(--fw) * 0.52);
+  z-index: 4;
+  width: calc(var(--fw) * 0.78);
+  aspect-ratio: 320 / 250;
+  translate: -50% 50%;
+  pointer-events: none;
+}
+
+.clash > .fx-cloud {
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transform: scale(0.2);
+}
+
+.hit-star {
+  position: absolute;
+  z-index: 5;
+  width: calc(var(--fw) * 0.2);
+  translate: -50% -50%;
+  pointer-events: none;
+}
+
+.combo {
+  position: absolute;
+  left: 50%;
+  bottom: 3%;
+  z-index: 6;
+  translate: -50% 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.3rem, 4.4cqw, 3.2rem);
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--star);
+  -webkit-text-stroke: 0.14em var(--ink);
+  paint-order: stroke fill;
+  text-shadow: 0.04em 0.08em 0 var(--ink);
+  text-transform: uppercase;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.announcer {
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
+.announcer__text {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 8.5cqw, 6rem);
+  line-height: 0.9;
+  text-align: center;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--star);
+  -webkit-text-stroke: 0.12em var(--ink);
+  paint-order: stroke fill;
+  text-shadow: 0.04em 0.07em 0 var(--ink);
+  opacity: 0;
+}
+
+.announcer__text--accent { color: var(--accent); }
+.announcer__text--paper { color: var(--paper); }
+
+.dizzy {
+  position: absolute;
+  z-index: 5;
+  width: calc(var(--fw) * 0.5);
+  aspect-ratio: 2 / 1;
+  pointer-events: none;
+}
+
+.dizzy .fx-star {
+  position: absolute;
+  width: 26%;
+  left: 37%;
+  top: 25%;
+}
+
+.hint {
+  position: absolute;
+  left: 50%;
+  bottom: 3%;
+  z-index: 6;
+  translate: -50% 0;
+  padding: 0.45em 0.8em 0.4em;
+  border: 3px solid var(--ink);
+  border-radius: var(--r-blob-sm);
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 4px 0 var(--ink);
+  font-family: var(--font-display);
+  font-size: clamp(0.75rem, 1.6cqw, 1rem);
+  text-transform: uppercase;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.hint.is-on { opacity: 1; }
+
+.confetti-piece {
+  position: fixed;
+  z-index: var(--z-flash);
+  width: 22px;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+/* Phones & tall arenas: the halves stack (red on top) and the fighters
+   face off along the diagonal. */
+@container arena (aspect-ratio < 8 / 5) {
+  .fighter {
+    --fw: min(47cqw, 50cqh);
+    bottom: auto;
+  }
+
+  .fighter--left { left: 3%; top: 3%; }
+  .fighter--right { left: auto; right: 3%; top: auto; bottom: 2%; }
+
+  .fighter .bubble {
+    bottom: auto;
+    top: 10%;
+    right: auto;
+    left: 86%;
+    --tail-x: 16%;
+    --tail-tip: 6%;
+    transform-origin: 14% 120%;
+    font-size: clamp(0.8rem, 3.6cqw, 1.2rem);
+  }
+
+  .fighter--right .bubble {
+    top: auto;
+    bottom: 58%;
+    left: auto;
+    right: 86%;
+    --tail-x: calc(84% - 36px);
+    --tail-tip: 94%;
+    transform-origin: 86% 120%;
+  }
+
+  .clash {
+    bottom: 50%;
+    width: calc(var(--fw) * 0.7);
+  }
+
+  .combo { bottom: 4%; left: 27%; }
+}
+
+/* 15. Panel ================================================================= */
+
+.panel {
+  position: relative;
+  z-index: var(--z-ui);
+  display: grid;
+  justify-items: center;
+  gap: clamp(8px, 1.4vh, 14px);
+  width: min(1060px, 100% - 28px);
+  margin: 0 auto;
+  padding: 2px 0 clamp(10px, 1.6vh, 18px);
+}
+
+.hero__title {
+  margin: 0;
+  font-size: clamp(2rem, 0.9rem + 3.3vw, 3.9rem);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.hero__sub {
+  margin: -4px 0 0;
+  font-size: var(--fs-md);
+  font-weight: 600;
+  text-align: center;
+  text-shadow: 0 2px 0 var(--ink);
+}
+
+.pick-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(12px, 2.2vw, 30px);
+  width: 100%;
+}
+
+.pick-title {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+.pick-row .btn {
+  flex: none;
+  min-width: 150px;
+}
+
+/* Playing: the pick row steps aside (the h1 stays for screen readers). */
+.panel[data-mode="play"] .pick-row {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.panel[data-mode="play"] .pick-row > .btn {
+  display: none;
+}
+
+.panel__play {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.play-main {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px 18px;
+  text-shadow: 0 2px 0 var(--ink);
+}
+
+.round-label {
+  font-family: var(--font-display);
+  font-size: var(--fs-sm);
+  text-transform: uppercase;
+}
+
+.link-btn {
+  padding: 6px 4px;
+  border: 0;
+  background: none;
+  color: var(--paper);
+  font-size: var(--fs-xs);
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.btn--fight {
+  min-width: min(260px, 70vw);
+  font-size: clamp(1.6rem, 1.1rem + 1.6vw, 2.4rem);
+}
+
+.play-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 4px 16px;
+  text-shadow: 0 2px 0 var(--ink);
+}
+
+.score {
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  text-shadow: 0 2px 0 var(--ink);
+}
+
+.score b {
+  font-variant-numeric: tabular-nums;
+}
+
+.panel .battle__bar {
+  height: 28px;
+}
+
+.panel .milestones .ms {
+  width: 36px;
+  height: 36px;
+}
+
+/* 16. Corners: sound + socials sit on the ends of the marquee strip ========= */
+
+.hero__foot {
+  position: relative;
+  z-index: var(--z-ui);
+}
+
+.corner {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  display: flex;
+  gap: 8px;
+  translate: 0 -50%;
+}
+
+.corner--sound { left: clamp(10px, 2vw, 24px); }
+.corner--social { right: clamp(10px, 2vw, 24px); }
+
+.corner .icon-btn {
+  width: 46px;
+  height: 46px;
+}
+
+.corner .icon-btn svg {
+  width: 23px;
+  height: 23px;
+}
+
+.icon-btn .sound-on { display: none; }
+.icon-btn[aria-pressed="true"] .sound-on { display: inline; }
+.icon-btn[aria-pressed="true"] .sound-off { display: none; }
+
+.hero .marquee {
+  border-bottom: 0;
+}
+
+/* 17. Below the fold ========================================================= */
+
+.section {
+  position: relative;
+  padding: clamp(56px, 9vw, 110px) 0;
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.section--ink {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.section--accent {
+  background: var(--accent-bg);
+  color: var(--paper);
+}
+
+.wrap {
+  width: min(1080px, 100% - 32px);
+  margin-inline: auto;
+}
+
+.section__title {
+  margin: 0 0 clamp(20px, 3vw, 36px);
+  font-size: var(--fs-xl);
+}
+
+.section__lede {
+  max-width: 56ch;
+  margin: -8px 0 28px;
+  font-size: var(--fs-md);
+}
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+}
+
+.step {
+  position: relative;
+  padding: 22px 20px 20px;
+  border: var(--line) solid var(--ink);
+  border-radius: var(--r-blob);
+  background: #fff;
+  box-shadow: var(--shadow);
+  counter-increment: step;
+}
+
+.step::before {
+  content: counter(step);
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin-bottom: 12px;
+  border: 3px solid var(--ink);
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+}
+
+:root:not([data-team]) .step::before {
+  color: var(--ink);
+}
+
+.step h3 {
+  margin: 0 0 6px;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.25rem;
+  text-transform: uppercase;
+}
+
+.step p {
+  margin: 0;
+}
+
+.step .btn {
+  margin-top: 14px;
+}
+
+.contract {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  margin-top: 26px;
+  padding: 14px 16px;
+  border: var(--line) solid var(--ink);
+  border-radius: var(--r-blob-sm);
+  background: var(--paper-2);
+}
+
+.contract code {
+  flex: 1 1 260px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.crowd {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(20px, 4vw, 48px);
+  align-items: center;
+}
+
+.crowd__art {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  min-height: 220px;
+}
+
+.crowd__art > div {
+  width: 44%;
+}
+
+.crowd__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 22px;
+}
+
+.faq {
+  display: grid;
+  gap: 14px;
+  max-width: 820px;
+}
+
+.faq details {
+  border: var(--line) solid var(--ink);
+  border-radius: var(--r-blob-sm);
+  background: #fff;
+  box-shadow: var(--shadow-sm);
+}
+
+.faq summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 18px;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  list-style: none;
+  cursor: pointer;
+}
+
+.faq summary::-webkit-details-marker { display: none; }
+
+.faq summary::after {
+  content: "+";
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--ink);
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-size: 1.1rem;
+  line-height: 1;
+  transition: transform 0.3s var(--ease-elastic);
+}
+
+:root:not([data-team]) .faq summary::after { color: var(--ink); }
+.faq details[open] summary::after { transform: rotate(45deg); }
+
+.faq p {
+  margin: 0;
+  padding: 0 18px 18px;
+}
+
+/* 18. Footer ================================================================= */
+
+.footer {
+  padding: 48px 0 calc(40px + var(--legal-h, 48px));
+  background: var(--ink);
+  color: var(--paper-2);
+}
+
+.footer__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.footer__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  font-weight: 700;
+}
+
+.footer__legal {
+  max-width: 76ch;
+  margin: 26px 0 0;
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+}
+
+.footer small {
+  display: block;
+  margin-top: 14px;
+  opacity: 0.7;
+}
+
+/* 19. Small screens =========================================================== */
+
+@media (max-width: 720px) {
+  .topbar {
+    gap: 8px;
+    padding-inline: 12px;
+  }
+
+  .topbar .ticker {
+    font-size: 0.72rem;
+  }
+
+  .topbar .btn--sm {
+    min-height: 40px;
+    padding: 0.55em 0.75em 0.5em;
+    font-size: 0.72rem;
+  }
+
+  .pick-row {
+    flex-wrap: wrap;
+    gap: 8px 12px;
+  }
+
+  .pick-title {
+    order: -1;
+    flex-basis: 100%;
+  }
+
+  .pick-row .btn {
+    min-width: 0;
+    flex: 1 1 130px;
+  }
+
+  .play-main {
+    gap: 8px 10px;
+  }
+
+  .play-main .btn--fight {
+    order: 3;
+    flex-basis: 100%;
+    min-width: 0;
+    min-height: 58px;
+  }
+
+  .play-main .btn--sm {
+    order: 2;
+  }
+
+  .battle__note {
+    font-size: 0.68rem;
+  }
+
+  .corner .icon-btn {
+    width: 40px;
+    height: 40px;
+  }
+
+  .corner .icon-btn svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .crowd {
+    grid-template-columns: 1fr;
+  }
+
+  .legal {
+    font-size: 0.64rem;
+    padding-inline: 10px;
+  }
+}
+
+@media (max-width: 430px) {
+  .topbar .btn__icon { display: none; }
+  .topbar .logo { --logo-size: 0.88rem; }
+}
+
+@media (max-height: 700px) {
+  .hero__sub,
+  .battle__head .battle__title {
+    display: none;
+  }
+
+  .panel .milestones .ms {
+    width: 30px;
+    height: 30px;
+  }
+}
+
+@media (max-height: 600px) {
+  .battle__note {
+    display: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -862,5 +1631,10 @@ a {
 
   .marquee__track {
     animation: none;
+  }
+
+  .duel,
+  .fighter {
+    will-change: auto;
   }
 }

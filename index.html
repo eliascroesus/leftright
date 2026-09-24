@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en" class="fist-cursor">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>LEFT RIGHT (${{TICKER}}) · Pick a side.</title>
+    <meta name="description" content="Two cartoon kids yelling about nothing, forever. Pick a side and join the fight. ${{TICKER}} is a meme coin with no utility and no expectation of profit." />
+    <meta name="theme-color" content="#1b1412" />
+    <link rel="canonical" href="{{SITE_URL}}/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="LEFT RIGHT (${{TICKER}}) · Pick a side." />
+    <meta property="og:description" content="The fight never ends." />
+    <meta property="og:image" content="{{SITE_URL}}/assets/og-image.png" />
+    <meta property="og:url" content="{{SITE_URL}}/" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="LEFT RIGHT (${{TICKER}}) · Pick a side." />
+    <meta name="twitter:description" content="The fight never ends." />
+    <meta name="twitter:image" content="{{SITE_URL}}/assets/og-image.png" />
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body class="grain">
+    <!-- ======================= THE FIGHT (one screen) ======================= -->
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <div class="hero__bg" id="hero-bg" aria-hidden="true"></div>
+
+      <header class="topbar">
+        <div class="topbar__brand">
+          <a class="logo" href="#top" aria-label="LEFT RIGHT, back to the top"><span class="chip chip--left">Left</span><span class="chip chip--right">Right</span></a>
+          <span class="ticker">${{TICKER}}</span>
+        </div>
+        <button class="btn btn--sm" type="button" data-copy="{{CONTRACT_ADDRESS}}">
+          <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8.5" y="8.5" width="11.5" height="11.5" rx="2.5" /><path d="M15.5 8.5V6A2 2 0 0 0 13.5 4H6A2 2 0 0 0 4 6v7.5A2 2 0 0 0 6 15.5h2.5" /></svg>
+          Copy contract
+        </button>
+      </header>
+
+      <div class="arena" id="arena" aria-label="LEFTY and RIGHTY yelling at each other" role="img">
+        <div class="duel" id="duel">
+          <div class="fighter fighter--left" id="fighter-left"></div>
+          <div class="fighter fighter--right" id="fighter-right"></div>
+          <div class="clash" id="clash"></div>
+        </div>
+        <p class="combo" id="combo" aria-hidden="true"></p>
+        <div class="announcer" aria-hidden="true"><span class="announcer__text" id="announcer"></span></div>
+        <p class="hint" id="hint" aria-hidden="true">Mash fight · or tap here</p>
+      </div>
+
+      <div class="panel" id="panel" data-mode="pick">
+        <div class="pick-row" role="group" aria-labelledby="hero-title">
+          <button class="btn btn--left btn--xl" type="button" data-pick="left">
+            <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 5 7.5 12l7 7" /></svg>
+            Left
+          </button>
+          <div class="pick-title">
+            <h1 class="display sticker-text hero__title" id="hero-title">Pick a side.</h1>
+            <p class="hero__sub">The fight never ends.</p>
+          </div>
+          <button class="btn btn--right btn--xl" type="button" data-pick="right">
+            Right
+            <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9.5 5 7 7-7 7" /></svg>
+          </button>
+        </div>
+
+        <div class="panel__play" id="panel-play" hidden>
+          <div class="play-main">
+            <span class="side-label">Your side <span class="chip chip--accent" id="side-chip">Left</span></span>
+            <button class="btn btn--accent btn--xl btn--fight" type="button" id="fight-btn">Fight</button>
+            <button class="btn btn--sm" type="button" id="pfp-btn">
+              <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10.5l5 5 5-5M5 20h14" /></svg>
+              Download your PFP
+            </button>
+          </div>
+          <div class="play-meta">
+            <span class="round-label" id="round-label">Round 1</span>
+            <span class="score" id="score">Rounds won <b>0</b> · lost <b>0</b> · this browser only</span>
+            <button class="link-btn" type="button" id="switch-side">Switch sides</button>
+          </div>
+        </div>
+
+        <div class="battle" id="battle">
+          <div class="battle__head">
+            <span class="battle__team">Left <b class="battle__num" id="num-left">50</b></span>
+            <span class="battle__title">Standings</span>
+            <span class="battle__team"><b class="battle__num" id="num-right">50</b> Right</span>
+          </div>
+          <div class="battle__track">
+            <div class="battle__bar" role="img" id="battle-bar" aria-label="Standings: LEFT 50, RIGHT 50">
+              <span class="battle__fill"></span><span class="battle__mine"></span>
+            </div>
+            <div class="battle__edge"><span class="battle__clash" id="battle-clash"></span></div>
+          </div>
+          <p class="battle__note"><span id="standings-source">Set by the team · not live</span><span class="battle__local">Your punches: <b id="my-punches">0</b> · only counted in this browser</span></p>
+        </div>
+
+        <ol class="milestones" id="milestones" aria-label="Milestones"></ol>
+      </div>
+
+      <div class="hero__foot">
+        <div class="marquee" aria-hidden="true">
+          <div class="marquee__track">
+            <div class="marquee__group" data-marquee></div>
+            <div class="marquee__group" data-marquee></div>
+          </div>
+        </div>
+        <div class="corner corner--sound">
+          <button class="icon-btn" type="button" id="sound-btn" aria-pressed="false" aria-label="Sound">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 9.5h4l5-4.5v14l-5-4.5h-4z" fill="currentColor" /><path class="sound-off" d="m16.5 9.5 5 5m0-5-5 5" /><path class="sound-on" d="M16 8.5c1.6 1.9 1.6 5.1 0 7M18.7 6c3 3.3 3 8.7 0 12" /></svg>
+          </button>
+        </div>
+        <nav class="corner corner--social" aria-label="Socials">
+          <a class="icon-btn" href="{{X_URL}}" target="_blank" rel="noopener" aria-label="LEFT RIGHT on X">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" aria-hidden="true"><path d="m5.5 5 13 14m0-14-13 14" /></svg>
+          </a>
+          <a class="icon-btn" href="{{TELEGRAM_URL}}" target="_blank" rel="noopener" aria-label="LEFT RIGHT on Telegram">
+            <svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><path d="M21.5 3.8 2.8 11.2l5.7 2 1.4 5.8 3.3-3.4 4.6 3.5z" /><path d="m8.5 13.2 9.4-6.6-7.2 7.9" fill="none" stroke="var(--paper)" stroke-width="1.6" /></svg>
+          </a>
+        </nav>
+      </div>
+    </section>
+
+    <!-- Screen-reader play-by-play for the game (the visual banner is decorative). -->
+    <p class="visually-hidden" id="live" aria-live="polite"></p>
+
+    <main>
+      <!-- ============================ HOW TO BUY ============================ -->
+      <section class="section" id="how-to-buy" aria-labelledby="buy-title">
+        <div class="wrap">
+          <h2 class="display section__title" id="buy-title">How to buy</h2>
+          <ol class="steps">
+            <li class="step">
+              <h3>Get a wallet</h3>
+              <p>Install a self-custody crypto wallet and write the recovery phrase down somewhere safe. Never share it.</p>
+            </li>
+            <li class="step">
+              <h3>Fund it</h3>
+              <p>Add a little of the network's coin to pay for the swap. Only use money you can afford to lose.</p>
+            </li>
+            <li class="step">
+              <h3>Swap</h3>
+              <p>Open the exchange, paste the contract address below and swap for ${{TICKER}}.</p>
+              <a class="btn btn--sm" href="{{DEX_URL}}" target="_blank" rel="noopener">Open the exchange</a>
+            </li>
+            <li class="step">
+              <h3>Pick a side</h3>
+              <p>LEFT or RIGHT. It changes nothing. That's the joke.</p>
+            </li>
+          </ol>
+          <div class="contract">
+            <code id="contract-text">{{CONTRACT_ADDRESS}}</code>
+            <button class="btn btn--sm" type="button" data-copy="{{CONTRACT_ADDRESS}}">Copy contract</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================ THE CROWD ============================ -->
+      <section class="section section--accent" id="crowd" aria-labelledby="crowd-title">
+        <div class="wrap crowd">
+          <div>
+            <h2 class="display sticker-text section__title" id="crowd-title">The crowd</h2>
+            <p class="section__lede">Two sides. One group chat. Nobody wins, everybody yells. Bring your side, post your PFP, keep it about nothing.</p>
+            <div class="crowd__links">
+              <a class="btn btn--sm" href="{{X_URL}}" target="_blank" rel="noopener">Follow on X</a>
+              <a class="btn btn--sm" href="{{TELEGRAM_URL}}" target="_blank" rel="noopener">Join the Telegram</a>
+            </div>
+          </div>
+          <div class="crowd__art" aria-hidden="true">
+            <div data-cameo="left"></div>
+            <div data-cameo="right"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================ FAQ ================================ -->
+      <section class="section" id="faq" aria-labelledby="faq-title">
+        <div class="wrap">
+          <h2 class="display section__title" id="faq-title">FAQ</h2>
+          <div class="faq">
+            <details>
+              <summary>What is ${{TICKER}}?</summary>
+              <p>A meme coin about two cartoon kids who will never stop arguing. That's the whole thing.</p>
+            </details>
+            <details>
+              <summary>Who is winning?</summary>
+              <p>Nobody. The fight never ends. The standings bar is set by the team by hand, and your punches are only counted in your own browser.</p>
+            </details>
+            <details>
+              <summary>Is this about politics?</summary>
+              <p>No. They argue about nothing. No parties, no politicians, no issues. LEFT and RIGHT are just the two sides of your screen.</p>
+            </details>
+            <details>
+              <summary>Will I make money?</summary>
+              <p>Don't count on it. ${{TICKER}} has no utility and no expectation of profit. You can lose everything you put in.</p>
+            </details>
+            <details>
+              <summary>How do I make a PFP?</summary>
+              <p>Pick a side, then hit Download your PFP. It's drawn in your browser. Nothing gets uploaded.</p>
+            </details>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="wrap">
+        <div class="footer__row">
+          <span class="logo" style="--logo-size: 1.3rem"><span class="chip chip--left">Left</span><span class="chip chip--right">Right</span></span>
+          <nav class="footer__links" aria-label="Footer">
+            <a href="{{X_URL}}" target="_blank" rel="noopener">X</a>
+            <a href="{{TELEGRAM_URL}}" target="_blank" rel="noopener">Telegram</a>
+            <a href="{{DEX_URL}}" target="_blank" rel="noopener">Exchange</a>
+            <a href="#top">Back to the fight</a>
+          </nav>
+        </div>
+        <p class="footer__legal">${{TICKER}} is a meme coin with no utility and no expectation of profit. Nothing on this site is financial advice. You can lose everything you put in. This site is not affiliated with any political party, politician or government agency.</p>
+        <small>LEFT RIGHT is a joke. The characters are original and argue about nothing.</small>
+      </div>
+    </footer>
+
+    <!-- Always on screen. -->
+    <p class="legal" id="legal">${{TICKER}} is a meme coin with no utility and no expectation of profit. Nothing on this site is financial advice. You can lose everything you put in. This site is not affiliated with any political party, politician or government agency.</p>
+
+    <div class="flash" id="flash" aria-hidden="true"></div>
+    <p class="toast" id="toast" role="status" aria-live="polite"></p>
+
+    <noscript><p class="legal" style="bottom: auto; top: 0">Turn on JavaScript to see the fight.</p></noscript>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js" integrity="sha512-NcZdtrT77bJr4STcmsGAESr06BYGE8woZdSdEgqnpyqac7sugNO+Tr4bGwGF3MsnEkGKhU2KL2xh6Ec+BqsaHA==" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
+    <script src="js/rig.js" defer></script>
+    <script src="js/fx.js" defer></script>
+    <script src="js/sound.js" defer></script>
+    <script src="js/idle.js" defer></script>
+    <script src="js/milestones.js" defer></script>
+    <script src="js/fight.js" defer></script>
+    <script src="js/pfp.js" defer></script>
+    <script src="js/main.js" defer></script>
+  </body>
+</html>

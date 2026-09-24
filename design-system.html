@@ -47,14 +47,14 @@
 
       /* Fighters */
       .fighters { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
-      .fighter { position: relative; display: grid; grid-template-rows: auto 1fr; padding: 22px 22px 0; color: var(--paper); }
-      .fighter--left { background: var(--red-bg); }
-      .fighter--right { background: var(--blue-bg); }
-      .fighter h3 { margin: 0; font-size: var(--fs-lg); }
-      .fighter p { margin: 6px 0 0; max-width: 36ch; font-weight: 600; text-shadow: 0 2px 0 var(--ink); }
-      .fighter__art { width: min(320px, 86%); margin: 6px auto 0; }
-      .fighter--right .fighter__art { transform: translateX(4%); }
-      .fighter--left .fighter__art { transform: translateX(-4%); }
+      .ds-fighter { position: relative; display: grid; grid-template-rows: auto 1fr; padding: 22px 22px 0; color: var(--paper); }
+      .ds-fighter--left { background: var(--red-bg); }
+      .ds-fighter--right { background: var(--blue-bg); }
+      .ds-fighter h3 { margin: 0; font-size: var(--fs-lg); }
+      .ds-fighter p { margin: 6px 0 0; max-width: 36ch; font-weight: 600; text-shadow: 0 2px 0 var(--ink); }
+      .ds-fighter__art { width: min(320px, 86%); margin: 6px auto 0; }
+      .ds-fighter--right .ds-fighter__art { transform: translateX(4%); }
+      .ds-fighter--left .ds-fighter__art { transform: translateX(-4%); }
 
       /* Poses */
       .poses { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 22px; }
@@ -133,9 +133,6 @@
       /* PFP mock (the canvas generator in stage 4 draws exactly this) */
       .pfps { display: flex; flex-wrap: wrap; gap: 26px; justify-content: center; }
       .pfp { position: relative; width: min(300px, 80vw); aspect-ratio: 1; overflow: hidden; }
-      .pfp__rays { position: absolute; inset: 0; width: 100%; height: 100%; }
-      .pfp__char { position: absolute; left: 0; right: 0; bottom: 0; }
-      .pfp__badge { position: absolute; left: 50%; bottom: 5%; transform: translateX(-50%) rotate(-3deg); font-size: clamp(1.4rem, 5vw, 2rem); }
 
       footer.ds-foot { padding: 40px 0 120px; }
     </style>
@@ -146,7 +143,7 @@
       <div class="ds-wrap">
         <div class="ds-hero__top">
           <span class="logo" aria-label="LEFT RIGHT"><span class="chip chip--left">Left</span><span class="chip chip--right">Right</span></span>
-          <span class="ds-hero__meta">Design system · stage 1 of 6 · for review</span>
+          <span class="ds-hero__meta">Design system</span>
         </div>
         <h1 class="display sticker-text">Pick a side.</h1>
         <p class="ds-hero__sub">The fight never ends.</p>
@@ -177,10 +174,10 @@
       <section class="ds-section" id="review">
         <div class="ds-wrap">
           <h2 class="display">What to check</h2>
-          <p class="ds-lede">Everything on this page is built from the real site files (<code>css/style.css</code>, <code>js/rig.js</code>, <code>js/fx.js</code>). Animation arrives in stage 2; here everything is a static pose.</p>
+          <p class="ds-lede">Everything on this page is built from the real site files (<code>css/style.css</code>, <code>js/rig.js</code>, <code>js/fx.js</code>, <code>js/pfp.js</code>). The poses here are frozen; <a href="index.html">index.html</a> is where they move.</p>
           <ol class="checklist panel">
-            <li>LEFTY and RIGHTY look like one build, mirrored: same body, face, size and detail. Only colour and hat differ.</li>
-            <li>Neither reads as smarter, stronger or the joke. The beanie and the cap carry the same visual weight.</li>
+            <li>LEFTY and RIGHTY are one build, mirrored: same body, face and size. Only colour, hat and hair differ (she has bangs, lashes and a ponytail).</li>
+            <li>Neither reads as smarter, stronger or the joke. The beanie + pom-pom and the cap + ponytail carry the same visual weight.</li>
             <li>Every pose reads at a glance, and fists stay visible in all of them.</li>
             <li>The red and blue halves feel equally heavy. Cream text stays readable on both.</li>
             <li>The paper grain is visible but subtle, with no gradients anywhere.</li>
@@ -193,17 +190,17 @@
       <section class="ds-section" id="fighters">
         <div class="ds-wrap">
           <h2 class="display">The fighters</h2>
-          <p class="ds-lede">One SVG rig, drawn facing right. RIGHTY is the same rig mirrored and recoloured. Big round heads, tiny bodies, stubby limbs, small angry eyes, one brow higher than the other, forehead veins, the same forward lean. Funny and pathetic, never menacing.</p>
+          <p class="ds-lede">One SVG rig in a flat cutout-cartoon style, drawn facing right. RIGHTY is the same rig mirrored and recoloured, with the gal hair set. Wide round heads, big touching eyes, mittens, tiny legs, one brow higher than the other, temple veins, the same forward lean. Funny and pathetic, never menacing. Swap who wears the hair in <code>TEAMS</code> in <code>js/rig.js</code>.</p>
           <div class="fighters">
-            <article class="fighter fighter--left panel">
+            <article class="ds-fighter ds-fighter--left panel">
               <h3 class="display sticker-text">Lefty</h3>
-              <p>Red beanie, red jacket, permanently mid-shout. Always on the left.</p>
-              <div class="fighter__art" data-char="left" data-pose="idle"></div>
+              <p>Red beanie with a pom-pom, red coat, permanently mid-shout. Always on the left.</p>
+              <div class="ds-fighter__art" data-char="left" data-pose="idle"></div>
             </article>
-            <article class="fighter fighter--right panel">
+            <article class="ds-fighter ds-fighter--right panel">
               <h3 class="display sticker-text">Righty</h3>
-              <p>Blue cap, blue jacket, permanently mid-shout. Always on the right.</p>
-              <div class="fighter__art" data-char="right" data-pose="idle"></div>
+              <p>Blue cap, ponytail, blue coat, permanently mid-shout. Always on the right.</p>
+              <div class="ds-fighter__art" data-char="right" data-pose="idle"></div>
             </article>
           </div>
         </div>
@@ -458,7 +455,7 @@
       <section class="ds-section" id="pfp">
         <div class="ds-wrap">
           <h2 class="display">PFP</h2>
-          <p class="ds-lede">What the generator will draw on canvas in stage 4: your side's character, hat on, mid-shout, over flat sunburst rays, with a LEFT or RIGHT badge. It will download as a PNG, made entirely in the browser.</p>
+          <p class="ds-lede">Straight from the generator (<code>js/pfp.js</code>): your side's fighter mid-shout over flat sunburst rays, with a LEFT or RIGHT badge. 1024×1024 PNG, drawn in the browser, nothing uploaded. It's a little different every time.</p>
           <div class="pfps">
             <div class="pfp panel" data-pfp="left"></div>
             <div class="pfp panel" data-pfp="right"></div>
@@ -475,6 +472,7 @@
 
     <script src="js/rig.js"></script>
     <script src="js/fx.js"></script>
+    <script src="js/pfp.js"></script>
     <script>
       /* Documentation-page wiring only. */
       (function () {
@@ -493,6 +491,7 @@
           rage: 'After 30 seconds of shouting: red face, big veins.',
           steam: 'Rage resets: steam from both ears, hat pops.',
           camera: 'Type STOP: both freeze and stare at you.',
+          ko: 'Round lost: dizzy for a second, then straight back up.',
           lookUp: 'Pupils follow your cursor…',
           lookDown: '…in every direction.'
         };
@@ -577,10 +576,10 @@
 
         // Colour swatches, read live from :root
         var GROUPS = [
-          ['Sides', [['--red-bg', 'Left half'], ['--red-bg-2', 'Left shadow'], ['--red', 'Lefty jacket, LEFT button'], ['--red-dark', 'Cuffs, hem, beanie cuff'], ['--red-light', 'Highlights, stripes'],
-                     ['--blue-bg', 'Right half'], ['--blue-bg-2', 'Right shadow'], ['--blue', 'Righty jacket, RIGHT button'], ['--blue-dark', 'Cuffs, hem, cap brim'], ['--blue-light', 'Highlights, stripes']]],
+          ['Sides', [['--red-bg', 'Left half'], ['--red-bg-2', 'Sunburst, left'], ['--red', 'Lefty coat, LEFT button'], ['--red-dark', 'Mittens, beanie cuff'], ['--red-light', 'Stripes, confetti'],
+                     ['--blue-bg', 'Right half'], ['--blue-bg-2', 'Sunburst, right'], ['--blue', 'Righty coat, RIGHT button'], ['--blue-dark', 'Mittens, cap brim'], ['--blue-light', 'Stripes, confetti']]],
           ['Neutrals', [['--ink', 'Every outline, shadows'], ['--paper', 'Cream text, bubbles'], ['--paper-2', 'Secondary paper']]],
-          ['Characters', [['--skin', 'Both faces'], ['--skin-dark', 'Nose'], ['--flush', 'Rage flush (opacity)'], ['--vein', 'Forehead veins'], ['--mouth', 'Mouth'], ['--tongue', 'Tongue'], ['--pants', 'Both pairs of trousers']]],
+          ['Characters', [['--skin', 'Both faces'], ['--hair', 'Both heads of hair'], ['--flush', 'Rage flush (opacity)'], ['--vein', 'Temple veins'], ['--mouth', 'Mouth'], ['--tongue', 'Tongue'], ['--pants', 'Both pairs of trousers'], ['--shoe', 'Both pairs of shoes']]],
           ['Effects', [['--star', 'Stars, unlocked, neutral accent'], ['--star-dark', 'Star shade'], ['--dust', 'Brawl cloud'], ['--dust-2', 'Cloud swirls'], ['--locked', 'Locked milestone'], ['--locked-2', 'Locked detail']]]
         ];
         var cs = getComputedStyle(document.documentElement);
@@ -660,28 +659,12 @@
           cur.appendChild(fig);
         });
 
-        // PFP mocks: flat sunburst + bust crop + badge
+        // PFPs: the real generator output
         document.querySelectorAll('[data-pfp]').forEach(function (box) {
-          var team = box.getAttribute('data-pfp');
-          var bg = team === 'left' ? 'var(--red-bg)' : 'var(--blue-bg)';
-          var bg2 = team === 'left' ? 'var(--red-bg-2)' : 'var(--blue-bg-2)';
-          var rays = '';
-          for (var i = 0; i < 16; i++) {
-            var a0 = (i / 16) * Math.PI * 2, a1 = ((i + 0.5) / 16) * Math.PI * 2;
-            rays += '<path d="M50 58L' + (50 + 90 * Math.cos(a0)).toFixed(1) + ' ' + (58 + 90 * Math.sin(a0)).toFixed(1) + 'L' + (50 + 90 * Math.cos(a1)).toFixed(1) + ' ' + (58 + 90 * Math.sin(a1)).toFixed(1) + 'Z"/>';
-          }
-          box.style.background = bg;
-          box.innerHTML = '<svg class="pfp__rays" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><g fill="' + bg2 + '">' + rays + '</g></svg>';
-          var c = rig.create(team, { pose: 'yell', state: { armL: 52, armR: 44, rage: 0.35, spit: 0 } });
-          c.el.setAttribute('viewBox', '-20 -40 440 470');
-          var holder = document.createElement('div');
-          holder.className = 'pfp__char';
-          holder.appendChild(c.el);
-          box.appendChild(holder);
-          var badge = document.createElement('span');
-          badge.className = 'chip chip--' + team + ' pfp__badge';
-          badge.textContent = team === 'left' ? 'Left' : 'Right';
-          box.appendChild(badge);
+          LR.pfp.render(box.getAttribute('data-pfp')).then(function (canvas) {
+            canvas.style.cssText = 'display:block;width:100%;height:100%';
+            box.appendChild(canvas);
+          });
         });
       })();
     </script>
