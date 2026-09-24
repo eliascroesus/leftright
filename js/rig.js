@@ -224,6 +224,7 @@
     x: 0, y: 0, rot: 0, sx: 1, sy: 1, // whole character (feet stay the anchor)
     lean: 5, bodySY: 1,               // upper body lean (deg, + = forward) and squash
     legL: 0, legR: 0,                 // foot lift (px)
+    kickL: 0, kickR: 0, legReach: 1,  // leg swing (deg, + = forward) and stretch
     armL: 40, armR: 14,               // arm raise (deg, + = fist up)
     reachL: 1, reachR: 1,             // arm stretch along its length
     headRot: 0, headX: 0, headY: 0,   // head bob around the neck
@@ -256,6 +257,11 @@
     ko: { rot: -9, lean: -12, headRot: -16, x: -10, mouth: 0.55, blink: 0.9, armL: 64, armR: 70, browL: -6, browR: -6, flop: -1 },
     lookUp: { lookX: 0.1, lookY: -1, headRot: -7, mouth: 0.45 },
     lookDown: { lookX: 0.6, lookY: 1, headRot: 5, mouth: 0.35 },
+    kick: { kickR: 92, legReach: 2, lean: -13, x: 12, y: -4, armL: 56, armR: 34, mouth: 0.95, headRot: -6, flop: 0.8 },
+    uppercut: { armR: 46, reachR: 1.45, sy: 1.07, y: -6, lean: -3, headRot: -8, mouth: 1, flop: 1 },
+    guard: { armL: 22, armR: 10, reachL: 0.85, reachR: 0.85, lean: -5, x: -6, headRot: -6, blink: 0.35, mouth: 0.2, browL: 5, browR: 5 },
+    victory: { armL: 62, armR: 58, mouth: 1, lean: 2, headRot: -4, flop: 1, rage: 0.2 },
+    filibuster: { mouth: 1, lean: 14, headRot: 8, headY: -4, spit: 0.6, armL: 70, armR: 40, browL: 6, browR: 7, rage: 0.8, flop: 1 },
   };
 
   const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
@@ -342,7 +348,7 @@
     const piv = {
       upper: pivotOf(P.upper), armL: pivotOf(P.armL), armR: pivotOf(P.armR), head: pivotOf(P.head),
       eyes: pivotOf(P.eyes), browL: pivotOf(P.browL), browR: pivotOf(P.browR), mouth: pivotOf(P.mouth),
-      hat: pivotOf(P.hat),
+      hat: pivotOf(P.hat), legL: pivotOf(P.legL), legR: pivotOf(P.legR),
     };
 
     const state = Object.assign({}, BASE, opts.pose ? POSES[opts.pose] : null, opts.state);
@@ -357,8 +363,9 @@
       const s = state;
       const mirror = team.facing < 0 ? 'translate(400 0) scale(-1 1) ' : '';
       setT(P.root, `${mirror}translate(${r2(s.x)} ${r2(s.y)}) ${around(GROUND[0], GROUND[1], s.rot, s.sx, s.sy)}`);
-      setT(P.legL, `translate(0 ${r2(-s.legL)})`);
-      setT(P.legR, `translate(0 ${r2(-s.legR)})`);
+      // legs lift for stamps and swing forward (and stretch) for kicks
+      setT(P.legL, `translate(0 ${r2(-s.legL)}) ${around(piv.legL[0], piv.legL[1], -s.kickL, 1, s.kickL ? s.legReach : 1)}`);
+      setT(P.legR, `translate(0 ${r2(-s.legR)}) ${around(piv.legR[0], piv.legR[1], -s.kickR, 1, s.kickR ? s.legReach : 1)}`);
       setT(P.upper, around(piv.upper[0], piv.upper[1], s.lean, 1, s.bodySY));
       setT(P.armL, around(piv.armL[0], piv.armL[1], s.armL, s.reachL, 1));
       setT(P.armR, around(piv.armR[0], piv.armR[1], -s.armR, s.reachR, 1));

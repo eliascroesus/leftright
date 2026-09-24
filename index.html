@@ -23,7 +23,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="css/style.css" />
   </head>
-  <body class="grain">
+  <body>
     <!-- ======================= THE FIGHT (one screen) ======================= -->
     <section class="hero" id="top" aria-labelledby="hero-title">
       <div class="hero__bg" id="hero-bg" aria-hidden="true"></div>
@@ -39,46 +39,70 @@
         </button>
       </header>
 
-      <div class="arena" id="arena" aria-label="LEFTY and RIGHTY yelling at each other" role="img">
-        <div class="duel" id="duel">
+      <!-- Fight HUD: health (with a lag bar), round pips, special meter, timer. -->
+      <div class="hud" id="hud" aria-hidden="true" hidden>
+        <div class="hud__side" data-hud="left">
+          <div class="hud__top"><span class="hud__name">Lefty</span><span class="hud__tag">CPU</span></div>
+          <div class="hp"><span class="hp__lag"></span><span class="hp__fill"></span></div>
+          <div class="hud__bottom"><span class="pips"><i></i><i></i></span><span class="meter"><span class="meter__fill"></span></span></div>
+        </div>
+        <div class="hud__mid"><span class="hud__timer" id="hud-timer">45</span><span class="hud__level" id="hud-level">Lv 1</span></div>
+        <div class="hud__side hud__side--right" data-hud="right">
+          <div class="hud__top"><span class="hud__name">Righty</span><span class="hud__tag">CPU</span></div>
+          <div class="hp"><span class="hp__lag"></span><span class="hp__fill"></span></div>
+          <div class="hud__bottom"><span class="pips"><i></i><i></i></span><span class="meter"><span class="meter__fill"></span></span></div>
+        </div>
+      </div>
+
+      <div class="arena" id="arena">
+        <div class="duel" id="duel" role="img" aria-label="LEFTY and RIGHTY yelling at each other">
           <div class="fighter fighter--left" id="fighter-left"></div>
           <div class="fighter fighter--right" id="fighter-right"></div>
           <div class="clash" id="clash"></div>
         </div>
-        <p class="combo" id="combo" aria-hidden="true"></p>
-        <div class="announcer" aria-hidden="true"><span class="announcer__text" id="announcer"></span></div>
-        <p class="hint" id="hint" aria-hidden="true">Mash fight · or tap here</p>
+        <div class="callout callout--left" id="callout-left" aria-hidden="true"><span class="callout__name"></span><span class="callout__hits"></span></div>
+        <div class="callout callout--right" id="callout-right" aria-hidden="true"><span class="callout__name"></span><span class="callout__hits"></span></div>
+        <div class="announcer" aria-hidden="true">
+          <div class="announcer__box" id="announcer-box"><span class="announcer__text" id="announcer"></span><span class="announcer__sub" id="announcer-sub" hidden></span></div>
+        </div>
+        <p class="hint" id="hint" aria-hidden="true">Throw a punch to start</p>
       </div>
 
       <div class="panel" id="panel" data-mode="pick">
         <div class="pick-row" role="group" aria-labelledby="hero-title">
-          <button class="btn btn--left btn--xl" type="button" data-pick="left">
-            <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 5 7.5 12l7 7" /></svg>
+          <button class="btn btn--left btn--xl btn--ballot" type="button" data-pick="left">
+            <span class="ballot" aria-hidden="true"><svg class="ballot__mark" viewBox="0 0 24 24"><path d="M4 4l16 16" /><path d="M20 4 4 20" /></svg></span>
             Left
           </button>
           <div class="pick-title">
+            <p class="eyebrow">Which side are you on?</p>
             <h1 class="display sticker-text hero__title" id="hero-title">Pick a side.</h1>
             <p class="hero__sub">The fight never ends.</p>
           </div>
-          <button class="btn btn--right btn--xl" type="button" data-pick="right">
+          <button class="btn btn--right btn--xl btn--ballot" type="button" data-pick="right">
             Right
-            <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9.5 5 7 7-7 7" /></svg>
+            <span class="ballot" aria-hidden="true"><svg class="ballot__mark" viewBox="0 0 24 24"><path d="M4 4l16 16" /><path d="M20 4 4 20" /></svg></span>
           </button>
         </div>
 
         <div class="panel__play" id="panel-play" hidden>
-          <div class="play-main">
-            <span class="side-label">Your side <span class="chip chip--accent" id="side-chip">Left</span></span>
-            <button class="btn btn--accent btn--xl btn--fight" type="button" id="fight-btn">Fight</button>
-            <button class="btn btn--sm" type="button" id="pfp-btn">
-              <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10.5l5 5 5-5M5 20h14" /></svg>
-              Download your PFP
-            </button>
+          <div class="pad" id="pad" role="group" aria-label="Your moves">
+            <button class="btn pad__btn" type="button" id="pad-punch" data-move="P" aria-keyshortcuts="J F">Punch<kbd aria-hidden="true">J</kbd></button>
+            <button class="btn pad__btn" type="button" data-move="K" aria-keyshortcuts="K">Kick<kbd aria-hidden="true">K</kbd></button>
+            <button class="btn pad__btn" type="button" id="pad-block" data-move="B" aria-keyshortcuts="L">Block<kbd aria-hidden="true">L</kbd></button>
+            <button class="btn pad__btn pad__btn--special" type="button" id="pad-special" data-move="S" aria-keyshortcuts="Space" aria-disabled="true">Filibuster<kbd aria-hidden="true">Space</kbd></button>
           </div>
           <div class="play-meta">
-            <span class="round-label" id="round-label">Round 1</span>
-            <span class="score" id="score">Rounds won <b>0</b> · lost <b>0</b> · this browser only</span>
-            <button class="link-btn" type="button" id="switch-side">Switch sides</button>
+            <span class="side-label"><span class="side-label__text">Your side</span> <span class="chip chip--accent" id="side-chip">Left</span></span>
+            <span class="score" id="score">Won <b>0</b> · lost <b>0</b> · this browser only</span>
+            <span class="play-links">
+              <button class="link-btn" type="button" id="moves-btn" aria-haspopup="dialog">Moves</button>
+              <button class="link-btn" type="button" id="switch-side">Switch sides</button>
+              <button class="link-btn" type="button" id="pfp-btn">
+                <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10.5l5 5 5-5M5 20h14" /></svg>
+                Your PFP
+              </button>
+            </span>
           </div>
         </div>
 
@@ -94,7 +118,7 @@
             </div>
             <div class="battle__edge"><span class="battle__clash" id="battle-clash"></span></div>
           </div>
-          <p class="battle__note"><span id="standings-source">Set by the team · not live</span><span class="battle__local">Your punches: <b id="my-punches">0</b> · only counted in this browser</span></p>
+          <p class="battle__note"><span id="standings-source">Set by the team · not live</span><span class="battle__local">Your hits: <b id="my-hits">0</b> · only counted in this browser</span></p>
         </div>
 
         <ol class="milestones" id="milestones" aria-label="Milestones"></ol>
@@ -122,6 +146,45 @@
         </nav>
       </div>
     </section>
+
+    <!-- MOVES: controls, combos, tips. Opening it pauses the round. -->
+    <dialog class="moves" id="moves" aria-labelledby="moves-title">
+      <div class="moves__card">
+        <header class="moves__head">
+          <h2 class="display moves__title" id="moves-title">Moves</h2>
+          <button class="icon-btn moves__close" type="button" data-close aria-label="Close">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
+          </button>
+        </header>
+        <div class="moves__body">
+          <section class="moves__col" aria-labelledby="moves-controls">
+            <h3 class="moves__h" id="moves-controls">Controls</h3>
+            <dl class="moves__controls">
+              <div><dt>Punch</dt><dd><kbd>J</kbd> or <kbd>F</kbd>, the Punch button, or tap the fight.</dd></div>
+              <div><dt>Kick</dt><dd><kbd>K</kbd> or the Kick button. Slower, harder.</dd></div>
+              <div><dt>Block</dt><dd>Hold <kbd>L</kbd> or the Block button. Raise it just before a hit lands to parry: <b>Gotcha!</b></dd></div>
+              <div><dt>Filibuster</dt><dd><kbd>Space</kbd> or its button, once your meter is full. Four hits of pure blah.</dd></div>
+            </dl>
+          </section>
+          <section class="moves__col" aria-labelledby="moves-combos-title">
+            <h3 class="moves__h" id="moves-combos-title">Combos</h3>
+            <p class="moves__legend"><kbd>P</kbd> punch · <kbd>K</kbd> kick · <kbd>Block</kbd> block a hit first</p>
+            <ul class="moves__combos" id="moves-combos"></ul>
+          </section>
+          <section class="moves__col moves__col--wide" aria-labelledby="moves-tips">
+            <h3 class="moves__h" id="moves-tips">How to win</h3>
+            <ul class="moves__tips">
+              <li>A <b>!</b> over their head means a hit is coming. Block it, then punch back.</li>
+              <li>Hit them in their wind-up for an <b>Interruption</b> (+25%).</li>
+              <li>Stuck in a combo? Press Block with a third of a meter: <b>Point of order!</b></li>
+              <li>Spam one move and they'll read you. Mix it up.</li>
+              <li>Best of 3 rounds, 45 seconds each. Win the match, go up a level. It never ends.</li>
+            </ul>
+            <p class="moves__record" id="moves-record"></p>
+          </section>
+        </div>
+      </div>
+    </dialog>
 
     <!-- Screen-reader play-by-play for the game (the visual banner is decorative). -->
     <p class="visually-hidden" id="live" aria-live="polite"></p>
@@ -186,11 +249,15 @@
             </details>
             <details>
               <summary>Who is winning?</summary>
-              <p>Nobody. The fight never ends. The standings bar is set by the team by hand, and your punches are only counted in your own browser.</p>
+              <p>Nobody. The fight never ends. The standings bar is set by the team by hand, and your hits, wins and levels are only counted in your own browser.</p>
             </details>
             <details>
               <summary>Is this about politics?</summary>
-              <p>No. They argue about nothing. No parties, no politicians, no issues. LEFT and RIGHT are just the two sides of your screen.</p>
+              <p>Only the vibe. It's a debate about nothing: no parties, no politicians, no issues. LEFT and RIGHT are just the two sides of your screen.</p>
+            </details>
+            <details>
+              <summary>How do I play?</summary>
+              <p>Pick a side, then fight the other one. Punch, kick, block, and save your meter for a Filibuster. Watch for the <b>!</b> and block it. Hit Moves for the full list of combos. Every match you win, the other side gets tougher.</p>
             </details>
             <details>
               <summary>Will I make money?</summary>
@@ -198,7 +265,7 @@
             </details>
             <details>
               <summary>How do I make a PFP?</summary>
-              <p>Pick a side, then hit Download your PFP. It's drawn in your browser. Nothing gets uploaded.</p>
+              <p>Pick a side, then hit Your PFP. It's drawn in your browser. Nothing gets uploaded.</p>
             </details>
           </div>
         </div>

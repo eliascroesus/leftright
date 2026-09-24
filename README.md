@@ -2,37 +2,88 @@
 
 A one-screen cartoon meme-coin site. Two kids, **LEFTY** (red beanie, left)
 and **RIGHTY** (blue cap and ponytail, right), yell at each other forever
-about nothing. Visitors pick a side and join the brawl.
+about nothing. *Which side are you on?* Visitors tick a ballot and fight the
+other side in a small fighting game: combos, blocks, parries, a special,
+best-of-3 rounds and an opponent that gets harder every match you win.
 
 - **Always-on yelling.** Mouths flap in syllables, fists shake, the paper
   cutouts jitter, and eyes blink and follow your cursor. Their faces get
   redder for 30 seconds, then steam blows out of their ears and it starts
   over. Speech bubbles bicker about nothing.
-- **Pick a side.** Use the big LEFT / RIGHT buttons, or click either half of
-  the screen. You get confetti, a colour flash, and the whole page (accents,
-  cursor) leans your colour. The pick is remembered in `localStorage`.
-- **The brawl.** Mash **FIGHT** (or tap the arena, or press **F**). Each hit
-  is a swing, a dust cloud, stars and screen shake. Fast mashing builds
-  combos, and every 10th hit is a SUPER haymaker. Your hits push the seam
-  into the other side's half while the other side punches back. Push them
-  all the way for a **K.O.** They spin, see stars, and pop straight back up
-  for the next round, because the fight never ends. Rounds, punches and
-  combos are counted **in this browser only**.
+- **Pick a side.** "Which side are you on?" Tick the LEFT or RIGHT ballot
+  box (it gets its ✗), or click either half of the screen. You get
+  confetti, a colour flash, and the whole page (accents, cursor) leans your
+  colour. The pick is remembered in `localStorage`.
+- **The fight.** You play your side; the computer plays the other. Punch,
+  kick, hold to block, and a meter-powered special. Chains of hits make
+  named combos, blocking just before a hit lands parries it, and the
+  health bars, round timer and special meters sit in a proper fighting-game
+  HUD. Best of 3 rounds, then *"Say the last word!"*: a giant "OK." lands
+  on the loser. Win and the next opponent is a level harder. See
+  [How to play](#how-to-play). The political flavour is all debate-club
+  slang (talking points, filibusters, recounts); there are no parties,
+  politicians, slogans or issues anywhere.
 - **Standings bar.** It shows `TEAM_STATE`, which you edit by hand, with an
-  optional live endpoint. Your own punches show as a clearly labelled
-  striped slice and are never sent anywhere.
+  optional live endpoint. Your own hits show as a clearly labelled striped
+  slice and are never sent anywhere. Levels, wins and records are counted
+  **in this browser only**.
 - **PFP generator.** Builds a 1024×1024 PNG of your side's fighter with a
   LEFT / RIGHT badge. It's drawn in the browser and nothing is uploaded.
 - **Milestones.** Six story beats under the bar. When one unlocks, both
   fighters throw a swing.
 - **Extras.** Fist cursor in your colour. Sound is muted by default
-  (synthesised crowd murmur, punch thwack, round bell). Type **STOP** and
-  both freeze and stare at you.
+  (synthesised crowd murmur, punch, kick, block, parry, the filibuster
+  drone, round bell). Type **STOP** and both freeze and stare at you.
+- **Paper grain.** A subtle noise texture on the flat colour backgrounds
+  only (the split, the sections, the footer), never over the characters or
+  text. Set `--grain-opacity` in `css/style.css` to `0` to turn it off.
 - **Accessibility.** `prefers-reduced-motion` freezes everything into a
-  static pose, with no shake or flash. Works from 375px up: on phones the
-  halves stack and the two face off across the diagonal.
+  static pose, with no shake or flash; the game still plays (the HUD,
+  words and banners carry it). Works from 320px up: on phones the halves
+  stack and the two face off across the diagonal. The round pauses itself
+  when the Moves list is open, the tab is hidden, the fight is scrolled out
+  of view, or nobody has pressed anything for 6 seconds.
 
 Plain HTML, CSS and JavaScript. No build step, no framework, no backend.
+
+## How to play
+
+| Move | Keyboard | Touch / mouse |
+| --- | --- | --- |
+| Punch | `J` (or `F`) | Punch button, or tap the fight |
+| Kick | `K` | Kick button |
+| Block | hold `L` | hold the Block button |
+| Filibuster (special) | `Space`, when your meter is full | Filibuster button |
+
+- **Parry:** raise your block just before a hit lands (within 170 ms) and
+  it's a **Gotcha!**: they're left wide open.
+- **Combos:** land these in a row, each within 0.65 s of the last.
+
+  | Combo | Input | Bonus |
+  | --- | --- | --- |
+  | Talking point | P P P P P | +10, stagger |
+  | Flip-flop | P K P K | +9, knockback |
+  | Moving goalposts | K K K | +8, knockback |
+  | Hot take | P P K | +6, launch |
+  | Soundbite | K P P | +6, stagger |
+  | Counterpoint | block a hit, then P | +5, stagger |
+
+- **Interruption:** hit them during their wind-up for +25%.
+- **Point of order!:** stuck in a combo (3+ hits)? Press Block with a third
+  of a meter to shove them off.
+- **The opponent** shows a **!** before its attacks (a shorter warning each
+  level), blocks when you're on the attack, reads you if you repeat one
+  move ("HEARD IT."), counters what it blocks, parries from level 3, and
+  strings longer combos as it climbs. Level names run Group chat, Comment
+  section, Town hall, Family dinner, Panel show, Talk radio, Prime-time
+  debate and The final debate, then Overtime forever.
+- **Rounds:** 45 seconds, best of 3. On time the healthier side wins; a
+  dead heat is a **Recount!** Winning a round without taking a scratch is a
+  **Landslide!**
+
+Tested with scripted players: button-mashing wins the first couple of
+levels and stops working around level 4. From level 6 you need to block the
+**!** and punish.
 
 ## Preview
 
@@ -85,7 +136,7 @@ const TEAM_STATE = { left: 52, right: 48 }; // 0–100 each
 ```
 
 The bar shows these two numbers exactly as written. Visitors' clicks never
-change them. Their own punches only add the striped "local" slice they see
+change them. Their own hits only add the striped "local" slice they see
 themselves, and that slice is labelled as local.
 
 **Going live later:** set `TEAM_STATE_ENDPOINT` (just below) to a URL that
@@ -116,7 +167,12 @@ six compact stars.
 | --- | --- |
 | Which fighter has the girl hair set | `TEAMS` in `js/rig.js`: swap `variant: 'guy'` / `'gal'` |
 | Speech-bubble lines | `LINES` in `js/idle.js` (both sides share them) |
-| Game difficulty (push per hit, combo window, the other side's speed, rest timer) | `GAME` in `js/fight.js` |
+| Health, round length, meter, parry window, combo window, idle pause | `GAME` in `js/fight.js` |
+| Move damage and timing | `MOVES` in `js/fight.js` (the same for both sides) |
+| Combos: names, inputs, bonuses | `COMBOS` in `js/fight.js` (the Moves list builds itself from it) |
+| The opponent per level (reactions, blocking, parries, combos, damage) | `brain(level)` in `js/fight.js` |
+| Level names | `STAGES` in `js/fight.js` |
+| Paper grain strength | `--grain-opacity` in `css/style.css` (`0` = off) |
 | Rage cycle length | `RAGE_SECONDS` in `js/idle.js` |
 | Colours, type, spacing | tokens at the top of `css/style.css` |
 
@@ -124,15 +180,15 @@ six compact stars.
 
 | Path | What it is |
 | --- | --- |
-| `index.html` | The site: the one-screen brawl, then HOW TO BUY, THE CROWD, FAQ, footer |
+| `index.html` | The site: the one-screen fight (HUD, arena, move pad, Moves list), then HOW TO BUY, THE CROWD, FAQ, footer |
 | `design-system.html` | Both fighters in every pose, rig map, colour tokens, type, components, effects, real PFPs |
 | `css/style.css` | Tokens, components, layout |
 | `js/rig.js` | The one SVG character rig (#char-body, #char-head, #char-hat, #char-eyes, #char-pupils, #char-brows, #char-mouth, #char-arm-l/-r, #char-legs), its poses and renderer |
 | `js/idle.js` | The always-on yelling loop, blinks, cursor-following eyes, rage + steam, speech bubbles, STOP easter egg |
-| `js/fight.js` | `TEAM_STATE` + live hook, side picking, the brawl game, standings bar |
+| `js/fight.js` | `TEAM_STATE` + live hook, side picking, the fighting game (moves, combos, rounds, the computer opponent), standings bar |
 | `js/milestones.js` | `MILESTONES` + the star row |
 | `js/pfp.js` | Canvas PFP generator |
-| `js/sound.js` | Web Audio: crowd, thwack, bell, whoosh (muted by default, never autoplays) |
+| `js/sound.js` | Web Audio: crowd, punch, kick, block, parry, filibuster, bell, whoosh (muted by default, never autoplays) |
 | `js/fx.js` | Brawl cloud, stars, confetti, the split background |
 | `js/main.js` | Boot, copy contract, sound toggle, marquee, placeholder check |
 | `js/vendor/gsap.min.js` | GSAP 3.13.0 fallback (same file cdnjs serves) |
@@ -147,7 +203,9 @@ hair differ. Everything moves with transforms and opacity only.
 
 - Characters, art and sounds are original and made for this site (SVG and
   Web Audio). They're drawn in a flat cutout-cartoon style, and the site
-  doesn't copy or reference any show, character, logo or brand.
+  doesn't copy or reference any show, character, logo or brand. The fight
+  vocabulary is original too: debate slang, no borrowed catchphrases from
+  any game.
 - [GSAP](https://gsap.com) 3.13.0 is free to use under GreenSock's standard
   licence.
 - Bowlby One and Inter come via Google Fonts, under the SIL Open Font

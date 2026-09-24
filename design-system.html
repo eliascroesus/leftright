@@ -137,7 +137,7 @@
       footer.ds-foot { padding: 40px 0 120px; }
     </style>
   </head>
-  <body class="ds grain">
+  <body class="ds">
     <!-- ============================== HERO ============================== -->
     <header class="ds-hero split">
       <div class="ds-wrap">
@@ -180,7 +180,7 @@
             <li>Neither reads as smarter, stronger or the joke. The beanie + pom-pom and the cap + ponytail carry the same visual weight.</li>
             <li>Every pose reads at a glance, and fists stay visible in all of them.</li>
             <li>The red and blue halves feel equally heavy. Cream text stays readable on both.</li>
-            <li>The paper grain is visible but subtle, with no gradients anywhere.</li>
+            <li>The paper grain sits on the flat backgrounds only (never on the characters or text), with no gradients anywhere.</li>
             <li>Hover the page: your cursor is the fist (neutral until a side is picked).</li>
           </ol>
         </div>
@@ -485,7 +485,7 @@
           grit: 'Mouth snapping shut: clenched teeth.',
           flail: 'Fists shaking beside the head. Idle loop.',
           windup: 'Wind-up before a swing.',
-          punch: 'FIGHT click: rubber-hose stretch.',
+          punch: 'Punch: rubber-hose stretch.',
           flinch: 'The other guy, a beat after a swing.',
           blink: 'Every 3 to 5 seconds.',
           rage: 'After 30 seconds of shouting: red face, big veins.',
@@ -493,7 +493,12 @@
           camera: 'Type STOP: both freeze and stare at you.',
           ko: 'Round lost: dizzy for a second, then straight back up.',
           lookUp: 'Pupils follow your cursor…',
-          lookDown: '…in every direction.'
+          lookDown: '…in every direction.',
+          kick: 'Kick: the leg swings from the hip and stretches.',
+          uppercut: 'Point of order! The shove out of a combo.',
+          guard: 'Block: fists up, eyes squeezed.',
+          victory: 'Round won.',
+          filibuster: 'The special: a wall of BLAH.'
         };
 
         // Split backgrounds: the same builder the live page uses.
@@ -549,7 +554,7 @@
             ['char-eyes', 'Blink (squash to a line)'],
             ['char-mouth', 'Open/close from the top lip'],
             ['char-hat', 'Hat pop'],
-            ['char-legs', 'Stomp, foot lift']
+            ['char-legs', 'Stomp, foot lift, kick']
           ];
           var tbody = document.getElementById('parts-body');
           var pins = document.createElementNS(NS, 'g');

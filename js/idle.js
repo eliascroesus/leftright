@@ -13,14 +13,20 @@
 
   const LR = (root.LR = root.LR || {});
 
-  /* Content-free bickering. Both sides draw from the same pool. */
-  const LINES = ['SOURCE?', 'TYPICAL', 'READ A BOOK', 'HAHA OKAY', "YOU DON'T GET IT", 'OH REALLY?', 'OF COURSE', 'OH COME ON'];
+  /* Content-free bickering, debate-stage style: no issues, no names, no
+     slogans. Both sides draw from the same pool. */
+  const LINES = [
+    'SOURCE?', 'TYPICAL', 'READ A BOOK', 'HAHA OKAY', "YOU DON'T GET IT", 'OH REALLY?', 'OF COURSE', 'OH COME ON',
+    'FACT CHECK!', 'LET ME FINISH', 'NEXT QUESTION', 'POINT OF ORDER', 'NO COMMENT', 'I HAVE THE FLOOR', 'RESPECTFULLY, NO',
+  ];
 
   const RAGE_SECONDS = 30; // calm → steam, then it starts over
 
   let gsap = null;
   let actors = [];
   let paused = false;
+  let chatter = true; // idle speech bubbles (the fight quiets them mid-round)
+  let glare = false; // mid-round they only have eyes for each other
   let staring = false;
   let reduced = false;
   let rageTl = null;
@@ -57,6 +63,10 @@
         keys.forEach((k) => (holds[k] = Math.max(holds[k], now() + ms)));
       },
       free: (k) => now() >= holds[k],
+      /** Hand some channels straight back (e.g. when a block is let go). */
+      unhold(what) {
+        [].concat(what).forEach((k) => (holds[k] = 0));
+      },
       release() {
         Object.keys(holds).forEach((k) => (holds[k] = 0));
       },
@@ -191,7 +201,7 @@
     let turn = Math.random() < 0.5 ? 0 : 1;
     const next = () => {
       gsap.delayedCall(rand(0.9, 1.7), () => {
-        if (!paused) {
+        if (!paused && chatter) {
           const a = actors[turn];
           const b = actors[1 - turn];
           say(a);
@@ -247,7 +257,7 @@
       const s = a.s;
       s.throb = Math.max(0, (s.rage - 0.4) / 0.6) * (0.5 + 0.5 * Math.sin(t / 95 + i));
       if (!reduced && a.free('face') && a.eye) {
-        const target = cursorLive ? pointer : actors[1 - i].eye;
+        const target = cursorLive && !glare ? pointer : actors[1 - i].eye;
         if (target) {
           let dx = target.x - a.eye.x;
           let dy = target.y - a.eye.y;
@@ -309,6 +319,14 @@
     },
     resume() {
       paused = false;
+    },
+    /** Idle speech bubbles on/off (forced lines still show). */
+    chatter(on) {
+      chatter = !!on;
+    },
+    /** Pupils lock on the opponent instead of following the cursor. */
+    glare(on) {
+      glare = !!on;
     },
     /** Easter egg: freeze, stare at the camera, then carry on yelling. */
     stare() {

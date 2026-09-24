@@ -1,11 +1,12 @@
 /* ==========================================================================
    LEFT RIGHT — styles
-   1. Tokens          5. Buttons           9. Milestones
-   2. Base            6. Speech bubbles   10. Marquee
-   3. Type            7. Icon buttons     11. Toast, flash, legal
-   4. Paper grain     8. Battle bar       12. Cursor + motion prefs
+   1. Tokens          6. Speech bubbles   11. Toast, flash, legal   16. Moves dialog
+   2. Base            7. Icon buttons     12. Cursor                17. Corners
+   3. Type            8. Battle bar       13. Hero                  18. Below the fold
+   4. Paper grain     9. Milestones       14. Arena + fight FX      19. Footer
+   5. Buttons        10. Marquee          15. HUD, panel, pad       20. Small screens
    Flat fills, ink outlines, hard shadows. No gradients except the hard-stop
-   stripes that mark local-only punches on the battle bar.
+   stripes that mark local-only hits on the battle bar.
    ========================================================================== */
 
 /* 1. Tokens ================================================================ */
@@ -92,8 +93,10 @@
   --z-ui: 10;
   --z-legal: 60;
   --z-flash: 70;
-  --z-grain: 80;
   --z-toast: 90;
+
+  /* Paper grain on the flat backgrounds (see 4). 0 turns it off. */
+  --grain-opacity: 0.26;
 }
 
 [data-team="left"] {
@@ -194,19 +197,24 @@ a {
 .c-right { color: var(--blue); }
 
 /* 4. Paper grain ============================================================= */
-/* One static noise tile over everything with its own dark and light specks,
-   so every flat fill reads as construction paper. Normal blending on purpose:
-   a blend mode here costs ~20fps on big screens. */
+/* A static noise tile with its own dark and light specks, on the big flat
+   backgrounds only (the split, the sections, the footer), never over the
+   characters, text or buttons: the colour fields read as construction paper
+   and everything on top stays crisp. Set --grain-opacity to 0 to remove it.
+   Normal blending on purpose: a blend mode here costs ~20fps on big screens. */
 
-.grain::after {
+.hero__bg::after,
+.split::after,
+.section::before,
+.footer::before {
   content: "";
-  position: fixed;
+  position: absolute;
   inset: 0;
-  z-index: var(--z-grain);
+  z-index: -1;
   pointer-events: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='d' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.78' numOctaves='3' seed='4' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1  0 0 0 0 .08  0 0 0 0 .07  -2.4 0 0 0 1.12'/%3E%3C/filter%3E%3Cfilter id='l' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 .97  0 0 0 0 .9  2.4 0 0 0 -1.32'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23d)'/%3E%3Crect width='100%25' height='100%25' filter='url(%23l)'/%3E%3C/svg%3E");
   background-size: 240px 240px;
-  opacity: 0.4;
+  opacity: var(--grain-opacity);
 }
 
 /* 5. Buttons ================================================================ */
@@ -840,7 +848,7 @@ a {
   text-wrap: balance;
 }
 
-/* 12. Cursor + motion prefs ================================================== */
+/* 12. Cursor ================================================================== */
 /* A tiny cartoon fist in your team colour (SVG, 32px; hotspot on the knuckles). */
 
 .fist-cursor,
@@ -920,12 +928,15 @@ a {
   --logo-size: clamp(1rem, 0.8rem + 0.9vw, 1.55rem);
 }
 
-/* 14. Arena, fighters, overlays ============================================== */
+/* 14. Arena, fighters, fight FX ============================================== */
 
 .arena {
   position: relative;
   flex: 1 1 auto;
   min-height: 190px;
+  touch-action: manipulation; /* taps are punches: no double-tap zoom */
+  user-select: none;
+  -webkit-user-select: none;
   will-change: transform; /* shake runs on the compositor */
   container: arena / size;
   --fw: min(33cqw, 76cqh); /* fighter width; height = --fw * 1.15 */
@@ -1002,41 +1013,28 @@ a {
   position: absolute;
   z-index: 5;
   width: calc(var(--fw) * 0.2);
-  translate: -50% -50%;
-  pointer-events: none;
-}
-
-.combo {
-  position: absolute;
-  left: 50%;
-  bottom: 3%;
-  z-index: 6;
-  translate: -50% 0;
-  font-family: var(--font-display);
-  font-size: clamp(1.3rem, 4.4cqw, 3.2rem);
-  line-height: 1;
-  white-space: nowrap;
-  color: var(--star);
-  -webkit-text-stroke: 0.14em var(--ink);
-  paint-order: stroke fill;
-  text-shadow: 0.04em 0.08em 0 var(--ink);
-  text-transform: uppercase;
-  opacity: 0;
   pointer-events: none;
 }
 
 .announcer {
   position: absolute;
   inset: 0;
-  z-index: 7;
+  z-index: 9;
   display: grid;
   place-items: center;
   pointer-events: none;
 }
 
+.announcer__box {
+  display: grid;
+  justify-items: center;
+  gap: 0.5em;
+  opacity: 0;
+}
+
 .announcer__text {
   font-family: var(--font-display);
-  font-size: clamp(2.2rem, 8.5cqw, 6rem);
+  font-size: clamp(2rem, 8cqw, 6rem);
   line-height: 0.9;
   text-align: center;
   text-transform: uppercase;
@@ -1045,11 +1043,24 @@ a {
   -webkit-text-stroke: 0.12em var(--ink);
   paint-order: stroke fill;
   text-shadow: 0.04em 0.07em 0 var(--ink);
-  opacity: 0;
 }
 
 .announcer__text--accent { color: var(--accent); }
 .announcer__text--paper { color: var(--paper); }
+
+.announcer__sub {
+  padding: 0.4em 0.8em 0.34em;
+  border: 3px solid var(--ink);
+  border-radius: var(--r-blob-sm);
+  background: var(--ink);
+  color: var(--star);
+  font-family: var(--font-display);
+  font-size: clamp(0.8rem, 2.3cqw, 1.35rem);
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+  rotate: -2deg;
+}
 
 .dizzy {
   position: absolute;
@@ -1097,6 +1108,157 @@ a {
   will-change: transform, opacity;
 }
 
+/* Combo callouts: name + hit count, on the attacker's side. */
+.callout {
+  position: absolute;
+  top: 8%;
+  z-index: 8;
+  display: grid;
+  gap: 0.1em;
+  max-width: 40%;
+  font-family: var(--font-display);
+  line-height: 0.95;
+  text-transform: uppercase;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.callout--left { left: 3%; justify-items: start; transform-origin: 0 50%; }
+.callout--right { right: 3%; justify-items: end; text-align: right; transform-origin: 100% 50%; }
+
+.callout__name,
+.callout__hits {
+  -webkit-text-stroke: 0.14em var(--ink);
+  paint-order: stroke fill;
+  text-shadow: 0.04em 0.07em 0 var(--ink);
+}
+
+.callout__name {
+  font-size: clamp(1.1rem, 3.8cqw, 2.8rem);
+  color: var(--paper);
+  text-wrap: balance;
+}
+
+.callout__hits {
+  font-size: clamp(0.9rem, 2.4cqw, 1.6rem);
+  color: var(--star);
+}
+
+.callout__name:empty,
+.callout__hits:empty {
+  display: none;
+}
+
+/* Comic sound effects, flying off whoever got hit. (GSAP centres these
+   on their point with xPercent/yPercent: it folds a CSS translate into
+   its own transform and loses half of it.) */
+.word {
+  position: absolute;
+  z-index: 7;
+  font-family: var(--font-display);
+  font-size: clamp(1rem, 3.2cqw, 2.3rem);
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--star);
+  -webkit-text-stroke: 0.14em var(--ink);
+  paint-order: stroke fill;
+  text-shadow: 0.05em 0.08em 0 var(--ink);
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.word--big { font-size: clamp(1.3rem, 4.4cqw, 3.2rem); }
+.word--shout { font-size: clamp(1.3rem, 4.8cqw, 3.4rem); color: var(--paper); }
+.word--block { font-size: clamp(0.8rem, 2.1cqw, 1.35rem); color: var(--paper-2); }
+
+/* The computer's tell: an attack is coming. */
+.tell {
+  position: absolute;
+  z-index: 5;
+  left: 58%;
+  top: -3%;
+  display: grid;
+  place-items: center;
+  width: calc(var(--fw) * 0.18);
+  aspect-ratio: 1;
+  border: var(--line) solid var(--ink);
+  border-radius: 50%;
+  background: var(--star);
+  color: var(--ink);
+  box-shadow: 0 4px 0 var(--ink);
+  font-family: var(--font-display);
+  font-size: calc(var(--fw) * 0.1);
+  line-height: 1;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.fighter--right .tell { left: auto; right: 58%; }
+
+/* Block: ward lines in front of the fists. */
+.shield {
+  position: absolute;
+  z-index: 3;
+  left: 76%;
+  top: 30%;
+  width: 16%;
+  height: 46%;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.fighter--right .shield { left: auto; right: 76%; }
+.fighter--right .shield svg { scale: -1 1; } /* mirrored inside, GSAP animates the box */
+
+.shield svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.shield path {
+  fill: none;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.shield .ink { stroke: var(--ink); stroke-width: 9px; }
+.shield .ink + path { stroke: var(--paper); stroke-width: 4px; }
+
+/* Filibuster: little bubbles of BLAH. */
+.glyph {
+  position: absolute;
+  z-index: 7;
+  padding: 0.22em 0.42em 0.16em;
+  border: 3px solid var(--ink);
+  border-radius: 10px 7px 12px 6px / 7px 12px 6px 10px;
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 3px 0 var(--ink);
+  font-family: var(--font-display);
+  font-size: clamp(0.75rem, 2.3cqw, 1.5rem);
+  line-height: 1;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+/* The last word: a giant "OK." that lands on the loser. */
+.last-word {
+  position: absolute;
+  z-index: 8;
+  font-size: clamp(2rem, 9cqw, 5.5rem);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.last-word::before,
+.last-word::after {
+  display: none;
+}
+
 /* Phones & tall arenas: the halves stack (red on top) and the fighters
    face off along the diagonal. */
 @container arena (aspect-ratio < 8 / 5) {
@@ -1134,10 +1296,210 @@ a {
     width: calc(var(--fw) * 0.7);
   }
 
-  .combo { bottom: 4%; left: 27%; }
+  /* callouts sit in the two empty corners, next to each face */
+  .callout { max-width: 50%; }
+  .callout--left { left: auto; right: 3%; justify-items: end; text-align: right; }
+  .callout--right { top: auto; bottom: 4%; right: auto; left: 3%; justify-items: start; text-align: left; }
 }
 
-/* 15. Panel ================================================================= */
+/* Small but still side by side (short phones): smaller bubbles that wrap and
+   stay over each head, so a long line never runs off the screen. */
+@container arena (max-width: 560px) and (aspect-ratio >= 8 / 5) {
+  .fighter .bubble {
+    right: 8%;
+    width: max-content;
+    max-width: 30cqw;
+    white-space: normal;
+    text-align: center;
+    font-size: 0.72rem;
+  }
+
+  .fighter--right .bubble {
+    right: auto;
+    left: 8%;
+  }
+}
+
+/* 15. HUD, panel, pad ======================================================= */
+
+/* The HUD sits in the hero's flow (between the top bar and the arena) and
+   only shows once you've picked a side. The two halves are mirror images. */
+.hud {
+  position: relative;
+  z-index: var(--z-ui);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(8px, 1.6vw, 22px);
+  width: min(1100px, 100% - 32px);
+  margin: 4px auto 0;
+  font-family: var(--font-display);
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.hud__side {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+[data-hud="left"] { --team: var(--red); }
+[data-hud="right"] { --team: var(--blue); }
+
+.hud__top,
+.hud__bottom {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.hud__side--right .hud__top,
+.hud__side--right .hud__bottom {
+  flex-direction: row-reverse;
+}
+
+.hud__name {
+  color: var(--paper);
+  font-size: clamp(0.95rem, 0.7rem + 0.8vw, 1.4rem);
+  letter-spacing: 0.02em;
+  text-shadow: var(--rim);
+}
+
+.hud__tag {
+  padding: 0.24em 0.45em 0.18em;
+  border: 2px solid var(--ink);
+  border-radius: 6px 4px 7px 4px;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 0.66rem;
+  letter-spacing: 0.08em;
+}
+
+.hud__side.is-you .hud__tag {
+  background: var(--star);
+  color: var(--ink);
+}
+
+.hp {
+  position: relative;
+  height: clamp(16px, 0.9rem + 0.45vw, 26px);
+  overflow: hidden;
+  border: var(--line) solid var(--ink);
+  border-radius: 12px 8px 14px 7px / 8px 14px 7px 12px;
+  background: var(--ink);
+  box-shadow: var(--shadow-sm);
+}
+
+.hp__lag,
+.hp__fill,
+.meter__fill {
+  position: absolute;
+  inset: 0;
+  transform-origin: 0 50%;
+}
+
+.hud__side--right .hp__lag,
+.hud__side--right .hp__fill,
+.hud__side--right .meter__fill {
+  transform-origin: 100% 50%;
+}
+
+/* The lag bar waits until a combo is over, then catches up. */
+.hp__lag {
+  background: var(--paper);
+  transition: transform 0.45s var(--ease-out) 0.55s;
+}
+
+.hp__fill {
+  background: var(--team);
+  transition: transform 0.12s ease-out;
+}
+
+.hud__side.is-low .hp__fill {
+  animation: hp-low 0.6s steps(1, end) infinite;
+}
+
+@keyframes hp-low {
+  50% { opacity: 0.45; }
+}
+
+.pips {
+  display: inline-flex;
+  flex: none;
+  gap: 5px;
+}
+
+.pips i {
+  width: 15px;
+  height: 15px;
+  border: 3px solid var(--ink);
+  border-radius: 50%;
+  background: var(--paper-2);
+  box-shadow: 0 2px 0 var(--ink);
+}
+
+.pips i.is-won { background: var(--star); }
+
+.meter {
+  position: relative;
+  flex: 0 1 60%;
+  height: 12px;
+  overflow: hidden;
+  border: 3px solid var(--ink);
+  border-radius: 7px 4px 8px 4px;
+  background: var(--ink);
+}
+
+.meter__fill {
+  background: var(--star);
+  transform: scaleX(0);
+  transition: transform 0.2s var(--ease-out);
+}
+
+.hud__side.is-ready .meter {
+  animation: ready 0.55s ease-in-out infinite alternate;
+}
+
+.hud__mid {
+  display: grid;
+  justify-items: center;
+  gap: 5px;
+}
+
+.hud__timer {
+  display: grid;
+  place-items: center;
+  width: clamp(46px, 2.2rem + 1.6vw, 66px);
+  aspect-ratio: 1;
+  border: var(--line) solid var(--ink);
+  border-radius: 50%;
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: var(--shadow-sm);
+  font-size: clamp(1.15rem, 0.8rem + 1.1vw, 1.85rem);
+  transition: opacity 0.2s ease;
+}
+
+.hud__timer.is-low { color: var(--red-dark); }
+.hud__timer.is-paused { opacity: 0.5; }
+
+.hud__level {
+  padding: 0.28em 0.55em 0.22em;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--star);
+  font-size: 0.66rem;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+@keyframes ready {
+  from { transform: scale(1); }
+  to { transform: scale(1.06); }
+}
+
 
 .panel {
   position: relative;
@@ -1185,6 +1547,53 @@ a {
   min-width: 150px;
 }
 
+/* "Which side are you on?": a stamped label over the headline. */
+.eyebrow {
+  margin: 0 0 4px;
+  padding: 0.42em 0.8em 0.36em;
+  border: 3px solid var(--ink);
+  border-radius: var(--r-blob-sm);
+  background: var(--ink);
+  color: var(--star);
+  font-family: var(--font-display);
+  font-size: clamp(0.72rem, 0.6rem + 0.45vw, 1rem);
+  line-height: 1;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  rotate: -2deg;
+}
+
+/* Ballot boxes: pick a side and it gets its ✗. */
+.ballot {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 1.1em;
+  height: 1.1em;
+  border: 3px solid var(--ink);
+  border-radius: 5px 3px 6px 3px;
+  background: var(--paper);
+  box-shadow: 0 3px 0 var(--ink);
+}
+
+.ballot__mark {
+  width: 86%;
+  height: 86%;
+  overflow: visible;
+}
+
+.ballot__mark path {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 4.6;
+  stroke-linecap: round;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.btn--ballot:hover .ballot__mark path { opacity: 0.22; }
+.btn--ballot.is-cast .ballot__mark path { opacity: 1; }
+
 /* Playing: the pick row steps aside (the h1 stays for screen readers). */
 .panel[data-mode="play"] .pick-row {
   position: absolute;
@@ -1202,23 +1611,97 @@ a {
 .panel__play {
   display: grid;
   justify-items: center;
-  gap: 8px;
+  gap: 10px;
   width: 100%;
 }
 
-.play-main {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 10px 18px;
-  text-shadow: 0 2px 0 var(--ink);
+/* The move pad: four big buttons, the Filibuster fills up with meter. */
+.pad {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(0, 1.75fr);
+  gap: clamp(8px, 1.2vw, 14px);
+  width: min(760px, 100%);
 }
 
-.round-label {
-  font-family: var(--font-display);
-  font-size: var(--fs-sm);
+.pad__btn {
+  min-width: 0;
+  min-height: 62px;
+  padding: 0.5em 0.5em 0.45em;
+  gap: 0.45em;
+  font-size: clamp(1rem, 0.78rem + 0.75vw, 1.4rem);
+  -webkit-touch-callout: none;
+}
+
+.pad__btn[data-move="B"] {
+  touch-action: none; /* hold it without the page scrolling away */
+}
+
+.pad__btn.is-held {
+  transform: translateY(4px) scale(1.07, 0.88);
+  box-shadow: 0 2px 0 var(--ink);
+  transition-duration: 0.06s;
+}
+
+kbd {
+  display: inline-block;
+  min-width: 1.8em;
+  padding: 0.22em 0.36em 0.16em;
+  border: 2px solid var(--ink);
+  border-radius: 5px 4px 6px 4px;
+  background: var(--paper-2);
+  color: var(--ink);
+  box-shadow: 0 2px 0 var(--ink);
+  font-family: var(--font-body);
+  font-size: 0.58em;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.03em;
+  text-align: center;
+  text-shadow: none;
   text-transform: uppercase;
+  vertical-align: 0.15em;
+}
+
+.pad__btn--special,
+.pad__btn--special[aria-disabled="true"] {
+  --btn-bg: var(--ink);
+  --btn-fg: var(--paper);
+  isolation: isolate;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  text-shadow: var(--rim);
+}
+
+.pad__btn--special[aria-disabled="true"]:hover {
+  transform: scale(1.03);
+}
+
+.pad__btn--special[aria-disabled="true"]:active {
+  transform: translateY(4px) scale(1.07, 0.88);
+  box-shadow: 0 2px 0 var(--ink);
+}
+
+.pad__btn--special::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--accent);
+  transform: scaleX(var(--meter, 0));
+  transform-origin: 0 50%;
+  transition: transform 0.25s var(--ease-out);
+}
+
+.pad__btn--special.is-ready {
+  --btn-bg: var(--star);
+  --btn-fg: var(--ink);
+  text-shadow: none;
+  animation: ready 0.5s ease-in-out infinite alternate;
+}
+
+.pad__btn--special.is-ready::before {
+  transform: scaleX(0);
 }
 
 .link-btn {
@@ -1236,9 +1719,12 @@ a {
   cursor: pointer;
 }
 
-.btn--fight {
-  min-width: min(260px, 70vw);
-  font-size: clamp(1.6rem, 1.1rem + 1.6vw, 2.4rem);
+.link-btn .btn__icon {
+  display: inline-block;
+  width: 1.2em;
+  height: 1.2em;
+  margin-right: 0.15em;
+  vertical-align: -0.28em;
 }
 
 .play-meta {
@@ -1246,8 +1732,19 @@ a {
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 4px 16px;
+  gap: 4px 18px;
   text-shadow: 0 2px 0 var(--ink);
+}
+
+.play-links {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0 14px;
+}
+
+.side-label .chip {
+  font-size: var(--fs-sm);
 }
 
 .score {
@@ -1269,7 +1766,154 @@ a {
   height: 36px;
 }
 
-/* 16. Corners: sound + socials sit on the ends of the marquee strip ========= */
+/* 16. Moves dialog ============================================================ */
+
+.moves {
+  width: min(780px, 100% - 32px);
+  max-width: none;
+  max-height: none;
+  margin: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  overflow: visible;
+}
+
+.moves::backdrop {
+  background: rgb(27 20 18 / 0.66);
+}
+
+.moves__card {
+  max-height: calc(100vh - 32px);
+  max-height: calc(100dvh - 32px);
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: clamp(18px, 3vw, 30px);
+  border: var(--line) solid var(--ink);
+  border-radius: var(--r-blob);
+  background: var(--paper);
+  box-shadow: var(--shadow);
+}
+
+.moves__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: clamp(12px, 2vw, 20px);
+}
+
+.moves__title {
+  margin: 0;
+  font-size: var(--fs-xl);
+}
+
+.moves__close {
+  width: 44px;
+  height: 44px;
+  flex: none;
+}
+
+.moves__close svg {
+  width: 20px;
+  height: 20px;
+}
+
+.moves__body {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px 30px;
+}
+
+.moves__col--wide {
+  grid-column: 1 / -1;
+}
+
+.moves__h {
+  margin: 0 0 10px;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: var(--fs-md);
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.moves__controls {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+}
+
+.moves__controls div {
+  display: grid;
+  grid-template-columns: 6.6em minmax(0, 1fr);
+  gap: 10px;
+  align-items: baseline;
+}
+
+.moves__controls dt {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+}
+
+.moves__controls dd,
+.moves__legend,
+.moves__tips {
+  margin: 0;
+  font-size: var(--fs-sm);
+  line-height: 1.45;
+}
+
+.moves__legend {
+  margin-bottom: 10px;
+}
+
+.moves__combos {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.moves__combos li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 10px 7px 12px;
+  border: 3px solid var(--ink);
+  border-radius: var(--r-blob-sm);
+  background: var(--paper-2);
+}
+
+.moves__name {
+  font-family: var(--font-display);
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.moves__seq {
+  display: inline-flex;
+  flex: none;
+  gap: 4px;
+}
+
+.moves__tips {
+  display: grid;
+  gap: 6px;
+  padding-left: 1.2em;
+}
+
+.moves__record {
+  margin: 16px 0 0;
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  opacity: 0.8;
+}
+
+/* 17. Corners: sound + socials sit on the ends of the marquee strip ========= */
 
 .hero__foot {
   position: relative;
@@ -1306,10 +1950,11 @@ a {
   border-bottom: 0;
 }
 
-/* 17. Below the fold ========================================================= */
+/* 18. Below the fold ========================================================= */
 
 .section {
   position: relative;
+  isolation: isolate; /* keeps the grain layer behind the content */
   padding: clamp(56px, 9vw, 110px) 0;
   background: var(--paper);
   color: var(--ink);
@@ -1493,9 +2138,11 @@ a {
   padding: 0 18px 18px;
 }
 
-/* 18. Footer ================================================================= */
+/* 19. Footer ================================================================= */
 
 .footer {
+  position: relative;
+  isolation: isolate;
   padding: 48px 0 calc(40px + var(--legal-h, 48px));
   background: var(--ink);
   color: var(--paper-2);
@@ -1529,7 +2176,7 @@ a {
   opacity: 0.7;
 }
 
-/* 19. Small screens =========================================================== */
+/* 20. Small screens =========================================================== */
 
 @media (max-width: 720px) {
   .topbar {
@@ -1562,19 +2209,80 @@ a {
     flex: 1 1 130px;
   }
 
-  .play-main {
-    gap: 8px 10px;
+  .hud {
+    gap: 8px;
+    width: calc(100% - 32px);
+    margin-top: 2px;
   }
 
-  .play-main .btn--fight {
-    order: 3;
-    flex-basis: 100%;
-    min-width: 0;
-    min-height: 58px;
+  .hud__side {
+    gap: 4px;
   }
 
-  .play-main .btn--sm {
-    order: 2;
+  .hud__top,
+  .hud__bottom {
+    gap: 6px;
+  }
+
+  .hud__name {
+    font-size: 0.86rem;
+  }
+
+  .hud__tag {
+    font-size: 0.56rem;
+  }
+
+  .hp {
+    height: 15px;
+    border-width: 3px;
+  }
+
+  .pips i {
+    width: 12px;
+    height: 12px;
+    border-width: 2px;
+  }
+
+  .meter {
+    height: 10px;
+    border-width: 2px;
+  }
+
+  .hud__timer {
+    width: 42px;
+    border-width: 3px;
+    font-size: 1.1rem;
+  }
+
+  .hud__level {
+    font-size: 0.56rem;
+  }
+
+  .pad {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(0, 1.6fr);
+    gap: 6px;
+  }
+
+  .pad__btn {
+    min-height: 54px;
+    padding: 0.5em 0.2em 0.45em;
+    font-size: 0.84rem;
+  }
+
+  .pad__btn--special {
+    font-size: 0.74rem;
+  }
+
+  .play-meta {
+    gap: 2px 12px;
+  }
+
+  .side-label__text {
+    display: none; /* the chip says it */
+  }
+
+  .moves__body {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .battle__note {
@@ -1601,9 +2309,55 @@ a {
   }
 }
 
+/* Touch screens get no key hints on the pad. */
+@media (hover: none) {
+  .pad kbd {
+    display: none;
+  }
+}
+
 @media (max-width: 430px) {
   .topbar .btn__icon { display: none; }
   .topbar .logo { --logo-size: 0.88rem; }
+}
+
+@media (max-width: 360px) {
+  .pad__btn {
+    padding-inline: 0.1em;
+    font-size: 0.72rem;
+  }
+
+  .pad__btn--special {
+    font-size: 0.62rem;
+  }
+}
+
+/* Wide but short screens (laptops): a slimmer HUD and pad, and the milestone
+   stars move beside the standings, so the fight keeps its height. */
+@media (min-width: 900px) and (max-height: 820px) {
+  .hud__name { font-size: 1.05rem; }
+  .hp { height: 18px; }
+  .hud__timer { width: 52px; font-size: 1.35rem; }
+
+  .pad__btn { min-height: 52px; }
+
+  .panel[data-mode="play"] {
+    grid-template-columns: minmax(0, 600px) auto;
+    justify-content: center;
+    align-items: center;
+    column-gap: 28px;
+  }
+
+  .panel[data-mode="play"] > .pick-row,
+  .panel[data-mode="play"] > .panel__play {
+    grid-column: 1 / -1;
+  }
+
+  .panel[data-mode="play"] .milestones {
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    gap: 8px 10px;
+  }
 }
 
 @media (max-height: 700px) {
@@ -1615,6 +2369,14 @@ a {
   .panel .milestones .ms {
     width: 30px;
     height: 30px;
+  }
+
+  .pad__btn {
+    min-height: 48px;
+  }
+
+  .panel[data-mode="play"] {
+    gap: 6px;
   }
 }
 

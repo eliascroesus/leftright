@@ -3,9 +3,13 @@
    Everything is synthesised with Web Audio: no files, no autoplay. Muted by
    default; the corner toggle creates the AudioContext on its first click.
      crowd   muffled crowd murmur (loops while sound is on)
-     thwack  comedy punch, `power` 0–1
-     bell    round bell ("ding")
-     whoosh  swing
+     thwack      comedy punch, `power` 0–1
+     kick        heavier thud
+     block       dull tock of a blocked hit
+     parry       two-note ping
+     filibuster  rising buzz for the special
+     bell        round bell ("ding"); `times` repeats it
+     whoosh      swing
    ========================================================================== */
 (function (root) {
   'use strict';
@@ -174,7 +178,102 @@
     n.stop(t + 0.18);
   }
 
-  const SOUNDS = { thwack, bell, whoosh };
+  /* A heavier, lower thud for kicks. */
+  function kick(power = 0.7) {
+    const t = ctx.currentTime;
+    const p = Math.max(0.3, Math.min(1, power));
+    const o = ctx.createOscillator();
+    o.type = 'sine';
+    o.frequency.setValueAtTime(110 + Math.random() * 25, t);
+    o.frequency.exponentialRampToValueAtTime(38, t + 0.2);
+    const og = ctx.createGain();
+    og.gain.setValueAtTime(0.0001, t);
+    og.gain.exponentialRampToValueAtTime(1 * p, t + 0.008);
+    og.gain.exponentialRampToValueAtTime(0.001, t + 0.26);
+    o.connect(og);
+    og.connect(master);
+    o.start(t);
+    o.stop(t + 0.28);
+    const n = noiseSource(false);
+    const lp = ctx.createBiquadFilter();
+    lp.type = 'lowpass';
+    lp.frequency.value = 700;
+    const ng = ctx.createGain();
+    ng.gain.setValueAtTime(1.4 * p, t);
+    ng.gain.exponentialRampToValueAtTime(0.001, t + 0.14);
+    n.connect(lp);
+    lp.connect(ng);
+    ng.connect(master);
+    n.start(t, Math.random());
+    n.stop(t + 0.16);
+  }
+
+  /* Dull "tock" of a blocked hit. */
+  function block() {
+    const t = ctx.currentTime;
+    const o = ctx.createOscillator();
+    o.type = 'triangle';
+    o.frequency.setValueAtTime(320, t);
+    o.frequency.exponentialRampToValueAtTime(180, t + 0.06);
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(0.5, t + 0.004);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.09);
+    o.connect(g);
+    g.connect(master);
+    o.start(t);
+    o.stop(t + 0.1);
+  }
+
+  /* Bright two-note ping for a parry. */
+  function parry() {
+    [0, 0.07].forEach((d, i) => {
+      const t = ctx.currentTime + d;
+      const o = ctx.createOscillator();
+      o.type = 'square';
+      o.frequency.value = i ? 1320 : 990;
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(0.18, t + 0.005);
+      g.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
+      o.connect(g);
+      g.connect(master);
+      o.start(t);
+      o.stop(t + 0.14);
+    });
+  }
+
+  /* Filibuster: a rising, rambling buzz. */
+  function filibuster() {
+    const t = ctx.currentTime;
+    const o = ctx.createOscillator();
+    o.type = 'sawtooth';
+    o.frequency.setValueAtTime(140, t);
+    o.frequency.linearRampToValueAtTime(260, t + 0.8);
+    const lfo = ctx.createOscillator();
+    const depth = ctx.createGain();
+    lfo.frequency.value = 11;
+    depth.gain.value = 40;
+    lfo.connect(depth);
+    depth.connect(o.frequency);
+    const lp = ctx.createBiquadFilter();
+    lp.type = 'lowpass';
+    lp.frequency.value = 1100;
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(0.16, t + 0.05);
+    g.gain.setValueAtTime(0.16, t + 0.7);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.95);
+    o.connect(lp);
+    lp.connect(g);
+    g.connect(master);
+    o.start(t);
+    lfo.start(t);
+    o.stop(t + 1);
+    lfo.stop(t + 1);
+  }
+
+  const SOUNDS = { thwack, kick, block, parry, filibuster, bell, whoosh };
 
   LR.sound = {
     get enabled() {
