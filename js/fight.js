@@ -193,7 +193,7 @@
     if (reduced) return;
     const amp = 3 + power * 10;
     gsap.fromTo(
-      [el.arena, el.heroBg],
+      el.arena,
       { x: rand(-amp, amp), y: rand(-amp, amp) * 0.7, rotation: rand(-0.5, 0.5) * power },
       { x: 0, y: 0, rotation: 0, duration: 0.42, ease: 'elastic.out(1.2, 0.3)', overwrite: 'auto' },
     );

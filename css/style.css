@@ -194,8 +194,9 @@ a {
 .c-right { color: var(--blue); }
 
 /* 4. Paper grain ============================================================= */
-/* One static noise tile over everything, soft-light blended: specks go
-   lighter and darker, so every flat fill reads as construction paper. */
+/* One static noise tile over everything with its own dark and light specks,
+   so every flat fill reads as construction paper. Normal blending on purpose:
+   a blend mode here costs ~20fps on big screens. */
 
 .grain::after {
   content: "";
@@ -203,10 +204,9 @@ a {
   inset: 0;
   z-index: var(--z-grain);
   pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='p' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.78' numOctaves='3' seed='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncR type='linear' slope='1.7' intercept='-.35'/%3E%3CfeFuncG type='linear' slope='1.7' intercept='-.35'/%3E%3CfeFuncB type='linear' slope='1.7' intercept='-.35'/%3E%3CfeFuncA type='linear' slope='0' intercept='1'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='d' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.78' numOctaves='3' seed='4' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1  0 0 0 0 .08  0 0 0 0 .07  -2.4 0 0 0 1.12'/%3E%3C/filter%3E%3Cfilter id='l' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 .97  0 0 0 0 .9  2.4 0 0 0 -1.32'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23d)'/%3E%3Crect width='100%25' height='100%25' filter='url(%23l)'/%3E%3C/svg%3E");
   background-size: 240px 240px;
-  mix-blend-mode: soft-light;
-  opacity: 0.55;
+  opacity: 0.4;
 }
 
 /* 5. Buttons ================================================================ */
@@ -402,6 +402,10 @@ a {
   height: 100%;
   overflow: visible;
   pointer-events: none;
+}
+
+.hero .split-art {
+  will-change: transform; /* the seam slides during the brawl */
 }
 
 .split-art__blue {
@@ -922,6 +926,7 @@ a {
   position: relative;
   flex: 1 1 auto;
   min-height: 190px;
+  will-change: transform; /* shake runs on the compositor */
   container: arena / size;
   --fw: min(33cqw, 76cqh); /* fighter width; height = --fw * 1.15 */
 }
@@ -1634,7 +1639,9 @@ a {
   }
 
   .duel,
-  .fighter {
+  .fighter,
+  .arena,
+  .hero .split-art {
     will-change: auto;
   }
 }
