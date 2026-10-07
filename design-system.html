@@ -38,7 +38,8 @@
       .ds-note { font-size: var(--fs-sm); color: #5e544d; }
       .ds code { font-size: .88em; background: var(--paper-2); padding: .08em .35em; border-radius: 6px; }
 
-      .panel { border: var(--line) solid var(--ink); border-radius: var(--r-blob); box-shadow: var(--shadow); overflow: hidden; }
+      /* doc cards; reset what the site's hero .panel (the fight controls) sets */
+      .panel { display: block; width: auto; margin: 0; padding: 0; gap: 0; justify-items: stretch; z-index: auto; border: var(--line) solid var(--ink); border-radius: var(--r-blob); box-shadow: var(--shadow); overflow: hidden; }
       .panel--ink { background: var(--ink); color: var(--paper); }
       .panel--pad { padding: clamp(16px, 3vw, 28px); }
 
@@ -72,6 +73,7 @@
       .rage__cell--right { background: var(--blue-bg); }
       .rage__cell span { position: absolute; top: 6px; left: 8px; color: var(--paper); font: 800 .7rem/1 var(--font-body); letter-spacing: .08em; text-shadow: 0 2px 0 var(--ink); }
       .rage__cell > div { width: 100%; max-width: 170px; margin: 12px auto 0; }
+      #drip-strip .rage__cell > div { margin-top: 30px; }
       @media (max-width: 640px) { .rage { grid-template-columns: repeat(3, 1fr); } }
 
       /* Rig map */
@@ -160,6 +162,7 @@
         <li><a href="#fighters">Fighters</a></li>
         <li><a href="#poses">Poses</a></li>
         <li><a href="#rage">Rage</a></li>
+        <li><a href="#drip">Drip</a></li>
         <li><a href="#rig">Rig</a></li>
         <li><a href="#colour">Colour</a></li>
         <li><a href="#type">Type</a></li>
@@ -179,6 +182,7 @@
             <li>LEFTY and RIGHTY are one build, mirrored: same body, face and size. Only colour and hair differ: she has a blonde shoulder-length bob and lashes, he has short black hair and glasses.</li>
             <li>Neither reads as smarter, stronger or the joke. The bob and the black hair + glasses carry the same visual weight.</li>
             <li>Every pose reads at a glance, and fists stay visible in all of them.</li>
+            <li>Every piece of drip sits right on both haircuts and both sides.</li>
             <li>The red and blue halves feel equally heavy. Cream text stays readable on both.</li>
             <li>The paper grain sits on the flat backgrounds only (never on the characters or text), with no gradients anywhere.</li>
             <li>Hover the page: your cursor is the fist (neutral until a side is picked).</li>
@@ -221,6 +225,15 @@
           <h2 class="display">Rage build</h2>
           <p class="ds-lede">The longer the page is open, the redder the face and the bigger the veins. Every 30 seconds it resets with a puff of steam from both ears. Only opacity and scale change, so it stays at 60fps.</p>
           <div class="rage panel" id="rage-strip"></div>
+        </div>
+      </section>
+
+      <!-- ============================== DRIP ============================== -->
+      <section class="ds-section" id="drip">
+        <div class="ds-wrap">
+          <h2 class="display">Drip</h2>
+          <p class="ds-lede">What the game's crate airdrops give out: part of the same rig, in three slots (hat, face, neck), switched on with <code>data-hat</code>, <code>data-face</code> and <code>data-neck</code>. Cosmetic only. Your fighter wears your drip; the computer's never does. Catalogue and odds: <code>DRIP</code> in <code>js/drops.js</code>.</p>
+          <div class="rage panel" id="drip-strip"></div>
         </div>
       </section>
 
@@ -517,6 +530,23 @@
         });
 
         // Rage strip
+        // Drip strip: every crate drop, alternating sides
+        var dripStrip = document.getElementById('drip-strip');
+        [['Party hat', { hat: 'party' }], ['Shades', { face: 'shades' }], ['Gold chain', { neck: 'chain' }],
+         ['Propeller cap', { hat: 'propeller' }], ['Laser eyes', { face: 'laser' }], ['Crown', { hat: 'crown' }]].forEach(function (d, i) {
+          var team = i % 2 ? 'right' : 'left';
+          var cell = document.createElement('div');
+          cell.className = 'rage__cell rage__cell--' + team;
+          cell.innerHTML = '<span>' + d[0].toUpperCase() + '</span>';
+          var slot = document.createElement('div');
+          slot.setAttribute('data-char', team);
+          slot.setAttribute('data-pose', 'idle');
+          slot.setAttribute('data-drip', JSON.stringify(d[1]));
+          slot.setAttribute('data-state', JSON.stringify({ spin: 0.6, mouth: 0.7 }));
+          cell.appendChild(slot);
+          dripStrip.appendChild(cell);
+        });
+
         var strip = document.getElementById('rage-strip');
         ['left', 'right'].forEach(function (team) {
           [0, 0.25, 0.5, 0.75, 1, 'steam'].forEach(function (r) {
@@ -536,7 +566,8 @@
         // Characters into every [data-char] slot
         document.querySelectorAll('[data-char]').forEach(function (slot) {
           var state = slot.getAttribute('data-state');
-          var c = rig.create(slot.getAttribute('data-char'), { pose: slot.getAttribute('data-pose') || 'idle', state: state ? JSON.parse(state) : undefined });
+          var drip = slot.getAttribute('data-drip');
+          var c = rig.create(slot.getAttribute('data-char'), { pose: slot.getAttribute('data-pose') || 'idle', state: state ? JSON.parse(state) : undefined, drip: drip ? JSON.parse(drip) : undefined });
           slot.appendChild(c.el);
           if (slot.hasAttribute('data-map')) mapRig(c);
         });

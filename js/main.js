@@ -101,8 +101,47 @@
   function buildMarquee() {
     const m = LR.fx.art.star.match(/ d="([^"]+)"/);
     const star = `<svg class="marquee__star" viewBox="0 0 60 60"><path d="${m ? m[1] : ''}" fill="var(--star)" stroke="var(--ink)" stroke-width="5" stroke-linejoin="round"/></svg>`;
-    const item = `<span class="marquee__item"><span class="c-left">Left</span>${star}<span class="c-right">Right</span>${star}<span>Fight</span>${star}</span>`;
-    document.querySelectorAll('[data-marquee]').forEach((g) => (g.innerHTML = item.repeat(8)));
+    const esc = (t) => t.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+    const ticker = esc(((document.querySelector('.ticker') || {}).textContent || '').trim());
+    // group-chat slang only: nothing about prices or gains
+    const words = [
+      [ticker, 'c-star'], ['Left', 'c-left'], ['Right', 'c-right'], ['gm', ''], ['Pick a side', ''],
+      ['ser, this is a group chat', ''], ['Airdrops: cosmetic', 'c-star'], ['Memes inside', ''], ['Not financial advice', ''],
+    ];
+    const item = `<span class="marquee__item">${words.map(([w, c]) => `<span class="${c}">${w}</span>${star}`).join('')}</span>`;
+    const groups = document.querySelectorAll('[data-marquee]');
+    groups.forEach((g) => (g.innerHTML = item.repeat(3)));
+    // a steady reading speed (~110 px/s) whatever the copy's length
+    const track = document.querySelector('.marquee__track');
+    if (track && groups[0]) root.requestAnimationFrame(() => (track.style.animationDuration = `${Math.max(20, groups[0].offsetWidth / 110)}s`));
+  }
+
+  /* ---- the site menu (phones and small laptops) ------------------------------- */
+
+  function bindMenu() {
+    const btn = $('menu-btn');
+    const nav = $('topnav');
+    if (!btn || !nav) return;
+    const set = (open) => {
+      nav.classList.toggle('is-open', open);
+      btn.setAttribute('aria-expanded', String(open));
+    };
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      set(!nav.classList.contains('is-open'));
+    });
+    nav.addEventListener('click', (e) => {
+      if (e.target.closest('a')) set(false);
+    });
+    document.addEventListener('click', (e) => {
+      if (nav.classList.contains('is-open') && !nav.contains(e.target)) set(false);
+    });
+    root.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && nav.classList.contains('is-open')) {
+        set(false);
+        btn.focus();
+      }
+    });
   }
 
   /* ---- split: the seam always runs between the two fighters ----------------- */
@@ -149,6 +188,7 @@
     bindCopy();
     bindSound();
     buildMarquee();
+    bindMenu();
     bindEasterEgg();
 
     const hosts = { left: $('fighter-left'), right: $('fighter-right') };
@@ -177,8 +217,11 @@
 
     const reduced = reducedQuery.matches;
     LR.idle.start(chars, hosts, { reduced });
+    if (LR.drops) LR.drops.init({ chars, reduced }); // before the fight, which tells it your side
     LR.fight.init({ split, reduced });
     LR.milestones.init($('milestones'), { reduced, onUnlock: () => LR.fight.bothSwing() });
+    if (LR.memes) LR.memes.init();
+    if (LR.coin) LR.coin.init();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);

@@ -256,6 +256,7 @@
       // …then writes
       const s = a.s;
       s.throb = Math.max(0, (s.rage - 0.4) / 0.6) * (0.5 + 0.5 * Math.sin(t / 95 + i));
+      if (!reduced) s.spin = t / 55; // propeller-cap blades (only drawn with that hat)
       if (!reduced && a.free('face') && a.eye) {
         const target = cursorLive && !glare ? pointer : actors[1 - i].eye;
         if (target) {

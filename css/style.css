@@ -45,6 +45,12 @@
   --pants: #353342;
 
   /* Effects */
+  --laser: #ff2e4d;   /* laser-eyes drip */
+  --wood: #c98b4e;    /* airdrop crates */
+  --wood-dark: #8d5a2b;
+  --space: #121a3b;   /* the roadmap's night sky */
+  --space-2: #1f2a57;
+  --live: #23946a;    /* "live" status */
   --heat-2: #ff9d3a;  /* combo counter, 4+ hits */
   --heat-3: #ff5c8a;  /* combo counter, 6+ hits */
   --star: #ffd337;
@@ -200,6 +206,7 @@ a {
 
 .c-left { color: var(--red); }
 .c-right { color: var(--blue); }
+.c-star { color: var(--star); }
 
 /* 4. Paper grain ============================================================= */
 /* A static noise tile with its own dark and light specks, on the big flat
@@ -908,9 +915,9 @@ a {
 
 .topbar__brand {
   display: flex;
+  flex: 0 1 auto;
   align-items: center;
   gap: 10px;
-  margin-right: auto;
   min-width: 0;
 }
 
@@ -992,6 +999,12 @@ a {
   opacity: 0;
   transform-origin: 84% 120%;
   pointer-events: none;
+}
+
+@container arena (aspect-ratio >= 8 / 5) {
+  .fighter.has-hat .bubble {
+    bottom: 112%; /* clear the hat */
+  }
 }
 
 .fighter--right .bubble {
@@ -2318,6 +2331,1007 @@ kbd {
   display: block;
   margin-top: 14px;
   opacity: 0.7;
+}
+
+/* 21. Crypto: nav, memes, airdrops, tokenomics, roadmap ===================== */
+
+/* -- Site nav: links in the top bar on wide screens, a menu on small ones -- */
+.topnav {
+  display: flex;
+  flex: 1 1 auto;
+  justify-content: center;
+  align-items: center;
+  gap: clamp(10px, 1.6vw, 26px);
+  min-width: 0;
+}
+
+.topnav a {
+  color: var(--paper);
+  font-family: var(--font-display);
+  font-size: clamp(0.78rem, 0.6rem + 0.35vw, 0.95rem);
+  letter-spacing: 0.03em;
+  text-decoration: none;
+  text-transform: uppercase;
+  text-shadow: var(--rim);
+  white-space: nowrap;
+}
+
+.topnav a:hover {
+  color: var(--star);
+}
+
+.topnav__socials {
+  display: none;
+}
+
+.topbar__actions {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.btn--buy {
+  --btn-bg: var(--star);
+  --btn-fg: var(--ink);
+}
+
+.topbar__menu {
+  display: none;
+  width: 42px;
+  height: 42px;
+}
+
+.topbar__menu svg {
+  width: 22px;
+  height: 22px;
+}
+
+@media (max-width: 1300px) {
+  .topbar__menu {
+    display: inline-grid;
+  }
+
+  .topnav {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 16px;
+    z-index: 30;
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    width: min(260px, 100% - 32px);
+    padding: 8px;
+    border: var(--line) solid var(--ink);
+    border-radius: var(--r-blob);
+    background: var(--paper);
+    box-shadow: var(--shadow);
+  }
+
+  .topnav.is-open {
+    display: flex;
+  }
+
+  .topnav a {
+    padding: 12px 12px 10px;
+    border-radius: 10px;
+    color: var(--ink);
+    font-size: 1rem;
+    text-shadow: none;
+  }
+
+  .topnav a:hover,
+  .topnav a:focus-visible {
+    background: var(--paper-2);
+    color: var(--ink);
+  }
+
+  .topnav__socials {
+    display: flex;
+    gap: 4px;
+    margin-top: 4px;
+    padding-top: 6px;
+    border-top: 3px solid var(--paper-2);
+  }
+
+  .topnav__socials a {
+    flex: 1;
+    text-align: center;
+  }
+}
+
+@media (max-width: 560px) {
+  .topbar__brand .ticker,
+  .btn--buy__ticker {
+    display: none;
+  }
+}
+
+/* -- Section bits -- */
+.subhead {
+  margin: 0 0 14px;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: var(--fs-lg);
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.contract__label {
+  flex: none;
+  padding: 0.3em 0.55em 0.22em;
+  border-radius: 8px;
+  background: var(--ink);
+  color: var(--star);
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+}
+
+/* -- Memes -- */
+.meme-maker {
+  display: grid;
+  grid-template-columns: minmax(0, 520px) minmax(0, 1fr);
+  gap: clamp(18px, 3vw, 40px);
+  align-items: start;
+}
+
+.meme-maker__canvas {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  border: var(--line) solid var(--ink);
+  border-radius: var(--r-blob);
+  background: var(--paper-2);
+  box-shadow: var(--shadow);
+}
+
+.meme-maker__controls {
+  display: grid;
+  gap: 18px;
+}
+
+.meme-tpls,
+.meme-sides,
+.meme-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip-btn {
+  padding: 0.55em 0.85em 0.45em;
+  border: 3px solid var(--ink);
+  border-radius: var(--r-blob-sm);
+  background: #fff;
+  color: var(--ink);
+  box-shadow: 0 3px 0 var(--ink);
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  line-height: 1;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 0.25s var(--ease-elastic);
+}
+
+.chip-btn:hover {
+  transform: rotate(-2deg) scale(1.04);
+}
+
+.chip-btn[aria-pressed="true"] {
+  background: var(--star);
+}
+
+.chip-btn--left[aria-pressed="true"] {
+  background: var(--red);
+  color: var(--paper);
+  text-shadow: var(--rim);
+}
+
+.chip-btn--right[aria-pressed="true"] {
+  background: var(--blue);
+  color: var(--paper);
+  text-shadow: var(--rim);
+}
+
+.meme-fields {
+  display: grid;
+  gap: 10px;
+}
+
+.meme-field {
+  display: grid;
+  gap: 4px;
+  font-size: var(--fs-xs);
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.meme-field input {
+  width: 100%;
+  min-width: 0;
+  padding: 0.7em 0.8em;
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--ink);
+  font: 600 1rem var(--font-body);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.meme-field input:focus-visible {
+  outline: 4px solid var(--star);
+  outline-offset: 2px;
+}
+
+#memes .subhead {
+  margin-top: clamp(36px, 5vw, 60px);
+}
+
+.meme-wall {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr));
+  gap: 18px;
+}
+
+.meme-card {
+  margin: 0;
+  overflow: hidden;
+  border: var(--line) solid var(--ink);
+  border-radius: var(--r-blob);
+  background: #fff;
+  box-shadow: var(--shadow);
+}
+
+.meme-card__img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  background: var(--paper-2);
+}
+
+.meme-card figcaption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border-top: 3px solid var(--ink);
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+}
+
+/* -- Airdrops -- */
+.airdrop {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  gap: clamp(20px, 3vw, 40px);
+  align-items: start;
+}
+
+.airdrop__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px 14px;
+  margin-bottom: 14px;
+}
+
+.airdrop__head .subhead {
+  margin: 0;
+}
+
+.count-chip {
+  display: inline-block;
+  padding: 0.22em 0.5em 0.16em;
+  border-radius: 999px;
+  background: var(--star);
+  color: var(--ink);
+  font-size: 0.75em;
+  vertical-align: 0.12em;
+}
+
+.airdrop__next {
+  margin: 0;
+  color: var(--star);
+  font-weight: 700;
+}
+
+.airdrop__small {
+  margin: 14px 0 0;
+  font-size: var(--fs-xs);
+  opacity: 0.8;
+}
+
+.drops {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.drop {
+  --tier: var(--paper-2);
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  gap: 8px;
+  padding: 10px 10px 12px;
+  border: var(--line) solid var(--ink);
+  border-radius: var(--r-blob);
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 5px 0 var(--tier);
+  text-align: center;
+}
+
+[data-tier="rare"] { --tier: var(--blue-light); }
+[data-tier="epic"] { --tier: var(--heat-3); }
+[data-tier="legendary"] { --tier: var(--star); }
+
+.drop.is-on {
+  outline: 4px solid var(--star);
+  outline-offset: 3px;
+}
+
+.drop__art {
+  display: block;
+  width: 100%;
+  aspect-ratio: 440 / 480;
+  overflow: hidden;
+  border-radius: 12px;
+  background: var(--accent-bg);
+}
+
+:root:not([data-team]) .drop__art { background: var(--red-bg); }
+
+.drop__art svg {
+  width: 100%;
+  height: 100%;
+}
+
+.drop.is-locked .drop__art svg {
+  filter: brightness(0);
+  opacity: 0.25;
+}
+
+.drop__meta {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+}
+
+.drop__name {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 0.88rem;
+  line-height: 1.05;
+  text-transform: uppercase;
+}
+
+.drop__tier,
+.loot__tier {
+  padding: 0.2em 0.55em 0.15em;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  background: var(--tier, var(--paper-2));
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.drop__how {
+  font-size: 0.75rem;
+  font-weight: 700;
+  opacity: 0.7;
+}
+
+.drop__btn {
+  min-height: 36px;
+  padding: 0.5em 0.9em 0.45em;
+  font-size: 0.75rem;
+}
+
+.airdrop-card {
+  display: grid;
+  gap: 16px;
+  padding: clamp(18px, 2.5vw, 26px);
+  border: var(--line) solid var(--ink);
+  border-radius: var(--r-blob);
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 6px 0 var(--star);
+}
+
+.airdrop-card__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.airdrop-card__head .subhead {
+  margin: 0;
+}
+
+.status-pill {
+  padding: 0.35em 0.7em 0.28em;
+  border: 3px solid var(--ink);
+  border-radius: 999px;
+  background: var(--paper-2);
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+}
+
+[data-status="live"] .status-pill { background: var(--live); color: var(--paper); }
+[data-status="ended"] .status-pill { background: var(--locked); }
+
+.airdrop-card__facts {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+}
+
+.airdrop-card__facts dt {
+  font-size: var(--fs-xs);
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.airdrop-card__facts dd {
+  margin: 2px 0 0;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.airdrop-card__claim {
+  white-space: normal;
+  text-align: center;
+}
+
+.airdrop-card__claim[aria-disabled="true"] {
+  --btn-bg: var(--paper-2);
+  --btn-fg: var(--ink);
+  text-shadow: none;
+}
+
+.scam-box {
+  padding: 12px 14px;
+  border: 3px dashed var(--red-dark);
+  border-radius: 12px;
+  background: #fff;
+  font-size: var(--fs-sm);
+}
+
+.scam-box b {
+  color: var(--red-dark);
+  font-family: var(--font-display);
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.scam-box ul {
+  display: grid;
+  gap: 2px;
+  margin: 6px 0 0;
+  padding-left: 1.1em;
+}
+
+/* -- The crate drop and the loot card, inside the arena -- */
+.crate {
+  position: absolute;
+  z-index: 8;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.crate__art {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.crate__canopy { fill: var(--accent); stroke: var(--ink); stroke-width: 4; stroke-linejoin: round; }
+.crate__panel { fill: var(--paper); stroke: var(--ink); stroke-width: 3; stroke-linejoin: round; }
+.crate__seam { fill: none; stroke: var(--ink); stroke-width: 3; }
+.crate__strings { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linecap: round; }
+.crate__wood { fill: var(--wood); stroke: var(--ink); stroke-width: 4; }
+.crate__plank { fill: none; stroke: var(--wood-dark); stroke-width: 3; }
+.crate__brace { fill: none; stroke: var(--wood-dark); stroke-width: 4; stroke-linecap: round; }
+.crate__lid { fill: var(--wood-dark); stroke: var(--ink); stroke-width: 4; }
+.crate__sticker { fill: var(--star); stroke: var(--ink); stroke-width: 3; }
+.crate__q { fill: none; stroke: var(--ink); stroke-width: 3.5; stroke-linecap: round; }
+
+.loot {
+  position: absolute;
+  z-index: 10;
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  width: clamp(150px, 24cqw, 230px);
+  padding: 10px 12px 14px;
+  border: var(--line) solid var(--ink);
+  border-radius: var(--r-blob);
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 6px 0 var(--ink);
+  text-align: center;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.loot[data-tier="legendary"],
+.loot[data-tier="epic"] {
+  box-shadow: 0 0 0 5px var(--tier), 0 9px 0 var(--ink);
+}
+
+.loot__kicker {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.loot__art {
+  width: 74%;
+  aspect-ratio: 440 / 480;
+  overflow: hidden;
+  border: 3px solid var(--ink);
+  border-radius: 12px;
+  background: var(--accent-bg);
+}
+
+.loot__art svg {
+  width: 100%;
+  height: 100%;
+}
+
+.loot__name {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.05;
+  text-transform: uppercase;
+}
+
+/* -- Tokenomics -- */
+.tok-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+  gap: 14px;
+  margin: 0 0 clamp(20px, 3vw, 32px);
+}
+
+.tok-tile {
+  padding: 16px 18px;
+  border: var(--line) solid var(--ink);
+  border-radius: var(--r-blob-sm);
+  background: #fff;
+  box-shadow: var(--shadow-sm);
+}
+
+.tok-tile dt {
+  font-size: var(--fs-xs);
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.tok-tile dd {
+  margin: 6px 0 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-md);
+  line-height: 1.05;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+.tok-charts {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  align-items: start;
+  gap: 18px;
+}
+
+.alloc {
+  margin: 0;
+  padding: 18px;
+  border: var(--line) solid var(--ink);
+  border-radius: var(--r-blob);
+  background: #fff;
+  box-shadow: var(--shadow);
+}
+
+.alloc__title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.joke-chip {
+  padding: 0.3em 0.55em 0.25em;
+  border-radius: 999px;
+  background: var(--star);
+  font-family: var(--font-body);
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+
+/* Part-to-whole: one stacked bar, 2px gaps of card white between parts. */
+.alloc__bar {
+  display: flex;
+  gap: 2px;
+  height: 44px;
+  overflow: hidden;
+  border: var(--line) solid var(--ink);
+  border-radius: 14px;
+  background: #fff;
+}
+
+.alloc__seg {
+  display: grid;
+  place-items: center;
+  min-width: 6px;
+  flex: 1 1 0;
+  outline-offset: -5px;
+}
+
+.alloc__seg:focus-visible {
+  outline: 3px solid var(--paper);
+}
+
+.alloc__in {
+  color: var(--paper);
+  font-size: 0.85rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  text-shadow: var(--rim);
+}
+
+.alloc__bar.is-tba {
+  display: grid;
+  place-items: center;
+  border-style: dashed;
+  background: var(--paper-2);
+}
+
+.alloc__tba {
+  font-weight: 800;
+  font-size: var(--fs-sm);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.alloc__legend {
+  display: grid;
+  gap: 6px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.alloc__legend li {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+}
+
+.alloc__key {
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--ink);
+  border-radius: 4px;
+}
+
+.alloc__pct {
+  font-variant-numeric: tabular-nums;
+}
+
+.alloc__note {
+  margin: 12px 0 0;
+  font-size: var(--fs-xs);
+  opacity: 0.75;
+}
+
+.chart-tip {
+  position: absolute;
+  z-index: var(--z-toast);
+  padding: 0.4em 0.65em 0.35em;
+  border-radius: 8px;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 0.8rem;
+  font-weight: 700;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, -100%);
+  transition: opacity 0.12s ease;
+}
+
+.chart-tip.is-on {
+  opacity: 1;
+}
+
+/* -- Roadmap: a coin, two orbits, six stops around it -- */
+.section--space {
+  background: var(--space);
+  color: var(--paper);
+}
+
+.section--space .wrap {
+  position: relative;
+}
+
+/* a static starfield */
+.section--space::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320'%3E%3Cg fill='%23fef5e3'%3E%3Ccircle cx='14' cy='22' r='1.4'/%3E%3Ccircle cx='88' cy='70' r='1'/%3E%3Ccircle cx='160' cy='18' r='1.8'/%3E%3Ccircle cx='230' cy='96' r='1.2'/%3E%3Ccircle cx='300' cy='40' r='1'/%3E%3Ccircle cx='40' cy='150' r='1.1'/%3E%3Ccircle cx='120' cy='200' r='1.6'/%3E%3Ccircle cx='210' cy='170' r='1'/%3E%3Ccircle cx='280' cy='230' r='1.5'/%3E%3Ccircle cx='60' cy='270' r='1'/%3E%3Ccircle cx='170' cy='290' r='1.3'/%3E%3Ccircle cx='250' cy='300' r='1'/%3E%3C/g%3E%3Cpath d='M190 118l3 7 7 3-7 3-3 7-3-7-7-3 7-3z M44 222l2 5 5 2-5 2-2 5-2-5-5-2 5-2z' fill='%239cbefc'/%3E%3C/svg%3E");
+  background-size: 320px 320px;
+  opacity: 0.8;
+}
+
+.roadmap {
+  position: relative;
+  max-width: 1040px;
+  aspect-ratio: 16 / 9;
+  margin: clamp(8px, 2vw, 24px) auto 0;
+}
+
+.roadmap__orbits {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.roadmap__orbits ellipse {
+  fill: none;
+  stroke: var(--space-2);
+  stroke-width: 3px;
+  vector-effect: non-scaling-stroke;
+}
+
+.roadmap__coin {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 2;
+  width: clamp(110px, 17%, 180px);
+  aspect-ratio: 1;
+  border: 6px solid var(--ink);
+  border-radius: 50%;
+  background: var(--star);
+  box-shadow: 0 0 0 14px rgb(255 211 55 / 0.14), 0 0 0 30px rgb(255 211 55 / 0.06), 0 8px 0 var(--ink);
+  translate: -50% -50%;
+}
+
+.roadmap__coin-face {
+  display: grid;
+  grid-auto-flow: column;
+  place-content: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 10px var(--star-dark);
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4.6vw, 3.4rem);
+  line-height: 1;
+  -webkit-text-stroke: 0.12em var(--ink);
+  paint-order: stroke fill;
+}
+
+.roadmap__ship {
+  position: absolute;
+  left: 77%;
+  top: 50%;
+  z-index: 1;
+  width: 34px;
+  height: 34px;
+  overflow: visible;
+  translate: -50% -50%;
+}
+
+.roadmap__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stop {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  z-index: 3;
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  width: clamp(130px, 17%, 190px);
+  text-align: center;
+  translate: -50% -50%;
+}
+
+.stop__icon {
+  display: grid;
+  place-items: center;
+  width: clamp(58px, 7vw, 78px);
+  aspect-ratio: 1;
+  border: 3px solid var(--space-2);
+  border-radius: 50%;
+  background: var(--space-2);
+}
+
+.stop__icon svg {
+  width: 80%;
+  height: 80%;
+  overflow: visible;
+}
+
+.stop__icon svg * {
+  stroke: var(--ink);
+  stroke-width: 3;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.ri-a { fill: var(--red); }
+.ri-b { fill: var(--paper); }
+.ri-pole { fill: none; stroke: var(--paper) !important; stroke-width: 4 !important; }
+.ri-fire { fill: var(--star); }
+.ri-chute { fill: var(--blue); }
+.ri-wood { fill: var(--wood); }
+.ri-line { fill: none; }
+.ri-ring { fill: none; stroke: var(--star) !important; stroke-width: 4 !important; }
+
+.stop--done .stop__icon {
+  border-color: var(--star);
+  box-shadow: 0 0 0 6px rgb(255 211 55 / 0.16);
+}
+
+.stop--next .stop__icon {
+  border-color: var(--paper);
+  animation: next-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes next-pulse {
+  50% { transform: scale(1.08); }
+}
+
+.stop--soon .stop__icon svg {
+  filter: grayscale(1);
+  opacity: 0.45;
+}
+
+.stop__text {
+  display: grid;
+  gap: 3px;
+}
+
+.stop__n {
+  color: var(--star);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.stop--soon .stop__n {
+  color: var(--blue-light);
+}
+
+.stop__label {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 0.95rem;
+  line-height: 1.05;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+
+.stop__when {
+  font-size: 0.78rem;
+  opacity: 0.8;
+}
+
+@media (max-width: 900px) {
+  .meme-maker,
+  .airdrop,
+  .tok-charts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .meme-maker__canvas {
+    max-width: 520px;
+  }
+}
+
+@media (max-width: 760px) {
+  .roadmap {
+    display: grid;
+    justify-items: center;
+    gap: 22px;
+    aspect-ratio: auto;
+  }
+
+  .roadmap__orbits,
+  .roadmap__ship {
+    display: none;
+  }
+
+  .roadmap__coin {
+    position: relative;
+    left: auto;
+    top: auto;
+    width: 120px;
+    translate: none;
+  }
+
+  .roadmap__list {
+    display: grid;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .stop {
+    position: static;
+    grid-template-columns: 60px minmax(0, 1fr);
+    justify-items: start;
+    align-items: center;
+    gap: 14px;
+    width: auto;
+    padding: 12px 14px;
+    border: 3px solid var(--space-2);
+    border-radius: 16px;
+    text-align: left;
+    translate: none;
+  }
+
+  .stop__icon {
+    width: 60px;
+  }
+}
+
+@media (max-width: 520px) {
+  .drops {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stop--next .stop__icon {
+    animation: none;
+  }
 }
 
 /* 20. Small screens =========================================================== */

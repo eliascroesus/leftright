@@ -1,8 +1,9 @@
 /* ==========================================================================
    LEFT RIGHT — PFP generator
    Draws a 1024×1024 PNG entirely in the browser: flat sunburst in your
-   side's colours, your fighter mid-shout (the same rig as the page), a
-   LEFT / RIGHT badge and a little paper grain. Nothing is uploaded.
+   side's colours, your fighter mid-shout (the same rig as the page, in
+   your airdropped drip), a LEFT / RIGHT badge and a little paper grain.
+   Nothing is uploaded.
    ========================================================================== */
 (function (root) {
   'use strict';
@@ -65,6 +66,7 @@
     const fighter = LR.rig.create(team, {
       pose: 'yell',
       static: true,
+      drip: LR.drops ? LR.drops.equipped() : undefined, // whatever the crates gave you
       state: { armL: 58, armR: 48, spit: 0, mouth: 0.85 + Math.random() * 0.15, rage: 0.25 + Math.random() * 0.35, lookX: 0.35, lookY: 0.15 },
     });
     const h = Math.round((SIZE * 470) / 440);

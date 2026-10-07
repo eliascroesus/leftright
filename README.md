@@ -2,9 +2,13 @@
 
 A one-screen cartoon meme-coin site. Two kids, **LEFTY** (red, left: a
 blonde bob) and **RIGHTY** (blue, right: black hair and glasses), yell at
-each other forever about nothing. *Which side are you on?* Visitors tick a ballot and fight the
-other side in a small fighting game: combos, blocks, parries, a special,
-best-of-3 rounds and an opponent that gets harder every match you win.
+each other forever about nothing. *Which side are you on?* Visitors tick
+a ballot and fight the other side in a small fighting game: combos,
+blocks, parries, a special, best-of-3 rounds and an opponent that gets
+harder every match you win. Under the fight it's a proper meme-coin site:
+a meme maker and meme wall, airdrops (in-game crates of drip, plus a
+panel for the real token airdrop), tokenomics, a space roadmap and how
+to buy.
 
 - **Always-on yelling.** Mouths flap in syllables, fists shake, the paper
   cutouts jitter, and eyes blink and follow your cursor. Their faces get
@@ -50,6 +54,30 @@ best-of-3 rounds and an opponent that gets harder every match you win.
 - **Paper grain.** A subtle noise texture on the flat colour backgrounds
   only (the split, the sections, the footer), never over the characters or
   text. Set `--grain-opacity` in `css/style.css` to `0` to turn it off.
+- **Memes.** A meme maker with six formats (top/bottom, versus, "Nobody:",
+  nah/yes, the stare, full steam), ready-made captions to shuffle, your own
+  text, and Save PNG / Copy image. The fighters in the memes are the real
+  rig, in your drip. A meme wall below it; Remix loads any of them into
+  the maker. Everything is drawn in the browser and only once the section
+  is near the screen, so the fight never pays for it.
+- **Airdrops, two kinds, kept apart.**
+  - *Crate drops (the game):* your first round win, and every match win
+    after that, parachutes a crate into the arena with a piece of drip
+    (party hat, deal-with-it shades, gold chain, propeller cap, laser eyes,
+    crown). It goes straight on your fighter, your PFP and your memes; the
+    Airdrop section shows the stash and lets you swap. Cosmetic, worth
+    nothing, kept in this browser.
+  - *The token airdrop:* one card, with a status (`soon`, `live`, `ended`),
+    who, when and the one official claim link, plus a stay-safe box (no
+    DMs, never your seed phrase, never send to receive). Nothing on the
+    page connects a wallet or pretends to claim.
+- **Tokenomics.** Ticker, supply, chain and tax tiles, a stacked bar of the
+  allocation (empty until you fill it in: it says "to be announced" rather
+  than inventing numbers) and an "Argue-nomics" bar that is clearly
+  labelled a joke.
+- **Roadmap.** The milestones as six stops orbiting a coin in space, each
+  marked done, next or soon, with a little rocket going round. No dates
+  until they're real, no price targets ever. On phones it's a list.
 - **Accessibility.** `prefers-reduced-motion` freezes everything into a
   static pose, with no shake, flash, freeze frames, slow motion or sparks;
   the game still plays (the HUD, words and banners carry it). Works from 320px up: on phones the halves
@@ -133,6 +161,8 @@ console lists them (`[LEFT RIGHT] Replace before launch: …`).
 | `{{DEX_URL}}` | `index.html` | Exchange / swap URL for the HOW TO BUY step |
 | `{{SITE_URL}}` | `index.html` (`canonical`, `og:*`, `twitter:image`) | Live site origin without the trailing slash, e.g. `https://leftright.example`. Social cards need an absolute image URL |
 | `{{MILESTONE_1_LABEL}}` … `{{MILESTONE_6_LABEL}}` | `js/milestones.js` | Six short story beats. Never price targets |
+| `{{TOTAL_SUPPLY}}`, `{{CHAIN}}`, `{{TAX}}` | `TOKENOMICS` in `js/coin.js` (and the tiles in `index.html`) | e.g. `1,000,000,000`, `Solana`, `0% buy / 0% sell` |
+| `{{AIRDROP_ELIGIBILITY}}`, `{{AIRDROP_DATE}}`, `{{AIRDROP_URL}}` | `#airdrop-card` in `index.html` | Who qualifies, when, and the one official claim page. Leave the card on `data-status="soon"` until it's real |
 
 One-liner (macOS: use `sed -i ''`):
 
@@ -170,9 +200,41 @@ In `js/milestones.js`:
 - `timestamp`: ISO date, shown on hover once unlocked (`null` while locked).
 - `state`: `'locked'` or `'unlocked'`.
 
+- `icon`: the picture on the roadmap: `flag`, `rocket`, `crate`, `megaphone`,
+  `planet` or `trophy`.
+
 Flip one to `'unlocked'` and redeploy. Each visitor who hasn't seen it gets
 the star pop and both fighters throw a swing, once. The row is built to hold
-six compact stars.
+six compact stars, and the space roadmap is drawn from the same list (the
+first locked one shows as **Next**).
+
+## Tokenomics
+
+In `js/coin.js`, fill in `TOKENOMICS`:
+
+```js
+allocation: [
+  { label: 'Liquidity pool', pct: 90 },
+  { label: 'Community airdrop', pct: 5 },
+  { label: 'Team (locked)', pct: 5 },
+],
+```
+
+Up to five rows are drawn (more fold into "Other"). The colours are a fixed,
+colour-blind-checked order (blue, red, amber, green, purple), each part is
+labelled, and the legend doubles as the table. Only publish final numbers.
+
+## The token airdrop card
+
+In `index.html`, find `#airdrop-card`:
+
+- `data-status="soon"`: the claim button is greyed out and says the link
+  will appear there.
+- `data-status="live"`: the button links to `{{AIRDROP_URL}}`.
+- `data-status="ended"`: "Claim window closed".
+
+Keep the stay-safe box. If anyone ever DMs your holders a "claim" link, this
+is where they'll check.
 
 ## Other knobs
 
@@ -186,6 +248,9 @@ six compact stars.
 | The opponent per level (reactions, blocking, parries, combos, damage) | `brain(level)` in `js/fight.js` |
 | Level names | `STAGES` in `js/fight.js` |
 | Paper grain strength | `--grain-opacity` in `css/style.css` (`0` = off) |
+| Crate drops: the items, their tiers and odds | `DRIP` and `WEIGHT` in `js/drops.js` |
+| Meme formats and captions | `TEMPLATES` (and the wall's `WALL`) in `js/memes.js` |
+| Ticker-tape words | `buildMarquee()` in `js/main.js` |
 | Rage cycle length | `RAGE_SECONDS` in `js/idle.js` |
 | Colours, type, spacing | tokens at the top of `css/style.css` |
 
@@ -193,26 +258,30 @@ six compact stars.
 
 | Path | What it is |
 | --- | --- |
-| `index.html` | The site: the one-screen fight (HUD, arena, move pad, Moves list), then HOW TO BUY, THE CROWD, FAQ, footer |
+| `index.html` | The site: the one-screen fight (HUD, arena, move pad, Moves list), then MEMES, AIRDROPS, TOKENOMICS, ROADMAP, HOW TO BUY, THE CROWD, FAQ, footer |
 | `design-system.html` | Both fighters in every pose, rig map, colour tokens, type, components, effects, real PFPs |
 | `css/style.css` | Tokens, components, layout |
 | `js/rig.js` | The one SVG character rig (#char-body, #char-head, #char-hat, #char-eyes, #char-pupils, #char-brows, #char-mouth, #char-arm-l/-r, #char-legs), its poses and renderer |
 | `js/idle.js` | The always-on yelling loop, blinks, cursor-following eyes, rage + steam, speech bubbles, STOP easter egg |
 | `js/fight.js` | `TEAM_STATE` + live hook, side picking, the fighting game (moves, combos, rounds, the computer opponent), standings bar |
-| `js/milestones.js` | `MILESTONES` + the star row |
-| `js/pfp.js` | Canvas PFP generator |
+| `js/milestones.js` | `MILESTONES` + the star row + the space roadmap |
+| `js/drops.js` | Crate airdrops: the drip catalogue, the stash, the parachute drop; the token airdrop card's status |
+| `js/memes.js` | Meme maker and meme wall (canvas) |
+| `js/coin.js` | `TOKENOMICS` + the allocation bars |
+| `js/pfp.js` | Canvas PFP generator (wears your drip) |
 | `js/sound.js` | Web Audio: crowd, punch, kick, block, parry, filibuster, bell, whoosh (muted by default, never autoplays) |
 | `js/fx.js` | Brawl cloud, stars, confetti, the split background |
-| `js/main.js` | Boot, copy contract, sound toggle, marquee, placeholder check |
+| `js/main.js` | Boot, copy contract, sound toggle, site menu, marquee, placeholder check |
 | `js/vendor/gsap.min.js` | GSAP 3.13.0 fallback (same file cdnjs serves) |
 | `assets/` | Favicon and the 1200×630 social image |
 
 The two fighters are one rig: LEFTY is drawn facing right, and RIGHTY is the
 same drawing mirrored and recoloured. Both share the same body, face, size
 and animation set. Only the colour and hair differ: she has a blonde
-shoulder-length bob, he has short black hair and glasses. The rig still
-carries a beanie and a cap for anyone who wants hats back (off by
-default). Everything moves with transforms and opacity only.
+shoulder-length bob, he has short black hair and glasses. The drip from
+crate drops is part of the same rig (hat, face and neck slots), so it
+moves with the character. Everything moves with transforms and opacity
+only.
 
 ## Credits and licences
 

@@ -5,8 +5,10 @@
    (red, left) uses it as drawn; RIGHTY (blue, right) is the same rig
    mirrored and recoloured. Same body, face and size for both fighters.
    Only the hair differs (gal: blonde shoulder-length bob and lashes /
-   guy: short black hair and glasses). Hats (beanie + pom-pom / cap +
-   brim) are an optional extra per team, off by default.
+   guy: short black hair and glasses).
+   Drip (cosmetic, from the game's crate airdrops) is part of the same rig
+   and switched on with data attributes: data-hat (party, crown, propeller,
+   or the old beanie / cap), data-face (shades, laser), data-neck (chain).
 
    Parts (ids in RIG_MARKUP):
      #char-body  #char-head  #char-hat  #char-eyes  #char-pupils  #char-brows
@@ -16,6 +18,7 @@
      #char-jaw #char-flush #char-veins #char-ears #char-steam #char-spit
      #char-glasses #char-lock-l/-r #char-tuft #char-pom #char-brim
      (the last five swing with the secondary "flop" motion)
+     #char-prop (propeller blades, spun by the `spin` channel)
    "-l" / "-r" mean image-left / image-right in the un-mirrored drawing, so
    #char-arm-r is always the arm nearest the opponent.
 
@@ -61,6 +64,11 @@
 <circle class="f-team-dark line-soft" cx="226" cy="378" r="5"/>
 <path class="line-thin" d="M120 372C123.7 371.3 138.3 368.7 142 368"/>
 <path class="line-thin" d="M262 368C265.7 368.7 280.3 371.3 284 372"/>
+<g class="drip neck-chain">
+<ellipse class="f-gold line-soft" cx="142" cy="262" rx="8" ry="5" transform="rotate(65.7 142 262)"/><ellipse class="f-gold line-soft" cx="149.1" cy="276.9" rx="8" ry="5" transform="rotate(63.1 149.1 276.9)"/><ellipse class="f-gold line-soft" cx="156.2" cy="290" rx="8" ry="5" transform="rotate(59.8 156.2 290)"/><ellipse class="f-gold line-soft" cx="163.3" cy="301.3" rx="8" ry="5" transform="rotate(55.8 163.3 301.3)"/><ellipse class="f-gold line-soft" cx="170.4" cy="310.9" rx="8" ry="5" transform="rotate(50.6 170.4 310.9)"/><ellipse class="f-gold line-soft" cx="177.6" cy="318.7" rx="8" ry="5" transform="rotate(44.1 177.6 318.7)"/><ellipse class="f-gold line-soft" cx="184.7" cy="324.7" rx="8" ry="5" transform="rotate(35.7 184.7 324.7)"/><ellipse class="f-gold line-soft" cx="191.8" cy="328.9" rx="8" ry="5" transform="rotate(25.1 191.8 328.9)"/><ellipse class="f-gold line-soft" cx="198.9" cy="331.3" rx="8" ry="5" transform="rotate(12.3 198.9 331.3)"/><ellipse class="f-gold line-soft" cx="206" cy="332" rx="8" ry="5" transform="rotate(-1.8 206 332)"/><ellipse class="f-gold line-soft" cx="213.1" cy="330.9" rx="8" ry="5" transform="rotate(-15.7 213.1 330.9)"/><ellipse class="f-gold line-soft" cx="220.2" cy="328" rx="8" ry="5" transform="rotate(-28 220.2 328)"/><ellipse class="f-gold line-soft" cx="227.3" cy="323.3" rx="8" ry="5" transform="rotate(-38 227.3 323.3)"/><ellipse class="f-gold line-soft" cx="234.4" cy="316.9" rx="8" ry="5" transform="rotate(-45.9 234.4 316.9)"/><ellipse class="f-gold line-soft" cx="241.6" cy="308.7" rx="8" ry="5" transform="rotate(-52 241.6 308.7)"/><ellipse class="f-gold line-soft" cx="248.7" cy="298.7" rx="8" ry="5" transform="rotate(-56.9 248.7 298.7)"/><ellipse class="f-gold line-soft" cx="255.8" cy="286.9" rx="8" ry="5" transform="rotate(-60.7 255.8 286.9)"/><ellipse class="f-gold line-soft" cx="262.9" cy="273.3" rx="8" ry="5" transform="rotate(-63.8 262.9 273.3)"/><ellipse class="f-gold line-soft" cx="270" cy="258" rx="8" ry="5" transform="rotate(-66.3 270 258)"/>
+<circle class="f-gold line" cx="207" cy="351" r="21"/>
+<path class="f-gold-dark line-soft" d="M207 340L210.1 347.8L218.4 348.3L211.9 353.6L214.1 361.7L207 357.2L199.9 361.7L202.1 353.6L195.6 348.3L203.9 347.8Z"/>
+</g>
 </g>
 <g id="char-arm-r" data-pivot="280 318">
 <path class="f-team line" d="M268.5 302.1C271.9 298.2 289.5 300.1 297.8 300.3C306 300.6 314.1 300.9 317.9 303.8C321.8 306.7 321 313.1 320.9 317.8C320.8 322.5 321.4 329 317.5 332.1C313.6 335.1 305.7 335.9 297.5 336.1C289.3 336.4 271.5 337.7 268.1 333.7C264.7 329.7 265 306 268.5 302.1Z"/>
@@ -116,7 +124,7 @@
 <path class="f-paper line" d="M220.7 184C219.1 189.2 215.7 194.9 212.2 198.5C208.6 202.2 204 204.9 199.5 206.1C194.9 207.3 189.4 207.5 185.1 205.8C180.8 204 176.5 199.9 173.7 195.8C170.9 191.7 169 186.5 168.4 181.2C167.7 175.9 168.1 169.5 169.8 164.2C171.4 158.9 174.7 153.3 178.2 149.5C181.6 145.7 186.1 142.5 190.5 141.4C194.9 140.3 200.3 141.3 204.6 143C208.9 144.8 213.3 148 216.1 152.1C219 156.2 221 162.3 221.8 167.6C222.5 172.9 222.3 178.9 220.7 184Z"/>
 <path class="f-paper line" d="M275.8 176.9C275.5 182.4 274.1 188.1 271.7 192.6C269.4 197.1 265.6 201.3 261.7 203.6C257.7 206 252.7 207.3 248.1 206.8C243.6 206.3 238.3 203.8 234.5 200.6C230.7 197.5 227.3 192.8 225.2 187.9C223.2 183 222.1 176.6 222.3 171.1C222.4 165.6 223.7 159.4 226 155C228.4 150.5 232.5 146.5 236.4 144.2C240.3 142 244.9 141.1 249.5 141.5C254 141.9 259.6 143.6 263.6 146.7C267.5 149.7 271.2 154.8 273.3 159.8C275.3 164.9 276 171.4 275.8 176.9Z"/>
 <g class="gal-only"><path class="line-lash" d="M172.8 159.9C170.6 158.9 161.8 154.9 159.6 153.9"/><path class="line-lash" d="M179.3 150.4C177.5 148.7 170.6 141.9 168.9 140.2"/><path class="line-lash" d="M188 144.4C187.1 142.1 183.3 133.2 182.4 131"/><path class="line-lash" d="M256 144.4C256.9 142.1 260.7 133.2 261.6 131"/><path class="line-lash" d="M264.7 150.4C266.5 148.7 273.4 141.9 275.1 140.2"/><path class="line-lash" d="M271.2 159.9C273.4 158.9 282.2 154.9 284.4 153.9"/></g>
-<g id="char-pupils"><circle class="f-ink" cx="204" cy="180" r="5.8"/><circle class="f-ink" cx="258" cy="180" r="5.8"/></g>
+<g id="char-pupils"><circle class="f-ink" cx="204" cy="180" r="5.8"/><circle class="f-ink" cx="258" cy="180" r="5.8"/><g class="drip face-laser"><path class="f-laser line-soft" d="M204.3 184L561.1 163L574 148.8L558.9 137L203.7 176Z"/><path class="line-core" d="M204 180L560 150"/><circle class="f-laser line-soft" cx="204" cy="180" r="10"/><circle class="f-paper" cx="204" cy="180" r="4.5"/><path class="f-laser line-soft" d="M257.8 184L583.4 209L598 196.7L584.6 183L258.2 176Z"/><path class="line-core" d="M258 180L584 196"/><circle class="f-laser line-soft" cx="258" cy="180" r="10"/><circle class="f-paper" cx="258" cy="180" r="4.5"/></g></g>
 </g>
 <g id="char-glasses" class="guy-only">
 <circle class="f-lens" cx="194" cy="174" r="35"/><circle class="f-lens" cx="250" cy="174" r="35"/>
@@ -128,6 +136,7 @@
 <g id="char-brow-l" data-pivot="192 146"><path class="f-ink" d="M164.7 131C167.3 130.3 183.2 133.7 192.1 136C201.1 138.4 216.1 142.8 218.6 144.9C221.1 147 219.7 156.3 217 156.6C214.2 156.9 199.5 150.1 191.1 147.9C182.8 145.6 169.6 144.9 166.9 143.2C164.3 141.5 162.2 131.8 164.7 131Z"/></g>
 <g id="char-brow-r" data-pivot="256 149"><path class="f-ink" d="M227.1 152.4C229.8 150.1 247 145.5 256.2 142C265.5 138.6 279.9 131.4 282.8 131.7C285.6 132 287.2 142.9 284.6 145.1C282 147.3 266.1 150.4 256.8 153.7C247.5 157 231.8 165 228.8 164.9C225.9 164.8 224.4 154.7 227.1 152.4Z"/></g>
 </g>
+<g class="drip face-shades"><path class="f-ink" d="M92 150h210v7h-210ZM150 157h74v7h-74ZM228 157h74v7h-74ZM150 164h74v7h-74ZM228 164h74v7h-74ZM157 171h60v7h-60ZM235 171h60v7h-60ZM164 178h46v7h-46ZM242 178h46v7h-46ZM171 185h32v7h-32ZM249 185h32v7h-32Z"/><path class="f-paper" d="M164 164h7v7h-7ZM171 171h7v7h-7ZM242 164h7v7h-7ZM249 171h7v7h-7Z"/></g>
 <g id="char-mouth" data-pivot="224 224">
 <clipPath id="char-mouth-clip"><use href="#char-mouth-cavity"/></clipPath>
 <path id="char-mouth-cavity" class="f-mouth" d="M162 234C163.5 231.8 175.7 228 186 226C196.3 224 211.3 222.2 224 222C236.7 221.8 251.7 223.3 262 225C272.3 226.7 284.5 229.8 286 232C287.5 234.2 284.8 246.5 282 254C279.2 261.5 274.7 270.7 269 277C263.3 283.3 255.5 288.8 248 292C240.5 295.2 232 296 224 296C216 296 207.5 295.2 200 292C192.5 288.8 184.7 283.2 179 277C173.3 270.8 168.8 262.2 166 255C163.2 247.8 160.5 236.2 162 234Z"/>
@@ -186,14 +195,46 @@
 <path class="line-thin" d="M272 110C279.2 109.2 299.2 105.7 315 105C330.8 104.3 358.3 105.8 367 106"/>
 </g>
 </g>
+<g class="hat hat-party drip">
+<path class="f-gold line" d="M150.1 45.8C148.1 38.3 226.5 -73.6 232.1 -74C237.6 -74.4 267.5 29.9 262.1 37.9C256.6 45.9 152.1 53.2 150.1 45.8Z"/>
+<circle class="f-team line-soft" cx="196" cy="24" r="8"/>
+<circle class="f-team line-soft" cx="232" cy="14" r="7"/>
+<circle class="f-team line-soft" cx="216" cy="-22" r="6"/>
+<circle class="f-team line-soft" cx="228" cy="-45" r="4"/>
+<path class="f-team-dark line" d="M144.1 50.3C149 50.2 184.2 41.5 204.9 39.7C225.6 37.9 263 40.6 268.2 39.7C273.5 38.9 273.4 30.5 268.1 29.7C262.8 28.9 225.2 28 204.9 29.7C184.5 31.5 151.1 38.5 146.1 40.2C141 42 139.2 50.3 144.1 50.3Z"/>
+<path class="f-paper line" d="M248 -74.8C247 -72.7 248.7 -68.7 247 -67.4C245.3 -66.1 240.5 -67.8 237.8 -67.2C235.2 -66.6 233.2 -63.3 231.1 -63.7C229 -64 227.3 -67.8 225.1 -69.2C222.8 -70.6 218.5 -70.2 217.5 -71.9C216.4 -73.7 218.9 -77.2 218.7 -79.7C218.5 -82.2 215.3 -85.1 216.3 -86.9C217.3 -88.7 222.3 -88.8 224.5 -90.3C226.6 -91.8 226.9 -95.6 229 -96.1C231 -96.6 234 -93.6 236.7 -93.3C239.4 -93 243.5 -95.2 245.3 -94C247 -92.9 246.1 -88.7 247.4 -86.4C248.7 -84.1 253 -82.3 253.1 -80.4C253.2 -78.4 249 -77 248 -74.8Z"/>
+</g>
+<g class="hat hat-crown drip">
+<path class="f-gold line" d="M140.1 50.1C134.3 47.7 133.1 8.7 133.9 7.9C134.7 7.2 162.3 28.6 163.7 27.9C165.1 27.3 174.8 -12 176 -12.2C177.2 -12.5 199.1 20.3 200.2 20C201.4 19.7 210.9 -22 211.8 -22.1C212.7 -22.1 226.6 17.6 227.7 18C228.9 18.3 244.9 -11.8 246 -11.7C247.1 -11.6 259.2 21.4 260.2 21.9C261.2 22.4 275.6 1.3 275.8 2C276.1 2.8 273.7 41.3 267.7 44.3C261.7 47.2 225.2 36.8 204 37.8C182.7 38.7 145.9 52.6 140.1 50.1Z"/>
+<path class="line-thin" d="M142 34C152.3 32.7 183 27 204 26C225 25 257.3 27.7 268 28"/>
+<circle class="f-team line-soft" cx="172" cy="40" r="5.5"/>
+<circle class="f-laser line-soft" cx="205" cy="35" r="7"/>
+<circle class="f-team line-soft" cx="238" cy="34" r="5.5"/>
+<circle class="f-paper line-soft" cx="134" cy="6" r="4.5"/>
+<circle class="f-paper line-soft" cx="176" cy="-14" r="4.5"/>
+<circle class="f-paper line-soft" cx="212" cy="-24" r="4.5"/>
+<circle class="f-paper line-soft" cx="246" cy="-14" r="4.5"/>
+<circle class="f-paper line-soft" cx="277" cy="0" r="4.5"/>
+</g>
+<g class="hat hat-propeller drip">
+<path class="f-team-dark line" d="M240.1 41.8C243.2 40.4 265.6 34.7 276.3 34C286.9 33.3 302.3 36.8 304.3 37.8C306.3 38.8 305.9 44 300.2 46.1C294.5 48.1 280.1 49.6 270 50.3C259.9 51 242.3 50.9 239.8 50.2C237.3 49.5 237.1 43.1 240.1 41.8Z"/>
+<path class="f-team line" d="M140.2 50C135.5 47.8 142.9 26 148.2 17.6C153.5 9.2 162.7 3.7 172 -0.4C181.4 -4.4 193.4 -6.5 204.1 -6.5C214.8 -6.5 227.3 -4.4 236.2 -0.3C245.1 3.8 252.7 10.3 257.6 18C262.5 25.7 270.2 43.6 265.8 45.7C261.3 47.8 224.8 42.9 203.9 43.6C182.9 44.3 144.8 52.1 140.2 50Z"/>
+<path class="f-gold line-soft" d="M186.1 46C183.8 43 188.2 4.4 189.7 0.1C191.2 -4.3 199.4 -5.9 204.1 -6C208.9 -6 216.4 -4.3 218.1 -0.1C219.7 4.2 225.9 41.8 223.7 44.9C221.6 48 188.4 49 186.1 46Z"/>
+<rect class="f-ink" x="201" y="-30" width="6" height="26"/>
+<g id="char-prop" data-pivot="204 -32">
+<path class="f-team-dark line-soft" d="M202.9 -32.9C202.8 -31.6 201.5 -30.2 199.2 -29.1C196.9 -28 193.1 -27 189.2 -26.4C185.3 -25.8 180.2 -25.3 175.8 -25.3C171.4 -25.4 166.6 -25.9 162.7 -26.6C158.8 -27.3 154.8 -28.5 152.5 -29.5C150.2 -30.5 148.9 -31.5 149 -32.7C149 -34 150.5 -35.7 152.8 -36.9C155.1 -38.1 158.8 -39.1 162.6 -39.7C166.5 -40.3 171.5 -40.4 176 -40.4C180.4 -40.3 185.4 -40 189.3 -39.4C193.3 -38.8 197.2 -38.1 199.5 -37C201.8 -35.9 202.9 -34.3 202.9 -32.9Z"/>
+<path class="f-gold line-soft" d="M258.8 -30.9C258.8 -29.7 257.9 -28.4 255.6 -27.3C253.4 -26.2 249.2 -25.2 245.3 -24.5C241.4 -23.8 236.7 -23.3 232.2 -23.3C227.7 -23.3 222.2 -24 218.2 -24.6C214.3 -25.3 210.6 -26.3 208.4 -27.3C206.2 -28.3 205 -29.5 205 -30.8C205 -32 206.4 -33.5 208.7 -34.6C210.9 -35.7 214.7 -36.6 218.6 -37.3C222.5 -37.9 227.5 -38.4 232 -38.5C236.4 -38.6 241.4 -38.3 245.3 -37.6C249.3 -37 253.2 -35.7 255.4 -34.6C257.7 -33.5 258.8 -32.1 258.8 -30.9Z"/>
+</g>
+<circle class="f-gold line-soft" cx="204" cy="-32" r="6"/>
+</g>
 </g>
 <g id="char-steam">
-<g class="steam steam-l" opacity="0"><path class="f-paper line" d="M13.8 -0.4C13.8 1 11.1 2.8 10 4.1C9 5.5 8.5 6.4 7.4 7.6C6.2 8.9 4.8 11.6 3.2 11.7C1.5 11.8 -0.8 9 -2.5 8.4C-4.3 7.7 -5.8 8.5 -7.3 7.8C-8.8 7.2 -11 5.7 -11.5 4.3C-12.1 3 -10.6 1 -10.6 -0.4C-10.6 -1.9 -12.1 -3.1 -11.6 -4.4C-11.1 -5.7 -9.2 -7.6 -7.6 -8.3C-5.9 -9 -3.6 -8.3 -1.9 -8.8C-0.2 -9.3 1.1 -11.4 2.7 -11.2C4.3 -11.1 6.5 -9.1 7.7 -7.9C8.9 -6.8 8.8 -5.4 9.8 -4.1C10.8 -2.8 13.8 -1.7 13.8 -0.4Z"/></g>
-<g class="steam steam-l" opacity="0"><path class="f-paper line" d="M9 12.1C7.3 13.5 4.2 14.5 1.9 14.3C-0.4 14.1 -2.5 11.6 -4.7 10.9C-7 10.3 -10 11.4 -11.8 10.4C-13.5 9.3 -14.9 6.7 -15.3 4.8C-15.7 2.8 -14.1 0.8 -14.1 -1.4C-14 -3.7 -16.1 -6.9 -15.1 -8.6C-14.1 -10.2 -10.4 -10.6 -8.2 -11.2C-5.9 -11.8 -4 -11.6 -1.6 -12.2C0.7 -12.7 4 -15 5.9 -14.5C7.9 -14 8.7 -10.7 10.1 -9.1C11.5 -7.4 13 -6.4 14.2 -4.7C15.5 -3 18 -0.6 17.7 1.2C17.4 3 13.8 4.5 12.4 6.3C10.9 8.1 10.8 10.8 9 12.1Z"/></g>
-<g class="steam steam-l" opacity="0"><path class="f-paper line" d="M-7.8 13.8C-10.8 13 -15.9 13.8 -17.7 12.3C-19.5 10.7 -18.5 7.1 -18.6 4.4C-18.6 1.8 -18 -0.7 -17.9 -3.4C-17.9 -6.1 -19.8 -10.1 -18.2 -11.7C-16.7 -13.4 -11.6 -12.5 -8.6 -13.5C-5.7 -14.4 -3.5 -16.7 -0.5 -17.4C2.6 -18.1 7.1 -19 9.5 -17.7C11.9 -16.4 12 -11.8 13.9 -9.6C15.8 -7.5 19.5 -7 20.7 -4.7C21.9 -2.5 22.4 1.4 21.3 3.8C20.1 6.2 15.8 7.4 13.8 9.6C11.9 11.8 11.8 15.8 9.6 17.1C7.4 18.4 3.4 17.9 0.6 17.4C-2.3 16.8 -4.7 14.7 -7.8 13.8Z"/></g>
-<g class="steam steam-r" opacity="0"><path class="f-paper line" d="M13.8 -0.4C13.8 0.9 11 2.5 10 3.8C8.9 5.1 8.5 6.2 7.4 7.4C6.3 8.5 4.9 10.7 3.2 10.9C1.5 11.2 -0.9 9.4 -2.8 8.9C-4.6 8.4 -6.4 8.7 -7.9 8C-9.4 7.3 -11.4 5.8 -11.8 4.5C-12.2 3.1 -10.2 1.5 -10.3 -0.1C-10.3 -1.6 -12.6 -3.4 -12.2 -4.7C-11.7 -6.1 -9.1 -7.5 -7.5 -8.2C-5.8 -8.9 -3.9 -8.4 -2.2 -9C-0.6 -9.5 1 -11.6 2.5 -11.4C4.1 -11.2 5.9 -9 7.1 -7.7C8.3 -6.5 8.5 -5.1 9.6 -3.8C10.8 -2.6 13.7 -1.6 13.8 -0.4Z"/></g>
-<g class="steam steam-r" opacity="0"><path class="f-paper line" d="M8.5 12.2C6.8 13.6 3.9 15.2 1.8 15C-0.3 14.8 -1.8 11.9 -4.1 11.1C-6.5 10.4 -10.4 11.3 -12.3 10.3C-14.2 9.3 -15.2 7.2 -15.4 5.2C-15.6 3.3 -13.9 0.8 -13.8 -1.5C-13.7 -3.8 -16 -6.8 -15.1 -8.4C-14.2 -10 -10.5 -10.2 -8.4 -10.9C-6.2 -11.6 -4.5 -11.8 -2.1 -12.5C0.3 -13.2 4 -15.7 6 -15.1C8 -14.5 8.4 -10.5 9.9 -8.8C11.4 -7 13.9 -6.4 15.1 -4.7C16.4 -2.9 17.9 -0.3 17.5 1.5C17 3.4 13.8 4.9 12.3 6.7C10.8 8.5 10.3 10.8 8.5 12.2Z"/></g>
-<g class="steam steam-r" opacity="0"><path class="f-paper line" d="M-7.9 13.7C-10.9 12.8 -15.9 13.8 -17.7 12.2C-19.5 10.7 -18.5 6.9 -18.5 4.4C-18.6 1.8 -18.3 -0.4 -18.2 -3C-18.1 -5.6 -19.4 -9.6 -17.8 -11.4C-16.1 -13.2 -11.1 -13 -8.2 -13.9C-5.4 -14.9 -3.6 -16.7 -0.6 -17.2C2.3 -17.7 7 -18.3 9.3 -17.1C11.7 -15.9 11.6 -12.2 13.4 -10C15.2 -7.8 19.1 -6.4 20.3 -4.1C21.4 -1.8 21.6 1.6 20.6 3.8C19.5 6 15.6 7.1 13.8 9.1C11.9 11.2 11.6 15 9.4 16.3C7.2 17.7 3.3 17.8 0.4 17.4C-2.5 16.9 -4.8 14.6 -7.9 13.7Z"/></g>
+<g class="steam steam-l" opacity="0"><path class="f-paper line" d="M13.5 -0.4C13.5 1 11 3 9.9 4.4C8.8 5.8 8.1 6.8 6.9 7.9C5.8 9.1 4.6 11.2 2.9 11.3C1.3 11.4 -1.1 8.9 -2.8 8.4C-4.6 7.9 -6.1 8.8 -7.7 8.3C-9.2 7.7 -11.8 6.5 -12.2 5.2C-12.6 3.8 -10.1 1.6 -10.1 0C-10 -1.6 -12.1 -2.9 -11.8 -4.4C-11.4 -5.8 -9.4 -7.9 -7.9 -8.7C-6.3 -9.4 -4.4 -8.4 -2.7 -8.7C-0.9 -9.1 1.1 -11 2.7 -10.9C4.3 -10.8 5.8 -9.3 7 -8.2C8.1 -7 8.5 -5.4 9.6 -4.1C10.7 -2.8 13.4 -1.8 13.5 -0.4Z"/></g>
+<g class="steam steam-l" opacity="0"><path class="f-paper line" d="M9 12.2C7.4 13.6 4.6 15.1 2.3 15C0 14.8 -2.4 12 -4.8 11.3C-7.2 10.5 -10.4 11.5 -12.2 10.4C-14 9.2 -15 6.3 -15.4 4.3C-15.7 2.3 -14.3 0.4 -14.2 -1.7C-14.2 -3.9 -16.1 -6.9 -15.1 -8.5C-14.1 -10.1 -10.3 -10.5 -8.2 -11.3C-6.1 -12.1 -4.6 -12.5 -2.3 -13.1C0 -13.8 3.2 -15.9 5.4 -15.2C7.5 -14.4 9.1 -10.3 10.7 -8.6C12.2 -6.9 13.5 -6.6 14.7 -4.9C15.9 -3.2 18.4 -0.5 18 1.4C17.6 3.2 13.8 4.6 12.3 6.4C10.8 8.2 10.7 10.7 9 12.2Z"/></g>
+<g class="steam steam-l" opacity="0"><path class="f-paper line" d="M-7.1 13.7C-10 12.9 -15.3 13.7 -17.3 12.1C-19.2 10.5 -18.4 6.9 -18.6 4.4C-18.8 1.9 -18.3 -0.3 -18.2 -3C-18.2 -5.8 -20.1 -10.3 -18.4 -12.1C-16.7 -13.9 -10.9 -12.9 -7.9 -13.8C-4.9 -14.7 -3.3 -16.8 -0.5 -17.4C2.3 -18 6.5 -19 8.9 -17.7C11.3 -16.3 11.9 -11.5 13.8 -9.2C15.6 -7 18.7 -6.3 19.9 -4C21 -1.8 21.6 2.1 20.7 4.2C19.7 6.3 15.9 6.5 14.1 8.6C12.3 10.8 12.1 15.8 9.8 17.3C7.5 18.7 3 17.9 0.2 17.3C-2.6 16.7 -4.2 14.6 -7.1 13.7Z"/></g>
+<g class="steam steam-r" opacity="0"><path class="f-paper line" d="M13.3 0.2C13.2 1.6 10.4 2.9 9.5 4.2C8.5 5.4 8.6 6.4 7.5 7.6C6.4 8.8 4.6 11.3 2.9 11.5C1.1 11.7 -1 9.3 -2.8 8.8C-4.7 8.2 -6.6 8.6 -8.1 7.9C-9.6 7.3 -11.7 6.3 -12 4.9C-12.3 3.6 -10.2 1.4 -10.1 -0.2C-10 -1.8 -12.1 -3.5 -11.6 -4.9C-11.2 -6.2 -8.9 -7.7 -7.3 -8.3C-5.8 -9 -4.3 -8.3 -2.5 -8.7C-0.8 -9.1 1.4 -10.9 3.1 -10.8C4.7 -10.6 6.3 -9.1 7.4 -8C8.5 -7 8.7 -5.9 9.7 -4.5C10.6 -3.1 13.3 -1.3 13.3 0.2Z"/></g>
+<g class="steam steam-r" opacity="0"><path class="f-paper line" d="M9.1 12.1C7.4 13.5 4.4 15 2.2 14.8C-0.1 14.6 -1.8 11.8 -4.2 11C-6.7 10.3 -10.5 11.5 -12.4 10.4C-14.3 9.4 -15.3 6.7 -15.6 4.8C-15.8 2.9 -13.9 1 -13.8 -1.2C-13.8 -3.4 -16.1 -6.8 -15.2 -8.5C-14.3 -10.2 -10.5 -10.8 -8.2 -11.4C-5.9 -12 -3.8 -11.5 -1.4 -12.1C1 -12.8 4.2 -15.7 6.2 -15.2C8.3 -14.7 9.2 -10.9 10.7 -9.2C12.1 -7.4 13.7 -6.3 15 -4.5C16.2 -2.7 18.6 -0.2 18.1 1.6C17.7 3.4 13.9 4.4 12.4 6.1C10.9 7.9 10.8 10.6 9.1 12.1Z"/></g>
+<g class="steam steam-r" opacity="0"><path class="f-paper line" d="M-7.2 14.4C-10.1 13.4 -15.6 13.8 -17.6 12.1C-19.5 10.3 -18.6 6.4 -18.6 3.8C-18.7 1.2 -17.8 -1 -17.8 -3.6C-17.7 -6.2 -19.9 -9.9 -18.4 -11.6C-16.8 -13.3 -11.3 -13 -8.4 -13.9C-5.4 -14.9 -3.6 -16.8 -0.6 -17.4C2.4 -18.1 7.3 -18.9 9.6 -17.6C11.9 -16.4 11.4 -12.1 13.3 -9.9C15.1 -7.7 19.4 -6.5 20.7 -4.2C22 -1.9 22.3 1.8 21.1 3.9C19.9 6.1 15.4 6.5 13.4 8.7C11.5 10.9 11.8 15.6 9.6 17.1C7.4 18.6 3 18.3 0.2 17.8C-2.6 17.4 -4.2 15.3 -7.2 14.4Z"/></g>
 </g>
 </g>
 </g>
@@ -227,18 +268,24 @@
 .rig .f-team{fill:var(--team)}
 .rig .f-team-dark{fill:var(--team-dark)}
 .rig .f-shadow{fill:var(--ink);opacity:.2}
+.rig .f-gold{fill:var(--star)}
+.rig .f-gold-dark{fill:var(--star-dark)}
+.rig .f-laser{fill:var(--laser)}
+.rig .line-core{fill:none;stroke:var(--paper);stroke-width:calc(var(--ow) * 1.1);vector-effect:non-scaling-stroke;stroke-linecap:round}
 .rig[data-team="left"]{--team:var(--red);--team-dark:var(--red-dark)}
 .rig[data-team="right"]{--team:var(--blue);--team-dark:var(--blue-dark)}
 .rig[data-variant="gal"]{--hair:var(--hair-blonde);--hair-2:var(--hair-blonde-2)}
 .rig[data-variant="guy"]{--hair:var(--hair-black);--hair-2:var(--hair-black-2)}
 .rig[data-variant="guy"] .gal-only,.rig[data-variant="gal"] .guy-only{display:none}
-.rig .hat{display:none}
-.rig[data-hat="beanie"] .hat-beanie,.rig[data-hat="cap"] .hat-cap{display:inline}
+.rig .hat,.rig .drip{display:none}
+.rig[data-hat="beanie"] .hat-beanie,.rig[data-hat="cap"] .hat-cap,.rig[data-hat="party"] .hat-party,.rig[data-hat="crown"] .hat-crown,.rig[data-hat="propeller"] .hat-propeller,
+.rig[data-face="shades"] .face-shades,.rig[data-face="laser"] .face-laser,.rig[data-neck="chain"] .neck-chain{display:inline}
+.rig[data-face="shades"] [data-part="char-glasses"]{display:none}
 `;
 
   /* Tokens the rig paints with; inlined when exporting a standalone SVG. */
   const TOKENS = ['ink', 'paper', 'skin', 'flush', 'vein', 'mouth', 'tongue', 'pants', 'shoe',
-    'hair-blonde', 'hair-blonde-2', 'hair-black', 'hair-black-2',
+    'hair-blonde', 'hair-blonde-2', 'hair-black', 'hair-black-2', 'star', 'star-dark', 'laser',
     'red', 'red-dark', 'blue', 'blue-dark'];
 
   /* The two fighters. `variant` picks the look: "gal" is the blonde bob,
@@ -270,6 +317,7 @@
     hatY: 0, hatRot: 0, flop: 0,      // hat (and hair) pop; hair / pom-pom / brim flop (-1…1)
     steam: 0,                         // ear-steam puff progress 0…1
     spit: 0,                          // spit-spray progress 0…1
+    spin: 0,                          // propeller-cap blades (radians; only drawn with that hat)
   });
 
   /* Named poses (partial states merged over BASE). Shown in design-system.html
@@ -335,7 +383,8 @@
   /**
    * Build one character.
    * @param {'left'|'right'} teamId
-   * @param {{state?: object, pose?: string, variant?: 'guy'|'gal', hat?: 'beanie'|'cap'|null, static?: boolean}} [opts]
+   * @param {{state?: object, pose?: string, variant?: 'guy'|'gal', hat?: string|null,
+   *          drip?: {hat?: string|null, face?: string|null, neck?: string|null}, static?: boolean}} [opts]
    */
   function create(teamId, opts = {}) {
     const team = TEAMS[teamId];
@@ -347,8 +396,15 @@
     const svg = tpl.content.firstElementChild;
     svg.setAttribute('data-team', team.id);
     svg.setAttribute('data-variant', opts.variant || team.variant);
-    const hat = opts.hat !== undefined ? opts.hat : team.hat;
-    if (hat) svg.setAttribute('data-hat', hat);
+    const setDrip = (d = {}) => {
+      ['hat', 'face', 'neck'].forEach((slot) => {
+        if (!(slot in d)) return;
+        if (d[slot]) svg.setAttribute(`data-${slot}`, d[slot]);
+        else svg.removeAttribute(`data-${slot}`);
+      });
+    };
+    setDrip({ hat: opts.hat !== undefined ? opts.hat : team.hat });
+    if (opts.drip) setDrip(opts.drip);
 
     // ids → data-part, plus unique prefixed ids so two rigs can share a page
     const prefix = `${team.id}${++uid}-`;
@@ -370,7 +426,7 @@
       face: q('char-face'), eyes: q('char-eyes'), pupils: q('char-pupils'),
       browL: q('char-brow-l'), browR: q('char-brow-r'), mouth: q('char-mouth'),
       cavity: q('char-mouth-cavity'), mouthLine: q('char-mouth-line'), jaw: q('char-jaw'),
-      flush: q('char-flush'), hat: q('char-hat'),
+      flush: q('char-flush'), hat: q('char-hat'), prop: q('char-prop'),
     };
     const flushes = [P.flush, ...q('char-ears').querySelectorAll('.flush')];
     const veins = [...svg.querySelectorAll('.vein')].map((el) => ({ el, p: pivotOf(el) }));
@@ -383,7 +439,7 @@
     const piv = {
       upper: pivotOf(P.upper), armL: pivotOf(P.armL), armR: pivotOf(P.armR), head: pivotOf(P.head),
       eyes: pivotOf(P.eyes), browL: pivotOf(P.browL), browR: pivotOf(P.browR), mouth: pivotOf(P.mouth),
-      hat: pivotOf(P.hat), legL: pivotOf(P.legL), legR: pivotOf(P.legR),
+      hat: pivotOf(P.hat), legL: pivotOf(P.legL), legR: pivotOf(P.legR), prop: pivotOf(P.prop),
     };
 
     const state = Object.assign({}, BASE, opts.pose ? POSES[opts.pose] : null, opts.state);
@@ -429,6 +485,10 @@
       veins.forEach(({ el, p }) => setT(el, around(p[0], p[1], 0, vk, vk)));
 
       setT(P.hat, `translate(0 ${r2(s.hatY)}) ${around(piv.hat[0], piv.hat[1], s.hatRot, 1, 1)}`);
+      if (svg.getAttribute('data-hat') === 'propeller') {
+        const c = Math.cos(s.spin);
+        setT(P.prop, around(piv.prop[0], piv.prop[1], 0, Math.abs(c) < 0.08 ? 0.08 : c, 1));
+      }
       flops.forEach(({ el, p, kind }) => {
         const k = clamp(s.flop, -1.5, 1.5);
         if (kind === 'lock') setT(el, around(p[0], p[1], 3 * k, 1, 1));
@@ -478,6 +538,12 @@
       /** Replace the state with BASE + a named pose (+ overrides). */
       pose(name, extra) {
         Object.assign(state, BASE, POSES[name] || {}, extra);
+        apply();
+        return char;
+      },
+      /** Wear (or take off) drip: {hat, face, neck}; null removes a slot. */
+      setDrip(d) {
+        setDrip(d);
         apply();
         return char;
       },

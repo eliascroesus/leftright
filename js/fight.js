@@ -820,7 +820,9 @@
       return;
     }
     const fall = how === 'ko' ? show.knockout(w, l) : show.slump(w, l);
-    Promise.all([banner, fall]).then(() => {
+    // your first round win ever drops your first crate
+    const drop = w.team === st.side && LR.drops && !LR.drops.started ? banner.then(() => seq === st.seq && LR.drops.crate(st.side)) : null;
+    Promise.all([banner, fall, drop]).then(() => {
       if (seq !== st.seq) return;
       st.round += 1;
       startRound(seq);
@@ -876,6 +878,8 @@
     renderScore();
     say(`${w.name} wins! ${you ? `On to level ${st.level}: ${stageName(st.level)}.` : 'Rematch.'}`);
     announce(`${w.name} wins!`, 'star', 0.9)
+      // every match you win drops a crate
+      .then(() => (seq === st.seq && you && LR.drops ? LR.drops.crate(st.side) : null))
       .then(() => {
         if (seq !== st.seq) return null;
         show.getUp(l, flattened);
@@ -1899,6 +1903,7 @@
     el.hudSide[team].tag.textContent = 'You';
     el.hudSide[other(team)].tag.textContent = 'CPU';
     el.hudSide[team].box.classList.add('is-you');
+    if (LR.drops) LR.drops.onSide(team);
     el.hudSide[other(team)].box.classList.remove('is-you');
     fighterEl(team).classList.add('is-front');
     fighterEl(other(team)).classList.remove('is-front');
