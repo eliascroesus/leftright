@@ -357,8 +357,8 @@
             <div class="bubbles" id="bubbles"></div>
           </div>
 
-          <h3 class="ds-h3">Battle bar + milestones</h3>
-          <p class="ds-note">The solid fill is <code>TEAM_STATE</code> (edited by hand, or a real endpoint later). The striped slice is your own local punches, labelled as local and never mixed into the standings. Milestones: grey = locked, yellow = unlocked (hover for label and date).</p>
+          <h3 class="ds-h3">Scoreboard (the standings bar)</h3>
+          <p class="ds-note">Lives in Pick your side. The solid fill is <code>TEAM_STATE</code> (edited by hand, or a real endpoint later; it ships at 50/50). The striped slice is your own local hits, labelled as local and never mixed into the standings. Shown here off-centre both ways.</p>
           <div class="panel stage-demo split">
             <div class="battle" style="--share-left:.52;--mine-from:.52;--mine-to:.58">
               <div class="battle__head">
@@ -370,23 +370,52 @@
                 <div class="battle__bar"><span class="battle__fill"></span><span class="battle__mine"></span></div>
                 <div class="battle__edge"><span class="battle__clash" data-fx="spark"></span></div>
               </div>
-              <p class="battle__note"><span>Set by the team · not live</span><span class="battle__local">Your punches: <b>37</b> · only counted in this browser</span></p>
+              <p class="battle__note"><span>Set by the team · not live</span><span class="battle__local">Your hits: <b>37</b> · this browser only</span></p>
             </div>
-            <ol class="milestones" id="ms-demo" aria-label="Milestones"></ol>
           </div>
           <div class="panel stage-demo split" style="margin-top:18px">
-            <div class="battle battle--mine-right" style="--share-left:.52;--mine-from:.45;--mine-to:.52">
+            <div class="battle battle--mine-right" style="--share-left:.48;--mine-from:.42;--mine-to:.48">
               <div class="battle__head">
-                <span class="battle__team">Left <b class="battle__num">52</b></span>
+                <span class="battle__team">Left <b class="battle__num">48</b></span>
                 <span class="battle__title">Standings</span>
-                <span class="battle__team"><b class="battle__num">48</b> Right</span>
+                <span class="battle__team"><b class="battle__num">52</b> Right</span>
               </div>
               <div class="battle__track">
                 <div class="battle__bar"><span class="battle__fill"></span><span class="battle__mine"></span></div>
-                <div class="battle__edge" style="--share-left:.45"><span class="battle__clash" data-fx="spark"></span></div>
+                <div class="battle__edge" style="--share-left:.42"><span class="battle__clash" data-fx="spark"></span></div>
               </div>
-              <p class="battle__note"><span>Set by the team · not live</span><span class="battle__local">Your punches: <b>41</b> · only counted in this browser</span></p>
+              <p class="battle__note"><span>Set by the team · not live</span><span class="battle__local">Your hits: <b>37</b> · this browser only</span></p>
             </div>
+          </div>
+
+          <h3 class="ds-h3">Section pieces</h3>
+          <p class="ds-note">Every section under the fight is a poster: a yellow kicker sticker, one huge headline (ink with a red/blue misprint on light grounds, cream sticker letters on colour), a one-line punchline. The CA pill copies the contract address; the stamps carry the tokenomics, each with its joke.</p>
+          <div class="panel stage-demo" style="background:var(--paper);flex-direction:column">
+            <p class="kicker">The story so far</p>
+            <p class="display mega" style="font-size:clamp(2.6rem,8vw,5rem)">The lore</p>
+            <button class="ca-pill" type="button" tabindex="-1"><span class="ca-pill__label">CA</span><code class="ca-pill__addr">{{CONTRACT_ADDRESS}}</code><svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8.5" y="8.5" width="11.5" height="11.5" rx="2.5" /><path d="M15.5 8.5V6A2 2 0 0 0 13.5 4H6A2 2 0 0 0 4 6v7.5A2 2 0 0 0 6 15.5h2.5" /></svg></button>
+          </div>
+          <div class="panel stage-demo" style="background:var(--ink);margin-top:18px">
+            <ul class="stamps" style="width:min(100%,520px);grid-template-columns:repeat(2,minmax(0,1fr))">
+              <li class="stamp"><span class="stamp__k">Tax</span><b class="stamp__v">0%</b><span class="stamp__joke">Yelling is free.</span></li>
+              <li class="stamp"><span class="stamp__k">Liquidity</span><b class="stamp__v">Burned</b><span class="stamp__joke">Locked in, like their opinions.</span></li>
+            </ul>
+          </div>
+
+          <h3 class="ds-h3">Roadmap phase</h3>
+          <p class="ds-note">Built by <code>js/milestones.js</code> from <code>PHASES</code> and <code>MILESTONES</code>. Ticked = done. The yellow ring marks the phase you're in, and NEXT marks the first unticked item. Phases, not promises: never a price.</p>
+          <div class="panel stage-demo" style="background:var(--blue-bg)">
+            <ol class="phases" style="width:min(100%,380px);grid-template-columns:minmax(0,1fr)">
+              <li class="phase is-now">
+                <span class="phase__n">Phase 1</span>
+                <h4 class="phase__name">Pick a side</h4>
+                <ul class="phase__list">
+                  <li class="phase__item is-done"><span class="phase__box" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span><span><span class="visually-hidden">Done: </span>Launch the argument</span></li>
+                  <li class="phase__item is-done"><span class="phase__box" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span><span><span class="visually-hidden">Done: </span>Draw the line down the middle</span></li>
+                  <li class="phase__item"><span class="phase__box" aria-hidden="true"></span><span><span class="visually-hidden">To do: </span>1,000 holders<span class="phase__next">Next</span></span></li>
+                </ul>
+              </li>
+            </ol>
           </div>
 
           <h3 class="ds-h3">Marquee, toast, corner buttons</h3>
@@ -655,18 +684,7 @@
           bub.appendChild(b);
         });
 
-        // Milestones demo
-        var ms = document.getElementById('ms-demo');
         var starD = fx.art.star.match(/ d="([^"]+)"/)[1];
-        [['{{MILESTONE_1_LABEL}}', 'Sep 12, 2026', 1], ['{{MILESTONE_2_LABEL}}', 'Sep 18, 2026', 1], ['{{MILESTONE_3_LABEL}}', 'Sep 23, 2026', 1], ['{{MILESTONE_4_LABEL}}', '', 0], ['{{MILESTONE_5_LABEL}}', '', 0], ['{{MILESTONE_6_LABEL}}', '', 0]].forEach(function (m, i) {
-          var li = document.createElement('li');
-          li.className = 'ms ' + (m[2] ? 'is-unlocked' : 'is-locked') + (i === 2 ? ' is-tip-open' : '');
-          li.tabIndex = 0;
-          li.setAttribute('aria-label', 'Milestone ' + (i + 1) + ': ' + (m[2] ? m[0] + ', unlocked ' + m[1] : 'locked'));
-          li.innerHTML = '<svg class="ms__star" viewBox="0 0 60 60" aria-hidden="true"><path d="' + starD + '"/></svg><span class="ms__n" aria-hidden="true">' + (i + 1) + '</span>' +
-            (m[2] ? '<span class="ms__tip" aria-hidden="true"><b>' + m[0] + '</b><time>' + m[1] + '</time></span>' : '<span class="ms__tip" aria-hidden="true"><b>Locked</b>Coming soon</span>');
-          ms.appendChild(li);
-        });
 
         // Marquee (two identical halves so the loop is seamless)
         var track = document.getElementById('marquee-track');

@@ -286,7 +286,7 @@
   function renderStash() {
     if (!el.stash) return;
     el.stash.textContent = '';
-    DRIP.forEach((d) => {
+    DRIP.forEach((d, i) => {
       const owned = stash.owned.includes(d.id);
       const on = stash.wear[d.slot] === d.id;
       const li = document.createElement('li');
@@ -294,7 +294,8 @@
       li.dataset.tier = d.tier.toLowerCase();
       const art = document.createElement('span');
       art.className = 'drop__art';
-      art.appendChild(bust(side || 'left', { [d.slot]: d.id }));
+      // no side yet: the two of them take turns modelling the drip
+      art.appendChild(bust(side || (i % 2 ? 'right' : 'left'), { [d.slot]: d.id }));
       li.appendChild(art);
       const meta = document.createElement('span');
       meta.className = 'drop__meta';

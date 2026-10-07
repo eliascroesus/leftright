@@ -1,32 +1,79 @@
 # LEFT RIGHT (${{TICKER}})
 
-A one-screen cartoon meme-coin site. Two kids, **LEFTY** (red, left: a
-blonde bob) and **RIGHTY** (blue, right: black hair and glasses), yell at
-each other forever about nothing. *Which side are you on?* Visitors tick
-a ballot and fight the other side in a small fighting game: combos,
-blocks, parries, a special, best-of-3 rounds and an opponent that gets
-harder every match you win. Under the fight it's a proper meme-coin site:
-a meme maker and meme wall, airdrops (in-game crates of drip, plus a
-panel for the real token airdrop), tokenomics, a space roadmap and how
-to buy.
+**The internet's oldest argument. Now it has a coin.**
+
+A cartoon meme-coin site, built the way the big narrative meme coins are:
+one story, two characters, a poster for a hero, and everything else in
+service of the joke. Two kids, **LEFTY** (red, left: a blonde bob) and
+**RIGHTY** (blue, right: black hair and glasses), have been arguing since
+the first comment section. Nobody remembers what about. *Which side are
+you on?* Visitors tick a ballot and fight the other side in a small
+fighting game right in the hero. The only enemy is the fence: **there is
+no fence.**
+
+## How the page is built
+
+The meme-coin playbook (one-line hook, a rival, a name for the community,
+the mascot everywhere, a poster hero, the lore, how to buy, joke
+tokenomics, a joke roadmap, things to share, a way in), done with these
+two:
+
+1. **Poster hero: the fight.** Giant LEFT and RIGHT poster type behind the
+   two of them (it steps back once you play), the hook, the two ballots,
+   then Buy, the contract address (tap to copy) and Chart. The header is
+   fixed: logo, ticker, section links, CA, Buy. It's see-through over the
+   fight and turns ink once you scroll.
+2. **The lore.** A four-panel comic (*gm / gm*, *ACTUALLY / WELL
+   ACTUALLY*, *SOURCE? / TYPICAL*, then the coin) and a short manifesto:
+   pineapple on pizza, tabs or spaces, GIF or JIF. They have never agreed
+   on anything, except that there is no fence.
+3. **Pick your side.** Team Left and Team Right cards (same layout, same
+   number of traits, Join and Get the PFP on both), the VS, and the
+   scoreboard. The red/blue seam runs between the cards. "Join Team …"
+   picks that side and takes you back up to the fight.
+4. **How to buy.** Four sticker steps (wallet, gas, swap, pick a side),
+   Buy and Chart, the contract box. Then a tilted tape of group-chat
+   slang.
+5. **Tokenomics.** The total supply as one giant number, four stamps (tax,
+   liquidity, contract, chain), each with a joke, the "argue-nomics"
+   pizza (50% Left, 50% Right, 0% listening, labelled as a joke) and the
+   real allocation card, which says "to be announced" until you fill it
+   in.
+6. **Roadmap.** Three phases (*Pick a side*, *Raise your voice*, *Never
+   log off*), ticked off as they happen. Phases, not promises: no dates
+   until they're real, no price talk ever.
+7. **Memes.** Make a meme (the maker opens in a dialog), Get your PFP, a
+   wall of eight ready-made memes (Save or Remix any of them) and an
+   eight-piece sticker pack, four a side, saved as die-cut PNGs.
+8. **Airdrops.** The crate-drop stash from the game and the token airdrop
+   card.
+9. **FAQ**, then **Join the argument** (the two of them peeking over a
+   ledge, X and Telegram) and the footer with the disclaimer.
+
+Everything below the fight is drawn from the same character rig as the
+fight. `js/art.js` renders each pose once into a still image as it comes
+near the screen, so the page adds no live animation that could cost the
+fight a frame.
+
+## Features
 
 - **Always-on yelling.** Mouths flap in syllables, fists shake, the paper
   cutouts jitter, and eyes blink and follow your cursor. Their faces get
   redder for 30 seconds, then steam blows out of their ears and it starts
   over. Speech bubbles bicker about nothing.
-- **Pick a side.** "Which side are you on?" Tick the LEFT or RIGHT ballot
-  box (it gets its ✗), or click either half of the screen. You get
-  confetti, a colour flash, and the whole page (accents, cursor) leans your
-  colour. The pick is remembered in `localStorage`.
+- **Pick a side.** Tick the LEFT or RIGHT ballot box (it gets its ✗),
+  click either half of the screen, or join a team further down. You get
+  confetti, a colour flash, and the whole page (accents, cursor) leans
+  your colour. The pick is remembered in `localStorage`.
 - **The fight.** You play your side; the computer plays the other. Punch,
   kick, hold to block, and a meter-powered special. Chains of hits make
   named combos, blocking just before a hit lands parries it, and the
-  health bars, round timer and special meters sit in a proper fighting-game
-  HUD. Best of 3 rounds, then *"Say the last word!"*: a giant "OK." lands
-  on the loser. Win and the next opponent is a level harder. See
-  [How to play](#how-to-play). The political flavour is all debate-club
-  slang (talking points, filibusters, recounts); there are no parties,
-  politicians, slogans or issues anywhere.
+  health bars, round timer and special meters sit in a proper
+  fighting-game HUD. Best of 3 rounds, then *"Say the last word!"*: a
+  giant "OK." lands on the loser. Win and the next opponent is a level
+  harder. See [How to play](#how-to-play). The political flavour is all
+  debate-club slang (talking points, filibusters, recounts); there are no
+  parties, politicians, slogans or issues anywhere.
 - **Game feel.** Every hit freezes the frame for a beat (longer for bigger
   hits), sprays sparks the way the blow went, squashes the fighter it
   lands on and shakes their health bar. Combos punch the camera in, flash
@@ -34,56 +81,50 @@ to buy.
   streak hype ("Trending!", "Viral!", "Ratio'd!"). Knockouts land in slow
   motion; winning a match rains confetti. Phones buzz on impact where the
   browser allows it. With sound on, each hit in a combo climbs a scale.
-- **Uncluttered controls.** Under the fight: the four move buttons (icon +
-  word, key in the corner), three small icon buttons (moves list, switch
-  sides, PFP), the milestone stars, and a one-line standings bar. Your
-  win/loss record lives in the Moves list.
-- **Standings bar.** It shows `TEAM_STATE`, which you edit by hand, with an
-  optional live endpoint. Your own hits show as a clearly labelled striped
-  slice and are never sent anywhere. Levels, wins and records are counted
-  **in this browser only**.
-- **PFP generator.** Builds a 1024×1024 PNG of your side's fighter with a
-  LEFT / RIGHT badge. It's drawn in the browser and nothing is uploaded.
-- **Milestones.** Six story beats under the bar. When one unlocks, both
-  fighters throw a swing.
+- **Uncluttered controls.** While you play: the four move buttons (icon +
+  word, key in the corner) and three small icon buttons (moves list,
+  switch sides, PFP). Your win/loss record lives in the Moves list.
+- **Scoreboard.** It shows `TEAM_STATE`, which you edit by hand (it ships
+  at 50/50), with an optional live endpoint. Your own hits show as a
+  clearly labelled striped slice and are never sent anywhere. Levels,
+  wins and records are counted **in this browser only**.
+- **PFP generator.** Builds a 1024×1024 PNG of either fighter (in your
+  drip) with a LEFT / RIGHT badge. It's drawn in the browser and nothing
+  is uploaded.
+- **Memes and stickers.** A meme maker with six formats (top/bottom,
+  versus, "Nobody:", nah/yes, the stare, full steam), ready-made captions
+  to shuffle, your own text, and Save PNG / Copy image. The fighters in
+  the memes are the real rig, in your drip. The wall and the sticker pack
+  are drawn only once the section is near the screen, so the fight never
+  pays for them.
+- **Airdrops, two kinds, kept apart.**
+  - *Crate drops (the game):* your first round win, and every match win
+    after that, parachutes a crate into the arena with a piece of drip
+    (party hat, deal-with-it shades, gold chain, propeller cap, laser
+    eyes, crown). It goes straight on your fighter, your PFP and your
+    memes; the Airdrops section shows the stash and lets you swap.
+    Cosmetic, worth nothing, kept in this browser.
+  - *The token airdrop:* one card, with a status (`soon`, `live`,
+    `ended`), who, when and the one official claim link, plus a stay-safe
+    line (no DMs, never your seed phrase, never send to receive). Nothing
+    on the page connects a wallet or pretends to claim.
+- **Roadmap news.** Tick a roadmap item and redeploy: returning visitors
+  get a toast ("Roadmap: … Done.") and both fighters throw a swing, once.
 - **Extras.** Fist cursor in your colour. Sound is muted by default
   (synthesised crowd murmur, punch, kick, block, parry, the filibuster
   drone, combo blips, round bell); the speaker button wiggles once when
   the first round starts, and never plays anything by itself. Type
   **STOP** and both freeze and stare at you.
 - **Paper grain.** A subtle noise texture on the flat colour backgrounds
-  only (the split, the sections, the footer), never over the characters or
-  text. Set `--grain-opacity` in `css/style.css` to `0` to turn it off.
-- **Memes.** A meme maker with six formats (top/bottom, versus, "Nobody:",
-  nah/yes, the stare, full steam), ready-made captions to shuffle, your own
-  text, and Save PNG / Copy image. The fighters in the memes are the real
-  rig, in your drip. A meme wall below it; Remix loads any of them into
-  the maker. Everything is drawn in the browser and only once the section
-  is near the screen, so the fight never pays for it.
-- **Airdrops, two kinds, kept apart.**
-  - *Crate drops (the game):* your first round win, and every match win
-    after that, parachutes a crate into the arena with a piece of drip
-    (party hat, deal-with-it shades, gold chain, propeller cap, laser eyes,
-    crown). It goes straight on your fighter, your PFP and your memes; the
-    Airdrop section shows the stash and lets you swap. Cosmetic, worth
-    nothing, kept in this browser.
-  - *The token airdrop:* one card, with a status (`soon`, `live`, `ended`),
-    who, when and the one official claim link, plus a stay-safe box (no
-    DMs, never your seed phrase, never send to receive). Nothing on the
-    page connects a wallet or pretends to claim.
-- **Tokenomics.** Ticker, supply, chain and tax tiles, a stacked bar of the
-  allocation (empty until you fill it in: it says "to be announced" rather
-  than inventing numbers) and an "Argue-nomics" bar that is clearly
-  labelled a joke.
-- **Roadmap.** The milestones as six stops orbiting a coin in space, each
-  marked done, next or soon, with a little rocket going round. No dates
-  until they're real, no price targets ever. On phones it's a list.
+  only, never over the characters or text. Set `--grain-opacity` in
+  `css/style.css` to `0` to turn it off.
 - **Accessibility.** `prefers-reduced-motion` freezes everything into a
-  static pose, with no shake, flash, freeze frames, slow motion or sparks;
-  the game still plays (the HUD, words and banners carry it). Works from 320px up: on phones the halves
-  stack and the two face off across the diagonal. The round pauses itself
-  when the Moves list is open, the tab is hidden, the fight is scrolled out
-  of view, or nobody has pressed anything for 6 seconds.
+  static pose, with no shake, flash, freeze frames, slow motion, sparks or
+  scrolling tape; the game still plays (the HUD, words and banners carry
+  it). Works from 320px up: on phones the halves stack and the two face
+  off across the diagonal. The round pauses itself when a dialog is open,
+  the tab is hidden, the fight is scrolled out of view, or nobody has
+  pressed anything for 6 seconds.
 
 Plain HTML, CSS and JavaScript. No build step, no framework, no backend.
 
@@ -155,13 +196,14 @@ console lists them (`[LEFT RIGHT] Replace before launch: …`).
 | Placeholder | Where | What |
 | --- | --- | --- |
 | `{{TICKER}}` | `index.html` (title, meta, header, sections, disclaimer), `design-system.html` | Ticker without the `$`. The page already prints `$` in front, e.g. `${{TICKER}}` → `$LR` |
-| `{{CONTRACT_ADDRESS}}` | `index.html` (`data-copy` on both COPY CONTRACT buttons + the HOW TO BUY box) | Token contract address |
+| `{{CONTRACT_ADDRESS}}` | `index.html` (the header CA button, the CA pill in the hero, the How to buy box), `design-system.html` | Token contract address |
 | `{{X_URL}}` | `index.html` | X profile URL |
 | `{{TELEGRAM_URL}}` | `index.html` | Telegram group URL |
-| `{{DEX_URL}}` | `index.html` | Exchange / swap URL for the HOW TO BUY step |
+| `{{DEX_URL}}` | `index.html` (every Buy button) | Exchange / swap URL |
+| `{{CHART_URL}}` | `index.html` (every Chart link) | The token's chart page |
 | `{{SITE_URL}}` | `index.html` (`canonical`, `og:*`, `twitter:image`) | Live site origin without the trailing slash, e.g. `https://leftright.example`. Social cards need an absolute image URL |
-| `{{MILESTONE_1_LABEL}}` … `{{MILESTONE_6_LABEL}}` | `js/milestones.js` | Six short story beats. Never price targets |
-| `{{TOTAL_SUPPLY}}`, `{{CHAIN}}`, `{{TAX}}` | `TOKENOMICS` in `js/coin.js` (and the tiles in `index.html`) | e.g. `1,000,000,000`, `Solana`, `0% buy / 0% sell` |
+| `{{TOTAL_SUPPLY}}`, `{{CHAIN}}`, `{{TAX}}` | `TOKENOMICS` in `js/coin.js` (and the stamps in `index.html`) | e.g. `1,000,000,000`, `Solana`, `0% buy / 0% sell` |
+| `{{LP_STATUS}}`, `{{CONTRACT_STATUS}}` | `TOKENOMICS` in `js/coin.js` (and the stamps in `index.html`) | e.g. `Burned`, `Renounced`. Only what is true |
 | `{{AIRDROP_ELIGIBILITY}}`, `{{AIRDROP_DATE}}`, `{{AIRDROP_URL}}` | `#airdrop-card` in `index.html` | Who qualifies, when, and the one official claim page. Leave the card on `data-status="soon"` until it's real |
 
 One-liner (macOS: use `sed -i ''`):
@@ -175,7 +217,7 @@ sed -i 's/{{TICKER}}/LR/g; s#{{X_URL}}#https://x.com/yourhandle#g' index.html
 In `js/fight.js`:
 
 ```js
-const TEAM_STATE = { left: 52, right: 48 }; // 0–100 each
+const TEAM_STATE = { left: 50, right: 50 }; // 0–100 each
 ```
 
 The bar shows these two numbers exactly as written. Visitors' clicks never
@@ -183,34 +225,33 @@ change them. Their own hits only add the striped "local" slice they see
 themselves, and that slice is labelled as local.
 
 **Going live later:** set `TEAM_STATE_ENDPOINT` (just below) to a URL that
-returns `{ "left": 52, "right": 48 }`. The bar fetches it on load and every
+returns `{ "left": 50, "right": 50 }`. The bar fetches it on load and every
 `TEAM_STATE_POLL_MS` (60 s), and the label switches to "Standings updated
 <time>". If the fetch fails, it keeps showing `TEAM_STATE`.
 
-## Adding and unlocking milestones
+## Editing the roadmap
 
-In `js/milestones.js`:
+In `js/milestones.js`: three `PHASES` (their names) and the `MILESTONES`
+under them:
 
 ```js
-{ id: 'm3', label: 'First meme war', timestamp: '2026-10-02T12:00:00Z', state: 'unlocked' },
+{ id: 'meme-war', phase: 2, label: 'The first meme war', done: false },
 ```
 
-- `id`: unique, used to remember which unlocks a visitor has already seen.
-- `label`: short story beat.
-- `timestamp`: ISO date, shown on hover once unlocked (`null` while locked).
-- `state`: `'locked'` or `'unlocked'`.
+- `id`: unique, used to remember which ticks a visitor has already seen.
+- `phase`: `1`, `2` or `3`.
+- `label`: a short story beat. Never a price, never a return.
+- `done`: `true` once it has happened.
 
-- `icon`: the picture on the roadmap: `flag`, `rocket`, `crate`, `megaphone`,
-  `planet` or `trophy`.
-
-Flip one to `'unlocked'` and redeploy. Each visitor who hasn't seen it gets
-the star pop and both fighters throw a swing, once. The row is built to hold
-six compact stars, and the space roadmap is drawn from the same list (the
-first locked one shows as **Next**).
+Tick one (`done: true`) and redeploy. The first unticked item gets the
+**Next** tag and its phase gets the yellow ring. Returning visitors who
+haven't seen the tick get a toast, both fighters throw a swing, and the
+box pops when the roadmap scrolls into view, once each.
 
 ## Tokenomics
 
-In `js/coin.js`, fill in `TOKENOMICS`:
+In `js/coin.js`, fill in `TOKENOMICS` (supply, chain, tax, liquidity and
+contract status go on the stamps), then the allocation:
 
 ```js
 allocation: [
@@ -223,6 +264,7 @@ allocation: [
 Up to five rows are drawn (more fold into "Other"). The colours are a fixed,
 colour-blind-checked order (blue, red, amber, green, purple), each part is
 labelled, and the legend doubles as the table. Only publish final numbers.
+The pizza beside it is a drawing in `index.html`, captioned as a joke.
 
 ## The token airdrop card
 
@@ -250,7 +292,9 @@ is where they'll check.
 | Paper grain strength | `--grain-opacity` in `css/style.css` (`0` = off) |
 | Crate drops: the items, their tiers and odds | `DRIP` and `WEIGHT` in `js/drops.js` |
 | Meme formats and captions | `TEMPLATES` (and the wall's `WALL`) in `js/memes.js` |
-| Ticker-tape words | `buildMarquee()` in `js/main.js` |
+| The sticker pack (who, pose, line) | `STICKERS` in `js/memes.js` (keep it four a side) |
+| Lore comic, team cards, the heads around the page (pose, crop, face) | the `data-art`, `data-pose`, `data-view` and `data-state` attributes in `index.html` (see the top of `js/art.js`) |
+| Marquee and tape words | `buildMarquees()` in `js/main.js` |
 | Rage cycle length | `RAGE_SECONDS` in `js/idle.js` |
 | Colours, type, spacing | tokens at the top of `css/style.css` |
 
@@ -258,20 +302,21 @@ is where they'll check.
 
 | Path | What it is |
 | --- | --- |
-| `index.html` | The site: the one-screen fight (HUD, arena, move pad, Moves list), then MEMES, AIRDROPS, TOKENOMICS, ROADMAP, HOW TO BUY, THE CROWD, FAQ, footer |
-| `design-system.html` | Both fighters in every pose, rig map, colour tokens, type, components, effects, real PFPs |
+| `index.html` | The site: the fixed header, the one-screen fight (poster, HUD, arena, move pad, Moves list, meme maker dialog), then LORE, PICK YOUR SIDE, HOW TO BUY, TOKENOMICS, ROADMAP, MEMES, AIRDROPS, FAQ, JOIN, footer |
+| `design-system.html` | Both fighters in every pose, rig map, colour tokens, type, components (scoreboard, section pieces, roadmap phase), effects, real PFPs |
 | `css/style.css` | Tokens, components, layout |
 | `js/rig.js` | The one SVG character rig (#char-body, #char-head, #char-hat, #char-eyes, #char-pupils, #char-brows, #char-mouth, #char-arm-l/-r, #char-legs), its poses and renderer |
 | `js/idle.js` | The always-on yelling loop, blinks, cursor-following eyes, rage + steam, speech bubbles, STOP easter egg |
 | `js/fight.js` | `TEAM_STATE` + live hook, side picking, the fighting game (moves, combos, rounds, the computer opponent), standings bar |
-| `js/milestones.js` | `MILESTONES` + the star row + the space roadmap |
+| `js/milestones.js` | `PHASES` + `MILESTONES`: the roadmap and its tick news |
 | `js/drops.js` | Crate airdrops: the drip catalogue, the stash, the parachute drop; the token airdrop card's status |
-| `js/memes.js` | Meme maker and meme wall (canvas) |
-| `js/coin.js` | `TOKENOMICS` + the allocation bars |
+| `js/memes.js` | Meme maker (in its dialog), meme wall and sticker pack (canvas) |
+| `js/art.js` | Still pictures of the two fighters for the sections (rendered once, lazily) and die-cut stickers |
+| `js/coin.js` | `TOKENOMICS`: the stamps + the allocation card |
 | `js/pfp.js` | Canvas PFP generator (wears your drip) |
 | `js/sound.js` | Web Audio: crowd, punch, kick, block, parry, filibuster, bell, whoosh (muted by default, never autoplays) |
-| `js/fx.js` | Brawl cloud, stars, confetti, the split background |
-| `js/main.js` | Boot, copy contract, sound toggle, site menu, marquee, placeholder check |
+| `js/fx.js` | Brawl cloud, stars, confetti, the split backgrounds |
+| `js/main.js` | Boot, fixed header, copy contract, sound toggle, site menu, marquee and tape, PFP buttons, section splits, placeholder check |
 | `js/vendor/gsap.min.js` | GSAP 3.13.0 fallback (same file cdnjs serves) |
 | `assets/` | Favicon and the 1200×630 social image |
 

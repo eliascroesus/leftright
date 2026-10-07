@@ -1,11 +1,13 @@
 /* ==========================================================================
    LEFT RIGHT — memes
-   A meme maker and a meme wall, drawn in the browser on a canvas from the
-   same character rig as the fight (wearing your airdropped drip). Nothing
-   is uploaded. Formats are classic internet ones; the art and the captions
-   are original, about arguing, the group chat and crypto culture, never
-   about prices, gains or real politics.
+   A meme maker (in a dialog), a meme wall and a sticker pack, all drawn in
+   the browser on a canvas from the same character rig as the fight
+   (wearing your airdropped drip). Nothing is uploaded. Formats are classic
+   internet ones; the art and the captions are original, about arguing,
+   the group chat and crypto culture, never about prices, gains or real
+   politics.
    Add a caption: push it into a template's `captions` list below.
+   Add a sticker: push it into STICKERS (keep it four a side).
    ========================================================================== */
 (function (root) {
   'use strict';
@@ -43,6 +45,9 @@
         { top: 'FAMILY DINNER', left: 'SOURCE?', right: 'TRUST ME BRO' },
         { top: 'ME AND MY BEST FRIEND', left: 'AGREED', right: 'AGREED (LOUDER)' },
         { top: 'EVERY MORNING', left: 'GM', right: 'GM (ANGRY)' },
+        { top: 'PINEAPPLE ON PIZZA?', left: 'OBVIOUSLY', right: 'A CRIME' },
+        { top: 'TABS OR SPACES?', left: 'TABS', right: 'SPACES' },
+        { top: 'HOW DO YOU SAY IT?', left: 'GIF', right: 'JIF' },
       ],
     },
     {
@@ -87,14 +92,29 @@
     },
   ];
 
-  /* The wall: one ready-made meme per template (remix any of them). */
+  /* The wall: ready-made memes, save or remix any of them. Two each of just
+     Lefty and just Righty; the rest have both. */
   const WALL = [
-    { tpl: 'versus', cap: 1 },
+    { tpl: 'versus', cap: 5 },
     { tpl: 'classic', cap: 1, team: 'right' },
     { tpl: 'twopanel', cap: 0, team: 'left' },
     { tpl: 'stare', cap: 0 },
     { tpl: 'nobody', cap: 0, team: 'left' },
+    { tpl: 'versus', cap: 6 },
     { tpl: 'steam', cap: 0, team: 'right' },
+    { tpl: 'versus', cap: 7 },
+  ];
+
+  /* The sticker pack: four a side, die-cut, saved as transparent PNGs. */
+  const STICKERS = [
+    { id: 'actually', team: 'left', pose: 'yell', state: { mouth: 1, rage: 0.5, armL: 64, armR: 50 }, say: 'ACTUALLY' },
+    { id: 'source', team: 'right', pose: 'yell', state: { mouth: 1, rage: 0.5, armL: 64, armR: 50 }, say: 'SOURCE?' },
+    { id: 'typical', team: 'left', pose: 'steam', state: { rage: 1, throb: 1, steam: 0.62, mouth: 0.9 }, say: 'TYPICAL' },
+    { id: 'let-me-finish', team: 'right', pose: 'steam', state: { rage: 1, throb: 1, steam: 0.62, mouth: 0.9 }, say: 'LET ME FINISH' },
+    { id: 'haha-okay', team: 'left', pose: 'camera', state: { rage: 0 }, say: 'HAHA OKAY' },
+    { id: 'no-comment', team: 'right', pose: 'camera', state: { rage: 0 }, say: 'NO COMMENT' },
+    { id: 'gm', team: 'left', pose: 'victory', state: { rage: 0.2 }, drip: { hat: 'crown' }, say: 'GM' },
+    { id: 'trust-me', team: 'right', pose: 'victory', state: { rage: 0.2 }, drip: { face: 'shades' }, say: 'TRUST ME' },
   ];
 
   const tpl = (id) => TEMPLATES.find((t) => t.id === id) || TEMPLATES[0];
@@ -364,7 +384,9 @@
   let el = {};
   let ready = false;
 
-  const teamNow = () => state.team || (LR.fight && LR.fight.side) || 'left';
+  // no side picked yet: a coin toss decides who stars in the one-fighter formats
+  const tossed = Math.random() < 0.5 ? 'left' : 'right';
+  const teamNow = () => state.team || (LR.fight && LR.fight.side) || tossed;
 
   function renderFields() {
     const t = tpl(state.tpl);
@@ -429,15 +451,15 @@
     draw();
   }
 
-  async function download() {
+  async function save(id, data, team) {
     try {
-      const c = await render(document.createElement('canvas'), state.tpl, state.data, teamNow());
+      const c = await render(document.createElement('canvas'), id, data, team);
       const blob = await new Promise((resolve) => c.toBlob(resolve, 'image/png'));
       if (!blob) throw new Error('canvas export failed');
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `left-right-meme-${state.tpl}.png`;
+      a.download = `left-right-meme-${id}.png`;
       document.body.appendChild(a);
       a.click();
       a.remove();
@@ -448,6 +470,8 @@
       if (LR.toast) LR.toast('Save failed. Try again.');
     }
   }
+
+  const download = () => save(state.tpl, state.data, teamNow());
 
   async function copyImage() {
     try {
@@ -461,12 +485,45 @@
     }
   }
 
+  /* ---- the dialog ------------------------------------------------------------------ */
+
+  function openMaker() {
+    const dlg = el.dialog;
+    if (!dlg) return;
+    if (!dlg.open) {
+      if (typeof dlg.showModal === 'function') dlg.showModal();
+      else dlg.setAttribute('open', '');
+    }
+    ready = true;
+    renderFields();
+    draw();
+  }
+
+  function closeMaker() {
+    const dlg = el.dialog;
+    if (!dlg) return;
+    if (typeof dlg.close === 'function') dlg.close();
+    else dlg.removeAttribute('open');
+  }
+
   /* ---- the wall ---------------------------------------------------------------------- */
+
+  const smallBtn = (text, label, onClick) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'btn btn--sm';
+    b.textContent = text;
+    b.setAttribute('aria-label', label);
+    b.addEventListener('click', onClick);
+    return b;
+  };
 
   function buildWall() {
     WALL.forEach((w, i) => {
       const t = tpl(w.tpl);
       const data = t.captions[w.cap] || t.captions[0];
+      const team = w.team || 'left';
+      const words = t.slots.map((s) => data[s.key]).filter(Boolean).join(' / ');
       const fig = document.createElement('figure');
       fig.className = 'meme-card';
       const canvas = document.createElement('canvas');
@@ -474,25 +531,56 @@
       canvas.width = 540;
       canvas.height = 540;
       canvas.setAttribute('role', 'img');
-      canvas.setAttribute('aria-label', `${t.name} meme: ${t.slots.map((s) => data[s.key]).filter(Boolean).join(' / ')}`);
+      canvas.setAttribute('aria-label', `${t.name} meme: ${words}`);
       const cap = document.createElement('figcaption');
-      const b = document.createElement('button');
-      b.type = 'button';
-      b.className = 'btn btn--sm';
-      b.textContent = 'Remix';
-      b.addEventListener('click', () => {
-        choose(t.id, data, w.team || null);
-        el.maker.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      });
       const name = document.createElement('span');
+      name.className = 'meme-card__name';
       name.textContent = t.name;
-      cap.append(name, b);
+      const btns = document.createElement('span');
+      btns.className = 'meme-card__btns';
+      btns.append(
+        smallBtn('Save', `Save the ${t.name} meme: ${words}`, () => save(t.id, data, team)),
+        smallBtn('Remix', `Remix the ${t.name} meme: ${words}`, () => {
+          state.tpl = t.id;
+          state.data = Object.assign({}, data);
+          if (w.team) state.team = w.team;
+          openMaker();
+        }),
+      );
+      cap.append(name, btns);
       fig.append(canvas, cap);
       el.wall.appendChild(fig);
       setTimeout(async () => {
-        const full = await render(document.createElement('canvas'), t.id, data, w.team || 'left');
+        const full = await render(document.createElement('canvas'), t.id, data, team);
         canvas.getContext('2d').drawImage(full, 0, 0, 540, 540);
       }, i * 120); // one at a time, so scrolling stays smooth
+    });
+  }
+
+  /* ---- the sticker pack --------------------------------------------------------------- */
+
+  function buildStickers() {
+    const host = document.getElementById('stickers');
+    if (!host || !LR.art) return;
+    STICKERS.forEach((st, i) => {
+      const who = st.team === 'left' ? 'Lefty' : 'Righty';
+      const li = document.createElement('li');
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'sticker-btn';
+      b.setAttribute('aria-label', `Save the sticker: ${who}, “${st.say}”`);
+      b.addEventListener('click', () => LR.art.saveSticker(st, st.id));
+      li.appendChild(b);
+      host.appendChild(li);
+      setTimeout(async () => {
+        try {
+          const c = await LR.art.sticker(st, 300);
+          c.setAttribute('aria-hidden', 'true');
+          b.appendChild(c);
+        } catch (err) {
+          console.error('[stickers]', err);
+        }
+      }, 400 + i * 90);
     });
   }
 
@@ -502,7 +590,7 @@
     init() {
       const $ = (id) => document.getElementById(id);
       el = {
-        maker: $('meme-maker'), canvas: $('meme-canvas'), fields: $('meme-fields'), wall: $('meme-wall'),
+        maker: $('meme-maker'), canvas: $('meme-canvas'), fields: $('meme-fields'), wall: $('meme-wall'), dialog: $('meme-dialog'),
         sideRow: $('meme-sides'), tpls: [...document.querySelectorAll('[data-tpl]')], sides: [...document.querySelectorAll('[data-meme-side]')],
       };
       if (!el.maker || !el.canvas) return;
@@ -518,24 +606,34 @@
       $('meme-shuffle').addEventListener('click', shuffle);
       $('meme-save').addEventListener('click', download);
       $('meme-copy').addEventListener('click', copyImage);
+      const open = $('meme-open');
+      if (open) open.addEventListener('click', openMaker);
+      if (el.dialog) {
+        el.dialog.addEventListener('click', (e) => {
+          if (e.target === el.dialog || e.target.closest('[data-close]')) closeMaker();
+        });
+      }
       renderFields();
       // Draw nothing until the section is close: the fight keeps the page to itself.
+      let started = false;
       const start = () => {
-        if (ready) return;
-        ready = true;
-        draw();
-        buildWall();
+        if (started) return;
+        started = true;
+        if (el.wall) buildWall();
+        buildStickers();
       };
-      if ('IntersectionObserver' in root) {
+      const section = $('memes') || el.wall;
+      if ('IntersectionObserver' in root && section) {
         const io = new IntersectionObserver((entries) => {
           if (entries.some((e) => e.isIntersecting)) {
             io.disconnect();
             start();
           }
         }, { rootMargin: '600px 0px' });
-        io.observe(el.maker);
+        io.observe(section);
       } else start();
     },
+    open: openMaker,
     /** Your side changed: the maker follows it (unless you picked one in the maker). */
     refresh() {
       if (!el.maker) return;

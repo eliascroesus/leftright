@@ -1,8 +1,9 @@
 /* ==========================================================================
    LEFT RIGHT — boot
    Loads after every other script (all `defer`, in order). Wires the page:
-   the two fighters, the split background, the idle loop, the fight,
-   milestones, copy-contract, sound, marquee and the STOP easter egg.
+   the header, the two fighters, the split backgrounds, the idle loop, the
+   fight, the pictures below it, the roadmap, copy-contract, sound, the
+   marquees, PFP buttons and the STOP easter egg.
    ========================================================================== */
 (function (root) {
   'use strict';
@@ -38,6 +39,25 @@
     const set = () => doc.style.setProperty('--legal-h', `${legal.offsetHeight}px`);
     set();
     if ('ResizeObserver' in root) new ResizeObserver(set).observe(legal);
+  }
+
+  /* The header is fixed: see-through over the fight, ink once you scroll.
+     Its height (--head-h) keeps the fight and every #anchor clear of it. */
+  function trackHeader() {
+    const head = $('site-head');
+    if (!head) return;
+    const setH = () => doc.style.setProperty('--head-h', `${head.offsetHeight}px`);
+    setH();
+    if ('ResizeObserver' in root) new ResizeObserver(setH).observe(head);
+    let scrolled = null;
+    const check = () => {
+      const next = root.scrollY > 10;
+      if (next === scrolled) return;
+      scrolled = next;
+      head.classList.toggle('is-scrolled', next);
+    };
+    check();
+    root.addEventListener('scroll', check, { passive: true });
   }
 
   /* ---- toast + copy ------------------------------------------------------ */
@@ -96,24 +116,49 @@
     });
   }
 
-  /* ---- marquee: two identical groups, wide enough to loop on big screens --- */
+  /* ---- marquees: two identical groups each, wide enough to loop on big screens --- */
 
-  function buildMarquee() {
+  function buildMarquees() {
     const m = LR.fx.art.star.match(/ d="([^"]+)"/);
     const star = `<svg class="marquee__star" viewBox="0 0 60 60"><path d="${m ? m[1] : ''}" fill="var(--star)" stroke="var(--ink)" stroke-width="5" stroke-linejoin="round"/></svg>`;
     const esc = (t) => t.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
     const ticker = esc(((document.querySelector('.ticker') || {}).textContent || '').trim());
     // group-chat slang only: nothing about prices or gains
-    const words = [
-      [ticker, 'c-star'], ['Left', 'c-left'], ['Right', 'c-right'], ['gm', ''], ['Pick a side', ''],
-      ['ser, this is a group chat', ''], ['Airdrops: cosmetic', 'c-star'], ['Memes inside', ''], ['Not financial advice', ''],
-    ];
-    const item = `<span class="marquee__item">${words.map(([w, c]) => `<span class="${c}">${w}</span>${star}`).join('')}</span>`;
-    const groups = document.querySelectorAll('[data-marquee]');
-    groups.forEach((g) => (g.innerHTML = item.repeat(3)));
-    // a steady reading speed (~110 px/s) whatever the copy's length
-    const track = document.querySelector('.marquee__track');
-    if (track && groups[0]) root.requestAnimationFrame(() => (track.style.animationDuration = `${Math.max(20, groups[0].offsetWidth / 110)}s`));
+    const WORDS = {
+      hero: [
+        [ticker, 'c-star'], ['Left', 'c-left'], ['Right', 'c-right'], ['gm', ''], ['Pick a side', ''],
+        ['ser, this is a group chat', ''], ['Airdrops: cosmetic', 'c-star'], ['Memes inside', ''], ['Not financial advice', ''],
+      ],
+      tape: [
+        ['There is no fence', ''], ['Left', ''], ['Right', ''], ['Actually', ''], ['Source?', ''], [ticker, ''],
+        ['Typical', ''], ['Never log off', ''], ['gm', ''],
+      ],
+    };
+    document.querySelectorAll('.marquee__track').forEach((track) => {
+      const groups = track.querySelectorAll('[data-marquee]');
+      if (!groups.length) return;
+      const words = WORDS[groups[0].dataset.marquee] || WORDS.hero;
+      const item = `<span class="marquee__item">${words.map(([w, c]) => `<span class="${c}">${w}</span>${star}`).join('')}</span>`;
+      groups.forEach((g) => (g.innerHTML = item.repeat(3)));
+      // a steady reading speed (~110 px/s) whatever the copy's length
+      root.requestAnimationFrame(() => (track.style.animationDuration = `${Math.max(20, groups[0].offsetWidth / 110)}s`));
+    });
+  }
+
+  /* ---- PFP buttons below the fight ------------------------------------------------ */
+
+  function bindPfp() {
+    const save = (team) => LR.pfp && LR.pfp.download(team);
+    document.querySelectorAll('[data-pfp]').forEach((b) => b.addEventListener('click', () => save(b.dataset.pfp)));
+    document.querySelectorAll('[data-pfp-mine]').forEach((b) =>
+      b.addEventListener('click', () => {
+        const side = LR.fight && LR.fight.side;
+        if (side) return save(side);
+        toast('Pick a side first.');
+        const sides = $('sides');
+        if (sides) sides.scrollIntoView({ behavior: reducedQuery.matches ? 'auto' : 'smooth' });
+      }),
+    );
   }
 
   /* ---- the site menu (phones and small laptops) ------------------------------- */
@@ -164,6 +209,39 @@
     };
   }
 
+  /* The section splits: red and blue with a hand-cut seam. Pick your side's
+     seam runs between the two cards (across, once they stack). */
+  function sectionSplits() {
+    document.querySelectorAll('[data-split]').forEach((host, i) => {
+      const vs = host.querySelector('.teams__vs');
+      const cards = host.querySelectorAll('.team');
+      const geometry = (w, h) => {
+        const tilt = Math.tan((4 * Math.PI) / 180);
+        if (!vs || !vs.offsetWidth || cards.length !== 2) return { from: [0.53, 0], to: [0.47, 1], corners: [[1, 1], [1, 0]] };
+        const hb = host.getBoundingClientRect();
+        const b = vs.getBoundingClientRect();
+        const cx = b.left + b.width / 2 - hb.left;
+        const cy = b.top + b.height / 2 - hb.top;
+        if (cards[1].getBoundingClientRect().top >= cards[0].getBoundingClientRect().bottom - 8) {
+          // stacked cards: the seam runs across, through the VS
+          return { from: [0, (cy + (tilt * w) / 2) / h], to: [1, (cy - (tilt * w) / 2) / h], corners: [[1, 1], [0, 1]] };
+        }
+        return { from: [(cx + tilt * cy) / w, 0], to: [(cx - tilt * (h - cy)) / w, 1], corners: [[1, 1], [1, 0]] };
+      };
+      LR.fx.split(host, { geometry, seed: 11 + i * 4 });
+    });
+  }
+
+  /* Loops below the fight (the tape, the bobbing team art) only run while
+     they're on screen, so they never cost the fight a frame. */
+  function pauseOffscreen() {
+    if (!('IntersectionObserver' in root)) return;
+    const io = new IntersectionObserver((entries) => entries.forEach((e) => e.target.classList.toggle('is-offscreen', !e.isIntersecting)), {
+      rootMargin: '120px 0px',
+    });
+    document.querySelectorAll('.tape, .teams').forEach((el) => io.observe(el));
+  }
+
   /* ---- easter egg: type STOP ----------------------------------------------------- */
 
   function bindEasterEgg() {
@@ -185,11 +263,16 @@
   async function boot() {
     warnPlaceholders();
     trackLegalHeight();
+    trackHeader();
     bindCopy();
     bindSound();
-    buildMarquee();
+    buildMarquees();
     bindMenu();
+    bindPfp();
     bindEasterEgg();
+    sectionSplits();
+    pauseOffscreen();
+    if (LR.art) LR.art.init();
 
     const hosts = { left: $('fighter-left'), right: $('fighter-right') };
     const chars = { left: LR.rig.create('left'), right: LR.rig.create('right') };
@@ -200,12 +283,6 @@
     const arena = $('arena');
     const split = LR.fx.split(heroBg, { geometry: splitGeometry(heroBg, arena) });
     if ('ResizeObserver' in root) new ResizeObserver(() => split.set({})).observe(arena);
-
-    // cameos in THE CROWD section: a still frame of the same two
-    document.querySelectorAll('[data-cameo]').forEach((slot) => {
-      const c = LR.rig.create(slot.getAttribute('data-cameo'), { pose: 'yell', state: { spit: 0 } });
-      slot.appendChild(c.el);
-    });
 
     let gsap = null;
     try {
@@ -219,7 +296,7 @@
     LR.idle.start(chars, hosts, { reduced });
     if (LR.drops) LR.drops.init({ chars, reduced }); // before the fight, which tells it your side
     LR.fight.init({ split, reduced });
-    LR.milestones.init($('milestones'), { reduced, onUnlock: () => LR.fight.bothSwing() });
+    LR.milestones.init({ reduced, onUnlock: () => LR.fight.bothSwing() });
     if (LR.memes) LR.memes.init();
     if (LR.coin) LR.coin.init();
   }

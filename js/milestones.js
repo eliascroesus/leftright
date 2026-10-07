@@ -1,40 +1,48 @@
 /* ==========================================================================
-   LEFT RIGHT — milestones
+   LEFT RIGHT — roadmap
    --------------------------------------------------------------------------
-   Edit MILESTONES by hand. Each entry:
-     id         unique string (used to remember which ones a visitor has seen)
-     label      short story beat (never a price target)
-     timestamp  ISO date string, shown once unlocked (or null)
-     state      'locked' | 'unlocked'
-     icon       roadmap picture: flag | rocket | crate | megaphone | planet | trophy
-   Flip a milestone to 'unlocked' and redeploy: every visitor who hasn't seen
-   it yet gets the pop animation and both fighters throw a swing, once.
-   The same list draws the star row under the fight and the space roadmap
-   (#roadmap-stage) further down.
+   Edit PHASES and MILESTONES by hand. Each milestone:
+     id     unique string (remembers which ones a visitor has already seen)
+     phase  1, 2 or 3
+     label  a short story beat. Never a price, never a return.
+     done   true once it has happened
+   Tick one (done: true) and redeploy: every returning visitor gets a toast,
+   both fighters throw a swing, and its box pops when the roadmap scrolls
+   into view. Once per visitor.
    ========================================================================== */
 (function (root) {
   'use strict';
 
   const LR = (root.LR = root.LR || {});
 
+  const PHASES = ['Pick a side', 'Raise your voice', 'Never log off'];
+
   const MILESTONES = [
-    { id: 'm1', label: '{{MILESTONE_1_LABEL}}', timestamp: '2026-09-01T12:00:00Z', state: 'unlocked', icon: 'flag' },
-    { id: 'm2', label: '{{MILESTONE_2_LABEL}}', timestamp: '2026-09-18T12:00:00Z', state: 'unlocked', icon: 'rocket' },
-    { id: 'm3', label: '{{MILESTONE_3_LABEL}}', timestamp: null, state: 'locked', icon: 'crate' },
-    { id: 'm4', label: '{{MILESTONE_4_LABEL}}', timestamp: null, state: 'locked', icon: 'megaphone' },
-    { id: 'm5', label: '{{MILESTONE_5_LABEL}}', timestamp: null, state: 'locked', icon: 'planet' },
-    { id: 'm6', label: '{{MILESTONE_6_LABEL}}', timestamp: null, state: 'locked', icon: 'trophy' },
+    { id: 'launch', phase: 1, label: 'Launch the argument', done: true },
+    { id: 'line', phase: 1, label: 'Draw the line down the middle', done: true },
+    { id: 'holders-1k', phase: 1, label: '1,000 holders', done: false },
+    { id: 'trending', phase: 1, label: 'Both sides trending on X', done: false },
+    { id: 'listings', phase: 2, label: 'CoinGecko and CoinMarketCap listings', done: false },
+    { id: 'meme-war', phase: 2, label: 'The first meme war', done: false },
+    { id: 'holders-10k', phase: 2, label: '10,000 holders', done: false },
+    { id: 'merch', phase: 2, label: 'Merch nobody asked for', done: false },
+    { id: 'holders-100k', phase: 3, label: '100,000 holders', done: false },
+    { id: 'global', phase: 3, label: 'The argument goes global', done: false },
+    { id: 'winner', phase: 3, label: "Someone finally wins (they won't)", done: false },
   ];
 
   const SEEN_KEY = 'lr:milestones-seen';
-  const DATE = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  const CHECK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>';
 
+  /** The ids seen before, or null on a first visit. */
   function readSeen() {
     try {
-      const v = JSON.parse(localStorage.getItem(SEEN_KEY) || '[]');
+      const raw = localStorage.getItem(SEEN_KEY);
+      if (raw === null) return null;
+      const v = JSON.parse(raw);
       return Array.isArray(v) ? v : [];
     } catch {
-      return [];
+      return null;
     }
   }
 
@@ -46,131 +54,95 @@
     }
   }
 
-  function formatDate(ts) {
-    const d = ts ? new Date(ts) : null;
-    return d && !isNaN(d) ? DATE.format(d) : '';
-  }
-
-  function starPath() {
-    const m = LR.fx && LR.fx.art.star.match(/ d="([^"]+)"/);
-    return m ? m[1] : '';
-  }
-
-  function render(list, host) {
-    const d = starPath();
+  function render(host) {
     host.textContent = '';
-    list.forEach((m, i) => {
-      const unlocked = m.state === 'unlocked';
-      const date = formatDate(m.timestamp);
+    const next = MILESTONES.find((m) => !m.done);
+    PHASES.forEach((name, i) => {
+      const n = i + 1;
+      const items = MILESTONES.filter((m) => m.phase === n);
       const li = document.createElement('li');
-      li.className = `ms ${unlocked ? 'is-unlocked' : 'is-locked'}`;
-      li.dataset.id = m.id;
-      li.tabIndex = 0;
-      li.setAttribute('aria-label', unlocked ? `Milestone ${i + 1}: ${m.label}${date ? `, unlocked ${date}` : ''}` : `Milestone ${i + 1}: locked`);
-      li.innerHTML =
-        `<svg class="ms__star" viewBox="0 0 60 60" aria-hidden="true"><path d="${d}"/></svg>` +
-        `<span class="ms__n" aria-hidden="true">${i + 1}</span>` +
-        `<span class="ms__tip" aria-hidden="true"></span>`;
-      const tip = li.querySelector('.ms__tip');
-      const b = document.createElement('b');
-      b.textContent = unlocked ? m.label : 'Locked';
-      tip.appendChild(b);
-      if (unlocked && date) {
-        const t = document.createElement('time');
-        t.dateTime = m.timestamp;
-        t.textContent = date;
-        tip.appendChild(t);
-      } else if (!unlocked) {
-        tip.appendChild(document.createTextNode('Not yet'));
-      }
+      li.className = 'phase';
+      if (next && next.phase === n) li.classList.add('is-now');
+      li.innerHTML = '<span class="phase__n"></span><h3 class="phase__name"></h3><ul class="phase__list"></ul>';
+      li.querySelector('.phase__n').textContent = `Phase ${n}`;
+      li.querySelector('.phase__name').textContent = name;
+      const list = li.querySelector('.phase__list');
+      items.forEach((m) => {
+        const item = document.createElement('li');
+        item.className = `phase__item${m.done ? ' is-done' : ''}`;
+        item.dataset.id = m.id;
+        item.innerHTML = `<span class="phase__box" aria-hidden="true">${m.done ? CHECK : ''}</span><span><span class="visually-hidden"></span></span>`;
+        const text = item.lastChild;
+        text.firstChild.textContent = m.done ? 'Done: ' : 'To do: ';
+        text.appendChild(document.createTextNode(m.label));
+        if (m === next) {
+          const tag = document.createElement('span');
+          tag.className = 'phase__next';
+          tag.textContent = 'Next';
+          text.appendChild(tag);
+        }
+        list.appendChild(item);
+      });
       host.appendChild(li);
     });
   }
 
-  /* ---- the space roadmap ------------------------------------------------- */
-
-  const ICONS = {
-    flag: '<path class="ri-pole" d="M20 54V10"/><path class="ri-a" d="M21 11c10-5 18 5 30 0v20c-12 5-20-5-30 0z"/>',
-    rocket: '<path class="ri-a" d="M32 6c10 8 14 20 12 34H20C18 26 22 14 32 6z"/><circle class="ri-b" cx="32" cy="24" r="6"/><path class="ri-b" d="M20 34 12 46h10zM44 34l8 12H42z"/><path class="ri-fire" d="M25 41h14l-7 15z"/>',
-    crate: '<path class="ri-chute" d="M10 28C10 14 20 6 32 6s22 8 22 22c-7-4-15-4-22 0-7-4-15-4-22 0z"/><path class="ri-line" d="M12 28l12 14M52 28 40 42"/><rect class="ri-wood" x="21" y="38" width="22" height="20" rx="2"/><path class="ri-line" d="M21 48h22"/>',
-    megaphone: '<path class="ri-a" d="M12 26h10l22-12v34L22 36H12z"/><path class="ri-b" d="M16 36l4 14h7l-4-14z"/><path class="ri-line" d="M50 22c4 4 4 14 0 18"/>',
-    planet: '<circle class="ri-a" cx="32" cy="32" r="16"/><path class="ri-ring" d="M8 38c4 8 44-6 48-14 2-5-8-6-16-4"/><circle class="ri-b" cx="27" cy="27" r="4"/>',
-    trophy: '<path class="ri-a" d="M20 10h24v14a12 12 0 0 1-24 0z"/><path class="ri-line" d="M20 14h-7c0 9 4 13 9 14M44 14h7c0 9-4 13-9 14"/><path class="ri-b" d="M28 36h8v10h-8z"/><rect class="ri-a" x="20" y="46" width="24" height="8" rx="2"/>',
-  };
-
-  /* Spots around the orbit (percent of the stage), clockwise from top left. */
-  const SPOTS = [[13, 24], [9, 64], [34, 86], [68, 86], [91, 64], [86, 22]];
-
-  function roadmap(host, opts = {}) {
-    if (!host) return;
-    const list = host.querySelector('.roadmap__list');
-    if (!list) return;
-    list.textContent = '';
-    const next = MILESTONES.findIndex((m) => m.state !== 'unlocked');
-    MILESTONES.forEach((m, i) => {
-      const unlocked = m.state === 'unlocked';
-      const status = unlocked ? 'Done' : i === next ? 'Next' : 'Soon';
-      const date = formatDate(m.timestamp);
-      const li = document.createElement('li');
-      li.className = `stop stop--${status.toLowerCase()}`;
-      const [x, y] = SPOTS[i % SPOTS.length];
-      li.style.setProperty('--x', `${x}%`);
-      li.style.setProperty('--y', `${y}%`);
-      li.innerHTML =
-        `<span class="stop__icon" aria-hidden="true"><svg viewBox="0 0 64 64">${ICONS[m.icon] || ICONS.planet}</svg></span>` +
-        '<span class="stop__text"><span class="stop__n"></span><b class="stop__label"></b><span class="stop__when"></span></span>';
-      li.querySelector('.stop__n').textContent = `Phase ${i + 1} · ${status}`;
-      li.querySelector('.stop__label').textContent = m.label;
-      li.querySelector('.stop__when').textContent = unlocked ? date || 'Done' : 'Date TBA';
-      list.appendChild(li);
-    });
-
-    // a little rocket on the inner orbit, only while the roadmap is on screen
+  /* Pop the fresh ticks once the roadmap is on screen (they're visible the
+     whole time; the pop is a bonus). */
+  function popWhenSeen(host, ids, reduced) {
     const gsap = root.gsap;
-    const ship = host.querySelector('.roadmap__ship');
-    if (!gsap || !ship || opts.reduced) return;
-    const orbit = { a: 0.3 };
-    const tween = gsap.to(orbit, {
-      a: Math.PI * 2 + 0.3,
-      duration: 22,
-      ease: 'none',
-      repeat: -1,
-      paused: true,
-      onUpdate: () => {
-        const x = 50 + Math.cos(orbit.a) * 27;
-        const y = 50 + Math.sin(orbit.a) * 17;
-        gsap.set(ship, { left: `${x}%`, top: `${y}%`, rotation: (orbit.a * 180) / Math.PI + 90, zIndex: Math.sin(orbit.a) > 0 ? 3 : 1 });
+    if (!gsap || reduced || !ids.length) return;
+    const marks = ids.map((id) => host.querySelector(`[data-id="${id}"] .phase__box`)).filter(Boolean);
+    if (!marks.length) return;
+    const pop = () =>
+      gsap.to(marks, {
+        keyframes: [
+          { scale: 1.6, rotation: -16, duration: 0.16, ease: 'power2.out' },
+          { scale: 1, rotation: 0, duration: 0.6, ease: 'elastic.out(1, 0.4)' },
+        ],
+        stagger: 0.16,
+        delay: 0.2,
+      });
+    if (!('IntersectionObserver' in root)) return pop();
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (!e.isIntersecting) return;
+        io.disconnect();
+        pop();
       },
-    });
-    if ('IntersectionObserver' in root) {
-      new IntersectionObserver(([e]) => (e.isIntersecting ? tween.play() : tween.pause())).observe(host);
-    } else tween.play();
+      { threshold: 0.35 },
+    );
+    io.observe(host);
   }
 
   LR.milestones = {
+    PHASES,
     MILESTONES,
     /**
-     * Render the row and celebrate anything unlocked since the last visit.
-     * @param {HTMLElement} host  the <ol>
+     * Draw the roadmap, and celebrate anything ticked since the last visit.
      * @param {{onUnlock?: (m) => void, reduced?: boolean}} [opts]
      */
-    init(host, opts = {}) {
-      roadmap(document.getElementById('roadmap-stage'), opts);
+    init(opts = {}) {
+      const host = document.getElementById('phases');
       if (!host) return;
-      render(MILESTONES, host);
+      render(host);
       const seen = readSeen();
-      const fresh = MILESTONES.filter((m) => m.state === 'unlocked' && !seen.includes(m.id));
+      const done = MILESTONES.filter((m) => m.done).map((m) => m.id);
+      writeSeen(done);
+      if (seen === null) {
+        // first visit: no news, just the boxes popping in
+        popWhenSeen(host, done, opts.reduced);
+        return;
+      }
+      const fresh = MILESTONES.filter((m) => m.done && !seen.includes(m.id));
       if (!fresh.length) return;
-      writeSeen(seen.concat(fresh.map((m) => m.id)));
-      const gsap = root.gsap;
-      fresh.forEach((m, i) => {
-        const el = host.querySelector(`[data-id="${m.id}"] .ms__star`);
-        const delay = 1.2 + i * 0.9;
-        if (gsap && el && !opts.reduced) {
-          gsap.fromTo(el, { scale: 0.2, rotation: -160 }, { scale: 1, rotation: 0, duration: 0.9, ease: 'elastic.out(1, 0.45)', delay });
-        }
-        if (opts.onUnlock) setTimeout(() => opts.onUnlock(m), delay * 1000);
-      });
+      popWhenSeen(host, fresh.map((m) => m.id), opts.reduced);
+      fresh.forEach((m, i) =>
+        setTimeout(() => {
+          if (LR.toast) LR.toast(`Roadmap: ${m.label}. Done.`);
+          if (opts.onUnlock) opts.onUnlock(m);
+        }, 1200 + i * 1800),
+      );
     },
   };
 })(window);

@@ -3,18 +3,18 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <title>LEFT RIGHT (${{TICKER}}) · Pick a side.</title>
-    <meta name="description" content="Two cartoon kids yelling about nothing, forever. Pick a side and join the fight. ${{TICKER}} is a meme coin with no utility and no expectation of profit." />
+    <title>LEFT RIGHT (${{TICKER}}) · The internet's oldest argument.</title>
+    <meta name="description" content="Two cartoon kids. One comment section. Zero agreements. ${{TICKER}} is the internet's oldest argument, now with a coin. Pick a side. No utility and no expectation of profit." />
     <meta name="theme-color" content="#1b1412" />
     <link rel="canonical" href="{{SITE_URL}}/" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="LEFT RIGHT (${{TICKER}}) · Pick a side." />
-    <meta property="og:description" content="The fight never ends." />
+    <meta property="og:title" content="LEFT RIGHT (${{TICKER}}) · The internet's oldest argument." />
+    <meta property="og:description" content="Pick a side. There is no fence." />
     <meta property="og:image" content="{{SITE_URL}}/assets/og-image.png" />
     <meta property="og:url" content="{{SITE_URL}}/" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="LEFT RIGHT (${{TICKER}}) · Pick a side." />
-    <meta name="twitter:description" content="The fight never ends." />
+    <meta name="twitter:title" content="LEFT RIGHT (${{TICKER}}) · The internet's oldest argument." />
+    <meta name="twitter:description" content="Pick a side. There is no fence." />
     <meta name="twitter:image" content="{{SITE_URL}}/assets/og-image.png" />
     <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -24,37 +24,42 @@
     <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
-    <!-- ======================= THE FIGHT (one screen) ======================= -->
+    <!-- ============================ HEADER (fixed) ============================ -->
+    <header class="topbar" id="site-head">
+      <div class="topbar__brand">
+        <a class="logo" href="#top" aria-label="LEFT RIGHT, back to the top"><span class="chip chip--left">Left</span><span class="chip chip--right">Right</span></a>
+        <span class="ticker">${{TICKER}}</span>
+      </div>
+      <nav class="topnav" id="topnav" aria-label="Site">
+        <a href="#lore">Lore</a>
+        <a href="#how-to-buy">How to buy</a>
+        <a href="#tokenomics">Tokenomics</a>
+        <a href="#roadmap">Roadmap</a>
+        <a href="#memes">Memes</a>
+        <a href="#airdrop">Airdrops</a>
+        <span class="topnav__socials">
+          <a href="{{X_URL}}" target="_blank" rel="noopener">X</a>
+          <a href="{{TELEGRAM_URL}}" target="_blank" rel="noopener">Telegram</a>
+          <a href="{{CHART_URL}}" target="_blank" rel="noopener">Chart</a>
+        </span>
+      </nav>
+      <div class="topbar__actions">
+        <a class="icon-btn head-social" href="{{X_URL}}" target="_blank" rel="noopener" aria-label="LEFT RIGHT on X"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" aria-hidden="true"><path d="m5.5 5 13 14m0-14-13 14" /></svg></a>
+        <a class="icon-btn head-social" href="{{TELEGRAM_URL}}" target="_blank" rel="noopener" aria-label="LEFT RIGHT on Telegram"><svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><path d="M21.5 3.8 2.8 11.2l5.7 2 1.4 5.8 3.3-3.4 4.6 3.5z" /><path d="m8.5 13.2 9.4-6.6-7.2 7.9" fill="none" stroke="var(--paper)" stroke-width="1.6" /></svg></a>
+        <button class="btn btn--sm topbar__ca" type="button" data-copy="{{CONTRACT_ADDRESS}}" aria-label="Copy the contract address">
+          <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8.5" y="8.5" width="11.5" height="11.5" rx="2.5" /><path d="M15.5 8.5V6A2 2 0 0 0 13.5 4H6A2 2 0 0 0 4 6v7.5A2 2 0 0 0 6 15.5h2.5" /></svg>
+          CA
+        </button>
+        <a class="btn btn--sm btn--buy" href="{{DEX_URL}}" target="_blank" rel="noopener">Buy<span class="btn--buy__ticker"> ${{TICKER}}</span></a>
+        <button class="icon-btn topbar__menu" type="button" id="menu-btn" aria-expanded="false" aria-controls="topnav" aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- ===================== HERO: the poster, and the fight ===================== -->
     <section class="hero" id="top" aria-labelledby="hero-title">
       <div class="hero__bg" id="hero-bg" aria-hidden="true"></div>
-
-      <header class="topbar">
-        <div class="topbar__brand">
-          <a class="logo" href="#top" aria-label="LEFT RIGHT, back to the top"><span class="chip chip--left">Left</span><span class="chip chip--right">Right</span></a>
-          <span class="ticker">${{TICKER}}</span>
-        </div>
-        <nav class="topnav" id="topnav" aria-label="Site">
-          <a href="#memes">Memes</a>
-          <a href="#airdrop">Airdrop</a>
-          <a href="#tokenomics">Tokenomics</a>
-          <a href="#roadmap">Roadmap</a>
-          <a href="#how-to-buy">How to buy</a>
-          <span class="topnav__socials">
-            <a href="{{X_URL}}" target="_blank" rel="noopener">X</a>
-            <a href="{{TELEGRAM_URL}}" target="_blank" rel="noopener">Telegram</a>
-          </span>
-        </nav>
-        <div class="topbar__actions">
-          <button class="btn btn--sm topbar__ca" type="button" data-copy="{{CONTRACT_ADDRESS}}" aria-label="Copy the contract address">
-            <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8.5" y="8.5" width="11.5" height="11.5" rx="2.5" /><path d="M15.5 8.5V6A2 2 0 0 0 13.5 4H6A2 2 0 0 0 4 6v7.5A2 2 0 0 0 6 15.5h2.5" /></svg>
-            CA
-          </button>
-          <a class="btn btn--sm btn--buy" href="{{DEX_URL}}" target="_blank" rel="noopener">Buy<span class="btn--buy__ticker"> ${{TICKER}}</span></a>
-          <button class="icon-btn topbar__menu" type="button" id="menu-btn" aria-expanded="false" aria-controls="topnav" aria-label="Menu">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
-          </button>
-        </div>
-      </header>
 
       <!-- Fight HUD: health (with a lag bar), round pips, special meter, timer. -->
       <div class="hud" id="hud" aria-hidden="true" hidden>
@@ -72,6 +77,8 @@
       </div>
 
       <div class="arena" id="arena">
+        <!-- fight-poster type behind the two of them (fades out once you play) -->
+        <div class="poster" aria-hidden="true"><span class="poster__word poster__word--left">Left</span><span class="poster__word poster__word--right">Right</span></div>
         <div class="duel" id="duel" role="img" aria-label="LEFTY and RIGHTY yelling at each other">
           <div class="fighter fighter--left" id="fighter-left"></div>
           <div class="fighter fighter--right" id="fighter-right"></div>
@@ -93,13 +100,19 @@
           </button>
           <div class="pick-title">
             <p class="eyebrow">Which side are you on?</p>
-            <h1 class="display sticker-text hero__title" id="hero-title">Pick a side.</h1>
-            <p class="hero__sub">The fight never ends.</p>
+            <h1 class="display sticker-text hero__title" id="hero-title"><span class="visually-hidden">LEFT RIGHT (${{TICKER}}): </span>The internet's oldest argument.</h1>
+            <p class="hero__sub">Now it has a coin. Pick a side.</p>
           </div>
           <button class="btn btn--right btn--xl btn--ballot" type="button" data-pick="right">
             Right
             <span class="ballot" aria-hidden="true"><svg class="ballot__mark" viewBox="0 0 24 24"><path d="M4 4l16 16" /><path d="M20 4 4 20" /></svg></span>
           </button>
+        </div>
+
+        <div class="hero-ctas">
+          <a class="btn btn--buy hero-ctas__buy" href="{{DEX_URL}}" target="_blank" rel="noopener">Buy ${{TICKER}}</a>
+          <button class="ca-pill" type="button" data-copy="{{CONTRACT_ADDRESS}}" aria-label="Copy the contract address"><span class="ca-pill__label">CA</span><code class="ca-pill__addr">{{CONTRACT_ADDRESS}}</code><svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8.5" y="8.5" width="11.5" height="11.5" rx="2.5" /><path d="M15.5 8.5V6A2 2 0 0 0 13.5 4H6A2 2 0 0 0 4 6v7.5A2 2 0 0 0 6 15.5h2.5" /></svg></button>
+          <a class="btn btn--sm hero-ctas__chart" href="{{CHART_URL}}" target="_blank" rel="noopener"><svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V5M4 19h16" /><path d="m7 15 4-5 3 3 5-7" /></svg>Chart</a>
         </div>
 
         <div class="panel__play" id="panel-play" hidden>
@@ -120,22 +133,6 @@
           </div>
         </div>
 
-        <div class="battle" id="battle">
-          <div class="battle__head">
-            <span class="battle__team">Left <b class="battle__num" id="num-left">50</b></span>
-            <span class="battle__title">Standings</span>
-            <span class="battle__team"><b class="battle__num" id="num-right">50</b> Right</span>
-          </div>
-          <div class="battle__track">
-            <div class="battle__bar" role="img" id="battle-bar" aria-label="Standings: LEFT 50, RIGHT 50">
-              <span class="battle__fill"></span><span class="battle__mine"></span>
-            </div>
-            <div class="battle__edge"><span class="battle__clash" id="battle-clash"></span></div>
-          </div>
-          <p class="battle__note"><span id="standings-source">Set by the team · not live</span><span class="battle__local">Your hits: <b id="my-hits">0</b> · this browser only</span></p>
-        </div>
-
-        <ol class="milestones" id="milestones" aria-label="Milestones"></ol>
       </div>
 
       <div class="hero__foot">
@@ -200,152 +197,193 @@
       </div>
     </dialog>
 
+    <!-- MEME MAKER: opened from the Memes section (and Remix on the wall). -->
+    <dialog class="moves meme-dialog" id="meme-dialog" aria-labelledby="meme-dialog-title">
+      <div class="moves__card">
+        <header class="moves__head">
+          <h2 class="display moves__title" id="meme-dialog-title">Meme maker</h2>
+          <button class="icon-btn moves__close" type="button" data-close aria-label="Close">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
+          </button>
+        </header>
+        <div class="meme-maker" id="meme-maker">
+          <canvas class="meme-maker__canvas" id="meme-canvas" width="1080" height="1080" role="img" aria-label="Meme preview"></canvas>
+          <div class="meme-maker__controls">
+            <div class="meme-tpls" role="group" aria-label="Template">
+              <button class="chip-btn" type="button" data-tpl="classic">Top / bottom</button>
+              <button class="chip-btn" type="button" data-tpl="versus">Versus</button>
+              <button class="chip-btn" type="button" data-tpl="nobody">Nobody:</button>
+              <button class="chip-btn" type="button" data-tpl="twopanel">Nah / yes</button>
+              <button class="chip-btn" type="button" data-tpl="stare">The stare</button>
+              <button class="chip-btn" type="button" data-tpl="steam">Full steam</button>
+            </div>
+            <div class="meme-fields" id="meme-fields"></div>
+            <div class="meme-sides" id="meme-sides" role="group" aria-label="Who's in it">
+              <button class="chip-btn chip-btn--left" type="button" data-meme-side="left">Lefty</button>
+              <button class="chip-btn chip-btn--right" type="button" data-meme-side="right">Righty</button>
+            </div>
+            <div class="meme-actions">
+              <button class="btn btn--sm" type="button" id="meme-shuffle">Shuffle caption</button>
+              <button class="btn btn--sm btn--accent" type="button" id="meme-save">Save PNG</button>
+              <button class="btn btn--sm" type="button" id="meme-copy">Copy image</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </dialog>
+
     <!-- Screen-reader play-by-play for the game (the visual banner is decorative). -->
     <p class="visually-hidden" id="live" aria-live="polite"></p>
 
     <main>
-      <!-- =============================== MEMES =============================== -->
-      <section class="section" id="memes" aria-labelledby="memes-title">
+      <!-- ================================ LORE ================================ -->
+      <section class="section section--lore" id="lore" aria-labelledby="lore-title">
         <div class="wrap">
-          <h2 class="display section__title" id="memes-title">Memes</h2>
-          <p class="section__lede">Make one, post it, tag ${{TICKER}}. Your fighter shows up in your drip. Drawn in your browser, nothing uploaded.</p>
-          <div class="meme-maker" id="meme-maker">
-            <canvas class="meme-maker__canvas" id="meme-canvas" width="1080" height="1080" role="img" aria-label="Meme preview"></canvas>
-            <div class="meme-maker__controls">
-              <div class="meme-tpls" role="group" aria-label="Template">
-                <button class="chip-btn" type="button" data-tpl="classic">Top / bottom</button>
-                <button class="chip-btn" type="button" data-tpl="versus">Versus</button>
-                <button class="chip-btn" type="button" data-tpl="nobody">Nobody:</button>
-                <button class="chip-btn" type="button" data-tpl="twopanel">Nah / yes</button>
-                <button class="chip-btn" type="button" data-tpl="stare">The stare</button>
-                <button class="chip-btn" type="button" data-tpl="steam">Full steam</button>
+          <header class="sec-head">
+            <p class="kicker">The story so far</p>
+            <h2 class="display mega" id="lore-title">The lore</h2>
+          </header>
+          <ol class="comic">
+            <li class="comic__panel comic__panel--1">
+              <div class="comic__stage">
+                <span class="art comic__l" data-art="left" data-pose="idle" data-view="bust" data-state='{"mouth":0.3,"lookX":1,"lookY":0.1,"rage":0,"armL":30,"armR":10}'></span>
+                <span class="art comic__r" data-art="right" data-pose="idle" data-view="bust" data-state='{"mouth":0.3,"lookX":1,"lookY":0.1,"rage":0,"armL":30,"armR":10}'></span>
+                <span class="bubble comic__say comic__say--l" aria-hidden="true">gm</span>
+                <span class="bubble comic__say comic__say--r" aria-hidden="true">gm</span>
               </div>
-              <div class="meme-fields" id="meme-fields"></div>
-              <div class="meme-sides" id="meme-sides" role="group" aria-label="Who's in it">
-                <button class="chip-btn chip-btn--left" type="button" data-meme-side="left">Lefty</button>
-                <button class="chip-btn chip-btn--right" type="button" data-meme-side="right">Righty</button>
+              <p class="comic__cap"><b>1.</b> In the beginning, there was a post.</p>
+            </li>
+            <li class="comic__panel comic__panel--2">
+              <div class="comic__stage">
+                <span class="art comic__l" data-art="left" data-pose="yell" data-view="bust" data-state='{"mouth":1,"spit":0.5,"rage":0.45}'></span>
+                <span class="art comic__r" data-art="right" data-pose="yell" data-view="bust" data-state='{"mouth":1,"spit":0.5,"rage":0.45}'></span>
+                <span class="bubble comic__say comic__say--l" aria-hidden="true">ACTUALLY</span>
+                <span class="bubble comic__say comic__say--r" aria-hidden="true">WELL ACTUALLY</span>
               </div>
-              <div class="meme-actions">
-                <button class="btn btn--sm" type="button" id="meme-shuffle">Shuffle caption</button>
-                <button class="btn btn--sm btn--accent" type="button" id="meme-save">Save PNG</button>
-                <button class="btn btn--sm" type="button" id="meme-copy">Copy image</button>
+              <p class="comic__cap"><b>2.</b> Then someone replied.</p>
+            </li>
+            <li class="comic__panel comic__panel--3">
+              <div class="comic__stage">
+                <span class="art comic__l" data-art="left" data-pose="steam" data-view="bust" data-state='{"rage":1,"throb":1,"steam":0.62,"mouth":0.95}'></span>
+                <span class="art comic__r" data-art="right" data-pose="steam" data-view="bust" data-state='{"rage":1,"throb":1,"steam":0.62,"mouth":0.95}'></span>
+                <span class="bubble comic__say comic__say--l" aria-hidden="true">SOURCE?</span>
+                <span class="bubble comic__say comic__say--r" aria-hidden="true">TYPICAL</span>
               </div>
-            </div>
+              <p class="comic__cap"><b>3.</b> Nobody remembers what it was about.</p>
+            </li>
+            <li class="comic__panel comic__panel--4">
+              <div class="comic__stage">
+                <span class="art comic__l" data-art="left" data-pose="camera" data-view="bust" data-state='{"rage":0}'></span>
+                <span class="art comic__r" data-art="right" data-pose="camera" data-view="bust" data-state='{"rage":0}'></span>
+              </div>
+              <p class="comic__cap"><b>4.</b> Nobody is backing down. So now there is a coin.</p>
+            </li>
+          </ol>
+          <div class="manifesto">
+            <p class="manifesto__lead">Lefty and Righty have been arguing since the first comment section.</p>
+            <p>Pineapple on pizza. Tabs or spaces. GIF or JIF. Every thread, every group chat, every family dinner. They have never agreed on anything.</p>
+            <p>Except one thing:</p>
+            <p class="manifesto__stamp">There is no fence.</p>
+            <p>${{TICKER}} is for everyone who has ever typed &ldquo;actually&rdquo;. Pick a side. Join the argument. The fight never ends.</p>
           </div>
-          <h3 class="subhead">Meme wall</h3>
-          <div class="meme-wall" id="meme-wall"></div>
         </div>
       </section>
 
-      <!-- ============================== AIRDROP ============================== -->
-      <section class="section section--ink" id="airdrop" aria-labelledby="airdrop-title">
+      <!-- ============================ PICK YOUR SIDE ============================ -->
+      <section class="section section--sides split" id="sides" data-split aria-labelledby="sides-title">
         <div class="wrap">
-          <h2 class="display sticker-text section__title" id="airdrop-title">Airdrops</h2>
-          <p class="section__lede">Two kinds. One falls out of the sky in the game. The other is the real token airdrop, and it only ever gets announced right here.</p>
-          <div class="airdrop">
-            <div class="airdrop__drops">
-              <div class="airdrop__head">
-                <h3 class="subhead">Crate drops <span class="count-chip" id="drop-count">0/6</span></h3>
-                <p class="airdrop__next" id="drop-next">First crate: win a round.</p>
+          <header class="sec-head">
+            <p class="kicker">No fence-sitting</p>
+            <h2 class="display mega sticker-text" id="sides-title">Pick your side</h2>
+          </header>
+          <div class="teams">
+            <article class="team team--left" aria-labelledby="team-left-name">
+              <span class="art team__art art--bob" data-art="left" data-pose="victory" data-view="full" data-state='{"rage":0.2}'></span>
+              <h3 class="display team__name" id="team-left-name">Team Left</h3>
+              <p class="team__who"><b>Lefty.</b> Blonde bob. Has never once lowered her voice.</p>
+              <ul class="team__traits">
+                <li>Loudest in the chat</li>
+                <li>Never logs off</li>
+                <li>Hates fences</li>
+              </ul>
+              <div class="team__actions">
+                <button class="btn btn--left" type="button" data-pick="left" data-jump>Join Team Left</button>
+                <button class="link-btn" type="button" data-pfp="left">Get the PFP</button>
               </div>
-              <ul class="drops" id="drop-stash"></ul>
-              <p class="airdrop__small">Cosmetic only. Worth nothing. Kept in this browser. Your fighter wears it in the fight, in your PFP and in your memes.</p>
-            </div>
-
-            <!-- The token airdrop. Set data-status to soon | live | ended, and
-                 fill in the three placeholders. Only one claim link, ever. -->
-            <article class="airdrop-card" id="airdrop-card" data-status="soon" aria-labelledby="airdrop-card-title">
-              <header class="airdrop-card__head">
-                <h3 class="subhead" id="airdrop-card-title">Token airdrop</h3>
-                <span class="status-pill" data-airdrop-status>Not live yet</span>
-              </header>
-              <dl class="airdrop-card__facts">
-                <div><dt>Who</dt><dd>{{AIRDROP_ELIGIBILITY}}</dd></div>
-                <div><dt>When</dt><dd>{{AIRDROP_DATE}}</dd></div>
-              </dl>
-              <a class="btn btn--accent airdrop-card__claim" data-airdrop-claim href="{{AIRDROP_URL}}" target="_blank" rel="noopener">Open the official claim page</a>
-              <div class="scam-box" role="note">
-                <b>Stay safe</b>
-                <ul>
-                  <li>The only claim link is the one on this page.</li>
-                  <li>We will never DM you first.</li>
-                  <li>Nobody needs your seed phrase. Ever.</li>
-                  <li>Never send tokens to "receive" tokens.</li>
-                </ul>
+            </article>
+            <span class="teams__vs" aria-hidden="true">VS</span>
+            <article class="team team--right" aria-labelledby="team-right-name">
+              <span class="art team__art art--bob art--late" data-art="right" data-pose="victory" data-view="full" data-state='{"rage":0.2}'></span>
+              <h3 class="display team__name" id="team-right-name">Team Right</h3>
+              <p class="team__who"><b>Righty.</b> Glasses. Has a source for everything (it's him).</p>
+              <ul class="team__traits">
+                <li>Replies in 0.2 seconds</li>
+                <li>Never logs off</li>
+                <li>Hates fences</li>
+              </ul>
+              <div class="team__actions">
+                <button class="btn btn--right" type="button" data-pick="right" data-jump>Join Team Right</button>
+                <button class="link-btn" type="button" data-pfp="right">Get the PFP</button>
               </div>
             </article>
           </div>
-        </div>
-      </section>
-
-      <!-- ============================ TOKENOMICS ============================ -->
-      <section class="section" id="tokenomics" aria-labelledby="tok-title">
-        <div class="wrap">
-          <h2 class="display section__title" id="tok-title">Tokenomics</h2>
-          <dl class="tok-tiles">
-            <div class="tok-tile"><dt>Ticker</dt><dd>${{TICKER}}</dd></div>
-            <div class="tok-tile"><dt>Supply</dt><dd id="tok-supply">{{TOTAL_SUPPLY}}</dd></div>
-            <div class="tok-tile"><dt>Chain</dt><dd id="tok-chain">{{CHAIN}}</dd></div>
-            <div class="tok-tile"><dt>Tax</dt><dd id="tok-tax">{{TAX}}</dd></div>
-          </dl>
-          <div class="tok-charts">
-            <figure class="alloc">
-              <figcaption class="alloc__title">Where the supply goes</figcaption>
-              <div id="tok-alloc"></div>
-            </figure>
-            <figure class="alloc alloc--joke">
-              <figcaption class="alloc__title">Argue-nomics <span class="joke-chip">a joke</span></figcaption>
-              <div id="tok-joke"></div>
-            </figure>
-          </div>
-          <div class="contract">
-            <span class="contract__label">CA</span>
-            <code>{{CONTRACT_ADDRESS}}</code>
-            <button class="btn btn--sm" type="button" data-copy="{{CONTRACT_ADDRESS}}">Copy contract</button>
+          <div class="scoreboard">
+            <h3 class="display scoreboard__title">Scoreboard</h3>
+            <div class="battle" id="battle">
+              <div class="battle__head">
+                <span class="battle__team">Left <b class="battle__num" id="num-left">50</b></span>
+                <span class="battle__title">Standings</span>
+                <span class="battle__team"><b class="battle__num" id="num-right">50</b> Right</span>
+              </div>
+              <div class="battle__track">
+                <div class="battle__bar" role="img" id="battle-bar" aria-label="Standings: LEFT 50, RIGHT 50">
+                  <span class="battle__fill"></span><span class="battle__mine"></span>
+                </div>
+                <div class="battle__edge"><span class="battle__clash" id="battle-clash"></span></div>
+              </div>
+              <p class="battle__note"><span id="standings-source">Set by the team · not live</span><span class="battle__local">Your hits: <b id="my-hits">0</b> · this browser only</span></p>
+            </div>
           </div>
         </div>
       </section>
 
-      <!-- ============================== ROADMAP ============================== -->
-      <section class="section section--space" id="roadmap" aria-labelledby="roadmap-title">
+      <!-- ============================== HOW TO BUY ============================== -->
+      <section class="section section--buy" id="how-to-buy" aria-labelledby="buy-title">
         <div class="wrap">
-          <h2 class="display sticker-text section__title" id="roadmap-title">Roadmap</h2>
-          <p class="section__lede">Phases, not promises. No price targets, ever. The fight never ends, so neither does this.</p>
-          <div class="roadmap" id="roadmap-stage">
-            <svg class="roadmap__orbits" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-              <ellipse cx="50" cy="50" rx="27" ry="17" />
-              <ellipse cx="50" cy="50" rx="41" ry="31" />
-            </svg>
-            <div class="roadmap__coin" aria-hidden="true"><span class="roadmap__coin-face"><span class="c-left">L</span><span class="c-right">R</span></span></div>
-            <svg class="roadmap__ship" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 3c6 5 8 12 7 21H13c-1-9 1-16 7-21z" fill="var(--paper)" stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round" /><circle cx="20" cy="15" r="3.5" fill="var(--blue)" stroke="var(--ink)" stroke-width="2" /><path d="M14 24h12l-6 11z" fill="var(--star)" stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round" /></svg>
-            <ol class="roadmap__list"></ol>
-          </div>
-        </div>
-      </section>
-
-      <!-- ============================ HOW TO BUY ============================ -->
-      <section class="section" id="how-to-buy" aria-labelledby="buy-title">
-        <div class="wrap">
-          <h2 class="display section__title" id="buy-title">How to buy</h2>
+          <header class="sec-head sec-head--flank">
+            <span class="art sec-head__l" data-art="left" data-pose="yell" data-view="head" data-state='{"rage":0.3}'></span>
+            <div>
+              <p class="kicker">Easier than winning an argument</p>
+              <h2 class="display mega" id="buy-title">How to buy</h2>
+            </div>
+            <span class="art sec-head__r" data-art="right" data-pose="yell" data-view="head" data-state='{"rage":0.3}'></span>
+          </header>
           <ol class="steps">
             <li class="step">
+              <svg class="step__icon" viewBox="0 0 48 48" aria-hidden="true"><rect x="5" y="12" width="38" height="28" rx="6" /><path d="M5 20h38" /><rect x="29" y="25" width="14" height="9" rx="3" class="step__fill" /></svg>
               <h3>Get a wallet</h3>
-              <p>Install a self-custody crypto wallet and write the recovery phrase down somewhere safe. Never share it.</p>
+              <p>Install a self-custody wallet for {{CHAIN}}. Write the recovery phrase down. Never share it with anyone.</p>
             </li>
             <li class="step">
-              <h3>Fund it</h3>
-              <p>Add a little of the network's coin to pay for the swap. Only use money you can afford to lose.</p>
+              <svg class="step__icon" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="17" class="step__fill" /><path d="M24 13v22M30 17.5c-1.5-2-3.6-2.8-6-2.8-3.3 0-6 1.8-6 4.6 0 6.2 12 3.2 12 9.4 0 2.9-2.7 4.6-6 4.6-2.6 0-4.8-1-6.3-3" /></svg>
+              <h3>Get some gas</h3>
+              <p>Buy a little of the network's coin to pay for the swap. Only use money you can afford to lose.</p>
             </li>
             <li class="step">
+              <svg class="step__icon" viewBox="0 0 48 48" aria-hidden="true"><path d="M8 17h28l-7-7M40 31H12l7 7" /></svg>
               <h3>Swap</h3>
               <p>Open the exchange, paste the contract address below and swap for ${{TICKER}}.</p>
-              <a class="btn btn--sm" href="{{DEX_URL}}" target="_blank" rel="noopener">Open the exchange</a>
             </li>
             <li class="step">
+              <svg class="step__icon" viewBox="0 0 48 48" aria-hidden="true"><rect x="9" y="9" width="30" height="30" rx="5" class="step__fill" /><path d="M16 16l16 16M32 16 16 32" /></svg>
               <h3>Pick a side</h3>
               <p>LEFT or RIGHT. It changes nothing. That's the joke.</p>
             </li>
           </ol>
+          <div class="buy-row">
+            <a class="btn btn--xl btn--buy" href="{{DEX_URL}}" target="_blank" rel="noopener">Buy ${{TICKER}}</a>
+            <a class="btn btn--xl" href="{{CHART_URL}}" target="_blank" rel="noopener"><svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V5M4 19h16" /><path d="m7 15 4-5 3 3 5-7" /></svg>Chart</a>
+          </div>
           <div class="contract">
             <span class="contract__label">CA</span>
             <code id="contract-text">{{CONTRACT_ADDRESS}}</code>
@@ -354,65 +392,162 @@
         </div>
       </section>
 
-      <!-- ============================ THE CROWD ============================ -->
-      <section class="section section--accent" id="crowd" aria-labelledby="crowd-title">
-        <div class="wrap crowd">
-          <div>
-            <h2 class="display sticker-text section__title" id="crowd-title">The crowd</h2>
-            <p class="section__lede">Two sides. One group chat. Nobody wins, everybody yells. Bring your side, post your PFP, keep it about nothing.</p>
-            <div class="crowd__links">
-              <a class="btn btn--sm" href="{{X_URL}}" target="_blank" rel="noopener">Follow on X</a>
-              <a class="btn btn--sm" href="{{TELEGRAM_URL}}" target="_blank" rel="noopener">Join the Telegram</a>
-            </div>
+      <div class="tape" aria-hidden="true">
+        <div class="marquee__track">
+          <div class="marquee__group" data-marquee="tape"></div>
+          <div class="marquee__group" data-marquee="tape"></div>
+        </div>
+      </div>
+
+      <!-- ============================== TOKENOMICS ============================== -->
+      <section class="section section--ink section--tok" id="tokenomics" aria-labelledby="tok-title">
+        <div class="wrap">
+          <header class="sec-head">
+            <p class="kicker">Numbers (boring)</p>
+            <h2 class="display mega sticker-text" id="tok-title">Tokenomics</h2>
+          </header>
+          <div class="supply">
+            <span class="supply__label">Total supply</span>
+            <span class="supply__num" id="tok-supply">{{TOTAL_SUPPLY}}</span>
           </div>
-          <div class="crowd__art" aria-hidden="true">
-            <div data-cameo="left"></div>
-            <div data-cameo="right"></div>
+          <ul class="stamps">
+            <li class="stamp"><span class="stamp__k">Tax</span><b class="stamp__v" id="tok-tax">{{TAX}}</b><span class="stamp__joke">Yelling is free.</span></li>
+            <li class="stamp"><span class="stamp__k">Liquidity</span><b class="stamp__v" id="tok-lp">{{LP_STATUS}}</b><span class="stamp__joke">Locked in, like their opinions.</span></li>
+            <li class="stamp"><span class="stamp__k">Contract</span><b class="stamp__v" id="tok-contract">{{CONTRACT_STATUS}}</b><span class="stamp__joke">Nobody's in charge. Like every group chat.</span></li>
+            <li class="stamp"><span class="stamp__k">Chain</span><b class="stamp__v" id="tok-chain">{{CHAIN}}</b><span class="stamp__joke">Where the argument lives.</span></li>
+          </ul>
+          <div class="tok-split">
+            <figure class="pizza">
+              <svg class="pizza__art" viewBox="-20 -20 360 360" role="img" aria-labelledby="pizza-cap">
+                <circle class="pizza__crust" cx="160" cy="160" r="150" />
+                <circle class="pizza__cheese" cx="160" cy="160" r="126" />
+                <g class="pizza__left"><circle cx="100" cy="100" r="17" /><circle cx="72" cy="168" r="16" /><circle cx="118" cy="214" r="17" /><circle cx="128" cy="150" r="14" /><circle cx="96" cy="262" r="12" /></g>
+                <g class="pizza__right"><circle cx="214" cy="96" r="11" /><circle cx="236" cy="128" r="10" /><circle cx="198" cy="150" r="11" /><circle cx="246" cy="182" r="11" /><circle cx="206" cy="214" r="10" /><circle cx="234" cy="246" r="11" /><circle cx="196" cy="268" r="9" /><circle cx="262" cy="222" r="9" /></g>
+                <path class="pizza__seam" d="M166 6 152 46 168 86 150 128 170 170 150 212 168 254 152 296 162 314" />
+              </svg>
+              <span class="pizza__tag pizza__tag--left">50% Left</span>
+              <span class="pizza__tag pizza__tag--right">50% Right</span>
+              <span class="pizza__tag pizza__tag--zero">0% listening</span>
+              <figcaption id="pizza-cap"><b>Argue-nomics.</b> 50% Left, 50% Right, 0% listening. A joke. The real numbers are above.</figcaption>
+            </figure>
+            <div class="alloc" id="tok-alloc"></div>
           </div>
         </div>
       </section>
 
-      <!-- ================================ FAQ ================================ -->
-      <section class="section" id="faq" aria-labelledby="faq-title">
+      <!-- =============================== ROADMAP =============================== -->
+      <section class="section section--roadmap" id="roadmap" aria-labelledby="roadmap-title">
         <div class="wrap">
-          <h2 class="display section__title" id="faq-title">FAQ</h2>
+          <header class="sec-head">
+            <p class="kicker">The plan (loosely)</p>
+            <h2 class="display mega sticker-text" id="roadmap-title">Roadmap</h2>
+          </header>
+          <ol class="phases" id="phases"></ol>
+          <p class="phases__note">Phases, not promises. No price talk, ever.</p>
+        </div>
+        <span class="art roadmap__peek roadmap__peek--l" data-art="left" data-pose="flail" data-view="full" data-state='{"rage":0.3}'></span>
+        <span class="art roadmap__peek roadmap__peek--r" data-art="right" data-pose="flail" data-view="full" data-state='{"rage":0.3}'></span>
+      </section>
+
+      <!-- ================================ MEMES ================================ -->
+      <section class="section section--memes" id="memes" aria-labelledby="memes-title">
+        <div class="wrap">
+          <header class="sec-head">
+            <p class="kicker">The good stuff</p>
+            <h2 class="display mega sticker-text" id="memes-title">Memes</h2>
+            <p class="sec-lede">Post them. Tag ${{TICKER}}. Keep it about nothing.</p>
+          </header>
+          <div class="meme-ctas">
+            <button class="btn btn--xl btn--buy" type="button" id="meme-open" aria-haspopup="dialog">Make a meme</button>
+            <button class="btn btn--xl" type="button" data-pfp-mine>Get your PFP</button>
+          </div>
+          <div class="meme-wall" id="meme-wall"></div>
+          <h3 class="subhead subhead--center">Sticker pack <span class="subhead__note">tap one to save it</span></h3>
+          <ul class="stickers" id="stickers"></ul>
+        </div>
+      </section>
+
+      <!-- =============================== AIRDROPS =============================== -->
+      <section class="section section--ink section--drops" id="airdrop" aria-labelledby="airdrop-title">
+        <div class="wrap">
+          <header class="sec-head">
+            <p class="kicker">Free drip</p>
+            <h2 class="display mega sticker-text" id="airdrop-title">Airdrops</h2>
+            <p class="sec-lede">Win fights. Crates fall from the sky. Whatever's inside, your fighter wears.</p>
+          </header>
+          <div class="drops-head">
+            <span class="count-chip" id="drop-count">0/6</span>
+            <span class="drops-head__next" id="drop-next">First crate: win a round.</span>
+            <a class="btn btn--sm" href="#top">Go fight</a>
+          </div>
+          <ul class="drops" id="drop-stash"></ul>
+          <p class="airdrop__small">Cosmetic only. Worth nothing. Kept in this browser. Your fighter wears it in the fight, in your PFP and in your memes.</p>
+
+          <!-- The token airdrop. Set data-status to soon | live | ended, and fill
+               in the three placeholders. Only one claim link, ever. -->
+          <article class="token-drop" id="airdrop-card" data-status="soon" aria-labelledby="token-drop-title">
+            <div class="token-drop__text">
+              <p class="token-drop__top"><span class="status-pill" data-airdrop-status>Not live yet</span> <span class="token-drop__facts">Who: {{AIRDROP_ELIGIBILITY}} · When: {{AIRDROP_DATE}}</span></p>
+              <h3 class="display token-drop__title" id="token-drop-title">Token airdrop</h3>
+              <p>Only ever announced here and on our X. We never DM first. Nobody needs your seed phrase. Never send tokens to &ldquo;receive&rdquo; tokens.</p>
+            </div>
+            <a class="btn btn--accent token-drop__claim" data-airdrop-claim href="{{AIRDROP_URL}}" target="_blank" rel="noopener">Open the official claim page</a>
+          </article>
+        </div>
+      </section>
+
+      <!-- ================================= FAQ ================================= -->
+      <section class="section section--faq" id="faq" aria-labelledby="faq-title">
+        <div class="wrap">
+          <header class="sec-head">
+            <p class="kicker">You asked</p>
+            <h2 class="display mega" id="faq-title">FAQ</h2>
+          </header>
           <div class="faq">
             <details>
               <summary>What is ${{TICKER}}?</summary>
-              <p>A meme coin about two cartoon kids who will never stop arguing. That's the whole thing.</p>
-            </details>
-            <details>
-              <summary>Who is winning?</summary>
-              <p>Nobody. The fight never ends. The standings bar is set by the team by hand, and your hits, wins and levels are only counted in your own browser.</p>
+              <p>The internet's oldest argument, now with a coin. Two cartoon kids who will never stop yelling. That's the whole thing.</p>
             </details>
             <details>
               <summary>Is this about politics?</summary>
-              <p>Only the vibe. It's a debate about nothing: no parties, no politicians, no issues. LEFT and RIGHT are just the two sides of your screen.</p>
+              <p>Only the vibe. It's an argument about nothing: no parties, no politicians, no issues. LEFT and RIGHT are just the two sides of your screen.</p>
             </details>
             <details>
               <summary>How do I play?</summary>
-              <p>Pick a side, then fight the other one. Punch, kick, block, and save your meter for a Filibuster. Watch for the <b>!</b> and block it. Hit Moves for the full list of combos. Every match you win, the other side gets tougher.</p>
+              <p>Pick a side at the top, then fight the other one. Punch, kick, block, and save your meter for a Filibuster. Watch for the <b>!</b> and block it. Every match you win, the other side gets tougher, and a crate of drip falls from the sky.</p>
             </details>
             <details>
               <summary>Is there an airdrop?</summary>
-              <p>Two kinds. The game drops crates of cosmetic drip when you win (worth nothing, just looks). A token airdrop, if there is one, is only ever announced in the Airdrop section of this site and our official channels. We'll never DM you first, and nobody needs your seed phrase.</p>
+              <p>Two kinds. The game drops crates of cosmetic drip when you win (worth nothing, just looks). A token airdrop, if there is one, is only ever announced in the Airdrops section and on our official X. We never DM first, and nobody needs your seed phrase.</p>
             </details>
             <details>
-              <summary>What chain is it on?</summary>
-              <p>{{CHAIN}}. The contract address is in Tokenomics and How to buy. Always copy it from this site.</p>
+              <summary>Who is winning?</summary>
+              <p>Nobody. The fight never ends. The scoreboard is set by the team by hand, and your hits, wins and levels only count in your own browser.</p>
             </details>
             <details>
               <summary>Can I use the memes?</summary>
-              <p>Yes, please. Make them in the Memes section, save them, post them. Keep it about nothing.</p>
+              <p>Yes, please. Make them, save the stickers, post everything. Keep it about nothing.</p>
             </details>
             <details>
               <summary>Will I make money?</summary>
               <p>Don't count on it. ${{TICKER}} has no utility and no expectation of profit. You can lose everything you put in.</p>
             </details>
-            <details>
-              <summary>How do I make a PFP?</summary>
-              <p>Pick a side, then hit the portrait button under the fight. It's drawn in your browser. Nothing gets uploaded.</p>
-            </details>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================ JOIN THE ARGUMENT ============================ -->
+      <section class="join split" id="join" data-split aria-labelledby="join-title">
+        <div class="join__peek" aria-hidden="true">
+          <span class="art join__head join__head--l" data-art="left" data-pose="flail" data-view="bust" data-state='{"mouth":1,"rage":0.4}'></span>
+          <span class="art join__head join__head--r" data-art="right" data-pose="flail" data-view="bust" data-state='{"mouth":1,"rage":0.4}'></span>
+        </div>
+        <div class="wrap join__inner">
+          <h2 class="display mega sticker-text" id="join-title">Join the argument</h2>
+          <p class="sec-lede">The group chat is open. Bring your side.</p>
+          <div class="join__btns">
+            <a class="btn btn--xl" href="{{X_URL}}" target="_blank" rel="noopener"><span class="btn__icon btn__icon--x"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" aria-hidden="true"><path d="m5.5 5 13 14m0-14-13 14" /></svg></span>Follow on X</a>
+            <a class="btn btn--xl" href="{{TELEGRAM_URL}}" target="_blank" rel="noopener"><span class="btn__icon btn__icon--tg"><svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><path d="M21.5 3.8 2.8 11.2l5.7 2 1.4 5.8 3.3-3.4 4.6 3.5z" /><path d="m8.5 13.2 9.4-6.6-7.2 7.9" fill="none" stroke="var(--paper)" stroke-width="1.6" /></svg></span>Join the Telegram</a>
           </div>
         </div>
       </section>
@@ -420,14 +555,14 @@
 
     <footer class="footer">
       <div class="wrap">
+        <p class="footer__word" aria-hidden="true"><span class="c-left">Left</span><span class="c-right">Right</span></p>
         <div class="footer__row">
-          <span class="logo" style="--logo-size: 1.3rem"><span class="chip chip--left">Left</span><span class="chip chip--right">Right</span></span>
+          <span class="ticker">${{TICKER}}</span>
           <nav class="footer__links" aria-label="Footer">
             <a href="{{X_URL}}" target="_blank" rel="noopener">X</a>
             <a href="{{TELEGRAM_URL}}" target="_blank" rel="noopener">Telegram</a>
-            <a href="{{DEX_URL}}" target="_blank" rel="noopener">Exchange</a>
-            <a href="#memes">Memes</a>
-            <a href="#airdrop">Airdrop</a>
+            <a href="{{CHART_URL}}" target="_blank" rel="noopener">Chart</a>
+            <a href="{{DEX_URL}}" target="_blank" rel="noopener">Buy</a>
             <a href="#top">Back to the fight</a>
           </nav>
         </div>
@@ -447,6 +582,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js" integrity="sha512-NcZdtrT77bJr4STcmsGAESr06BYGE8woZdSdEgqnpyqac7sugNO+Tr4bGwGF3MsnEkGKhU2KL2xh6Ec+BqsaHA==" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
     <script src="js/rig.js" defer></script>
     <script src="js/fx.js" defer></script>
+    <script src="js/art.js" defer></script>
     <script src="js/sound.js" defer></script>
     <script src="js/idle.js" defer></script>
     <script src="js/milestones.js" defer></script>

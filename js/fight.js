@@ -22,11 +22,11 @@
      TEAM_STATE: the standings bar. Edit these two numbers by hand (0–100).
      They are what the bar shows; your visitors' clicks never change them.
      ─────────────────────────────────────────────────────────────────────── */
-  const TEAM_STATE = { left: 52, right: 48 };
+  const TEAM_STATE = { left: 50, right: 50 };
 
   /* ───────────────────────────────────────────────────────────────────────
      LIVE HOOK (optional). Set this to an endpoint that returns JSON like
-         { "left": 52, "right": 48 }
+         { "left": 50, "right": 50 }
      and the bar fetches it on load and every TEAM_STATE_POLL_MS. Leave it
      null to show TEAM_STATE exactly as written above. Local hits are never
      sent anywhere.
@@ -1970,7 +1970,13 @@
   const typing = (t) => t && /^(input|textarea|select)$/i.test(t.tagName);
 
   function bind() {
-    document.querySelectorAll('[data-pick]').forEach((b) => b.addEventListener('click', () => pick(b.dataset.pick, b)));
+    document.querySelectorAll('[data-pick]').forEach((b) =>
+      b.addEventListener('click', () => {
+        pick(b.dataset.pick, b);
+        // "Join Team …" further down the page: take them to the fight
+        if (b.hasAttribute('data-jump')) el.hero.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
+      }),
+    );
     el.switchBtn.addEventListener('click', () => pick(other(st.side), el.switchBtn));
 
     // the pad: pointerdown for instant mashing; keyboard clicks (detail 0) too
