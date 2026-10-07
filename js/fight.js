@@ -1904,6 +1904,7 @@
     el.hudSide[other(team)].tag.textContent = 'CPU';
     el.hudSide[team].box.classList.add('is-you');
     if (LR.drops) LR.drops.onSide(team);
+    if (LR.side) LR.side.set(team); // the rest of the page follows your pick
     el.hudSide[other(team)].box.classList.remove('is-you');
     fighterEl(team).classList.add('is-front');
     fighterEl(other(team)).classList.remove('is-front');

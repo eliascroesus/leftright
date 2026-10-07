@@ -1,59 +1,61 @@
 # LEFT RIGHT (${{TICKER}})
 
-**The internet's oldest argument. Now it has a coin.**
+**Pick a side.**
 
-A cartoon meme-coin site, built the way the big narrative meme coins are:
-one story, two characters, a poster for a hero, and everything else in
-service of the joke. Two kids, **LEFTY** (red, left: a blonde bob) and
-**RIGHTY** (blue, right: black hair and glasses), have been arguing since
-the first comment section. Nobody remembers what about. *Which side are
-you on?* Visitors tick a ballot and fight the other side in a small
-fighting game right in the hero. The only enemy is the fence: **there is
-no fence.**
+A cartoon meme-coin site. Two kids, **LEFTY** (red, left: a blonde bob)
+and **RIGHTY** (blue, right: black hair and glasses), yell at each other
+forever about nothing. The first thing you do is pick a side: tick a
+ballot (or tap either half of the fight) and you're straight into a small
+fighting game against the other one. From then on the whole page is on
+your side.
 
-## How the page is built
+## Your side changes the page
 
-The meme-coin playbook (one-line hook, a rival, a name for the community,
-the mascot everywhere, a poster hero, the lore, how to buy, joke
-tokenomics, a joke roadmap, things to share, a way in), done with these
-two:
+Before you pick, everything is neutral and even. After you pick, the same
+rules apply to both sides, mirrored:
 
-1. **Poster hero: the fight.** Giant LEFT and RIGHT poster type behind the
-   two of them (it steps back once you play), the hook, the two ballots,
-   then Buy, the contract address (tap to copy) and Chart. The header is
-   fixed: logo, ticker, section links, CA, Buy. It's see-through over the
-   fight and turns ink once you scroll.
-2. **The lore.** A four-panel comic (*gm / gm*, *ACTUALLY / WELL
-   ACTUALLY*, *SOURCE? / TYPICAL*, then the coin) and a short manifesto:
-   pineapple on pizza, tabs or spaces, GIF or JIF. They have never agreed
-   on anything, except that there is no fence.
-3. **Pick your side.** Team Left and Team Right cards (same layout, same
-   number of traits, Join and Get the PFP on both), the VS, and the
-   scoreboard. The red/blue seam runs between the cards. "Join Team …"
-   picks that side and takes you back up to the fight.
-4. **How to buy.** Four sticker steps (wallet, gas, swap, pick a side),
-   Buy and Chart, the contract box. Then a tilted tape of group-chat
-   slang.
-5. **Tokenomics.** The total supply as one giant number, four stamps (tax,
-   liquidity, contract, chain), each with a joke, the "argue-nomics"
-   pizza (50% Left, 50% Right, 0% listening, labelled as a joke) and the
-   real allocation card, which says "to be announced" until you fill it
-   in.
-6. **Roadmap.** Three phases (*Pick a side*, *Raise your voice*, *Never
-   log off*), ticked off as they happen. Phases, not promises: no dates
-   until they're real, no price talk ever.
-7. **Memes.** Make a meme (the maker opens in a dialog), Get your PFP, a
-   wall of eight ready-made memes (Save or Remix any of them) and an
-   eight-piece sticker pack, four a side, saved as die-cut PNGs.
-8. **Airdrops.** The crate-drop stash from the game and the token airdrop
-   card.
-9. **FAQ**, then **Join the argument** (the two of them peeking over a
-   ledge, X and Telegram) and the footer with the disclaimer.
+- **Colours.** Buttons, cursor, the scroll bar, the tapes, and the
+  Roadmap and Memes sections all turn your colour. The other side's chip
+  in the logo steps back, and in the footer their word shrinks.
+- **Words.** Teams becomes "Team Left" (or Right) with a YOU sticker on
+  your card and a "Switch to …" button on theirs; How to buy ticks off
+  "Pick a side"; Memes says "Make Righty look silly"; Join becomes "Join
+  Team Left"; the tapes chant your team; the tab title says your team.
+- **The two of them.** Around the page your fighter cheers while theirs
+  steams (`data-you` / `data-rival` on each picture), and your fighter
+  rides along in the bottom corner of your side as you scroll, with a
+  pose and a line for each section.
+- The pick is remembered (`localStorage`), so a returning visitor lands
+  on their side straight away.
 
-Everything below the fight is drawn from the same character rig as the
-fight. `js/art.js` renders each pose once into a still image as it comes
-near the screen, so the page adds no live animation that could cost the
-fight a frame.
+## As you scroll
+
+GSAP ScrollTrigger, transform and opacity only:
+
+- The headlines pop in letter by letter, cascading from your side.
+- The team cards slide in from their own sides and the VS slams down;
+  How to buy's steps land one by one while the two heads swing in from
+  the edges; the tokenomics stamps slam down like rubber stamps and the
+  pizza spins in; the roadmap phases fly in; the stickers spring out;
+  the airdrop cards flip over like trading cards.
+- On desktop the Memes headline pins and the meme wall slides sideways
+  while you keep scrolling down. Phones get a grid.
+- The red/blue seam in Teams and Join shoves over toward the other side
+  as you scroll through (your colour wins the space).
+- The tapes lean into your scroll speed and spring back when you stop;
+  leaving the fight splits the giant LEFT and RIGHT apart; the two rise
+  over the ledge at Join; the footer's LEFT and RIGHT slide in.
+- A progress bar under the header fills from your side.
+- Anything already on screen is left alone, nothing is ever stuck hidden,
+  and with `prefers-reduced-motion` none of it runs.
+
+## The page
+
+The fight on top (the pick screen first), then Teams, How to buy (and a
+tape), Tokenomics, Roadmap (another tape), Memes (wall, meme maker, PFP,
+sticker pack), Airdrops, FAQ, Join and the footer. Everything below the
+fight is drawn from the same character rig as the fight: `js/art.js`
+renders each pose once into a still image as it comes near the screen.
 
 ## Features
 
@@ -63,8 +65,8 @@ fight a frame.
   over. Speech bubbles bicker about nothing.
 - **Pick a side.** Tick the LEFT or RIGHT ballot box (it gets its ✗),
   click either half of the screen, or join a team further down. You get
-  confetti, a colour flash, and the whole page (accents, cursor) leans
-  your colour. The pick is remembered in `localStorage`.
+  confetti, a colour flash, and the whole page leans your way (see
+  above). Hover a ballot and its word on the poster grows.
 - **The fight.** You play your side; the computer plays the other. Punch,
   kick, hold to block, and a meter-powered special. Chains of hits make
   named combos, blocking just before a hit lands parries it, and the
@@ -119,9 +121,10 @@ fight a frame.
   only, never over the characters or text. Set `--grain-opacity` in
   `css/style.css` to `0` to turn it off.
 - **Accessibility.** `prefers-reduced-motion` freezes everything into a
-  static pose, with no shake, flash, freeze frames, slow motion, sparks or
-  scrolling tape; the game still plays (the HUD, words and banners carry
-  it). Works from 320px up: on phones the halves stack and the two face
+  static pose, with no shake, flash, freeze frames, slow motion, sparks,
+  scrolling tape or scroll animations; the game still plays (the HUD,
+  words and banners carry it). Headlines split into letters for the pop
+  keep their real words for screen readers. Works from 320px up: on phones the halves stack and the two face
   off across the diagonal. The round pauses itself when a dialog is open,
   the tab is hidden, the fight is scrolled out of view, or nobody has
   pressed anything for 6 seconds.
@@ -184,9 +187,11 @@ Drag the whole folder onto Netlify's deploy drop zone (Netlify → Sites →
 "Deploy manually"). Any static host works (Vercel, Cloudflare Pages, GitHub
 Pages, S3). There's nothing to build.
 
-GSAP loads from cdnjs with a subresource-integrity hash. If cdnjs is blocked
-or the hash doesn't match, `js/main.js` loads the identical copy in
-`js/vendor/gsap.min.js`. Fonts come from Google Fonts (Bowlby One + Inter).
+GSAP and its ScrollTrigger plugin load from cdnjs with subresource-integrity
+hashes. If cdnjs is blocked or a hash doesn't match, `js/main.js` loads the
+identical copies in `js/vendor/`. Without ScrollTrigger the page still works,
+just without the scroll animations. Fonts come from Google Fonts (Bowlby One
++ Inter).
 
 ## Placeholders
 
@@ -293,8 +298,12 @@ is where they'll check.
 | Crate drops: the items, their tiers and odds | `DRIP` and `WEIGHT` in `js/drops.js` |
 | Meme formats and captions | `TEMPLATES` (and the wall's `WALL`) in `js/memes.js` |
 | The sticker pack (who, pose, line) | `STICKERS` in `js/memes.js` (keep it four a side) |
-| Lore comic, team cards, the heads around the page (pose, crop, face) | the `data-art`, `data-pose`, `data-view` and `data-state` attributes in `index.html` (see the top of `js/art.js`) |
-| Marquee and tape words | `buildMarquees()` in `js/main.js` |
+| Team cards and the heads around the page (pose, crop, face) | the `data-art`, `data-pose`, `data-view` and `data-state` attributes in `index.html` (see the top of `js/art.js`) |
+| Marquee and tape words (neutral and per side) | `buildMarquees()` in `js/main.js` |
+| Words that change with your pick | `data-picked` on the element in `index.html` (`{US}`, `{THEM}`, `{US_NAME}`, `{THEM_NAME}`) |
+| Poses that change with your pick | `data-you` / `data-rival` on an art slot in `index.html` |
+| The corner fighter's poses and lines | `BUDDY` in `js/scroll.js` |
+| Scroll animations | one function per section in `js/scroll.js` |
 | Rage cycle length | `RAGE_SECONDS` in `js/idle.js` |
 | Colours, type, spacing | tokens at the top of `css/style.css` |
 
@@ -302,7 +311,7 @@ is where they'll check.
 
 | Path | What it is |
 | --- | --- |
-| `index.html` | The site: the fixed header, the one-screen fight (poster, HUD, arena, move pad, Moves list, meme maker dialog), then LORE, PICK YOUR SIDE, HOW TO BUY, TOKENOMICS, ROADMAP, MEMES, AIRDROPS, FAQ, JOIN, footer |
+| `index.html` | The site: the fixed header, the one-screen fight (pick screen, HUD, arena, move pad, Moves list, meme maker dialog), then TEAMS, HOW TO BUY, TOKENOMICS, ROADMAP, MEMES, AIRDROPS, FAQ, JOIN, footer |
 | `design-system.html` | Both fighters in every pose, rig map, colour tokens, type, components (scoreboard, section pieces, roadmap phase), effects, real PFPs |
 | `css/style.css` | Tokens, components, layout |
 | `js/rig.js` | The one SVG character rig (#char-body, #char-head, #char-hat, #char-eyes, #char-pupils, #char-brows, #char-mouth, #char-arm-l/-r, #char-legs), its poses and renderer |
@@ -311,13 +320,15 @@ is where they'll check.
 | `js/milestones.js` | `PHASES` + `MILESTONES`: the roadmap and its tick news |
 | `js/drops.js` | Crate airdrops: the drip catalogue, the stash, the parachute drop; the token airdrop card's status |
 | `js/memes.js` | Meme maker (in its dialog), meme wall and sticker pack (canvas) |
-| `js/art.js` | Still pictures of the two fighters for the sections (rendered once, lazily) and die-cut stickers |
+| `js/art.js` | Still pictures of the two fighters for the sections (rendered once, lazily, re-posed when you pick) and die-cut stickers |
+| `js/side.js` | Your side: swaps the words, the poses and the team cards, and tells the rest of the page |
+| `js/scroll.js` | The scroll animations (ScrollTrigger), the progress bar and the fighter in the corner |
 | `js/coin.js` | `TOKENOMICS`: the stamps + the allocation card |
 | `js/pfp.js` | Canvas PFP generator (wears your drip) |
 | `js/sound.js` | Web Audio: crowd, punch, kick, block, parry, filibuster, bell, whoosh (muted by default, never autoplays) |
 | `js/fx.js` | Brawl cloud, stars, confetti, the split backgrounds |
 | `js/main.js` | Boot, fixed header, copy contract, sound toggle, site menu, marquee and tape, PFP buttons, section splits, placeholder check |
-| `js/vendor/gsap.min.js` | GSAP 3.13.0 fallback (same file cdnjs serves) |
+| `js/vendor/gsap.min.js`, `js/vendor/ScrollTrigger.min.js` | GSAP 3.13.0 and ScrollTrigger fallbacks (the same files cdnjs serves) |
 | `assets/` | Favicon and the 1200×630 social image |
 
 The two fighters are one rig: LEFTY is drawn facing right, and RIGHTY is the
@@ -335,8 +346,8 @@ only.
   doesn't copy or reference any show, character, logo or brand. The fight
   vocabulary is original too: debate slang, no borrowed catchphrases from
   any game.
-- [GSAP](https://gsap.com) 3.13.0 is free to use under GreenSock's standard
-  licence.
+- [GSAP](https://gsap.com) 3.13.0 and its ScrollTrigger plugin are free to
+  use under GreenSock's standard licence.
 - Bowlby One and Inter come via Google Fonts, under the SIL Open Font
   License.
 

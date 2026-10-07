@@ -518,8 +518,12 @@
     return b;
   };
 
+  /* The cards go on the page straight away (so the layout never jumps);
+     their pictures are drawn once the section is near the screen. */
+  const wallJobs = [];
+
   function buildWall() {
-    WALL.forEach((w, i) => {
+    WALL.forEach((w) => {
       const t = tpl(w.tpl);
       const data = t.captions[w.cap] || t.captions[0];
       const team = w.team || 'left';
@@ -550,19 +554,25 @@
       cap.append(name, btns);
       fig.append(canvas, cap);
       el.wall.appendChild(fig);
-      setTimeout(async () => {
+      wallJobs.push(async () => {
         const full = await render(document.createElement('canvas'), t.id, data, team);
         canvas.getContext('2d').drawImage(full, 0, 0, 540, 540);
-      }, i * 120); // one at a time, so scrolling stays smooth
+      });
     });
+  }
+
+  function drawWall() {
+    wallJobs.forEach((job, i) => setTimeout(job, i * 120)); // one at a time, so scrolling stays smooth
   }
 
   /* ---- the sticker pack --------------------------------------------------------------- */
 
+  const stickerJobs = [];
+
   function buildStickers() {
     const host = document.getElementById('stickers');
     if (!host || !LR.art) return;
-    STICKERS.forEach((st, i) => {
+    STICKERS.forEach((st) => {
       const who = st.team === 'left' ? 'Lefty' : 'Righty';
       const li = document.createElement('li');
       const b = document.createElement('button');
@@ -572,7 +582,7 @@
       b.addEventListener('click', () => LR.art.saveSticker(st, st.id));
       li.appendChild(b);
       host.appendChild(li);
-      setTimeout(async () => {
+      stickerJobs.push(async () => {
         try {
           const c = await LR.art.sticker(st, 300);
           c.setAttribute('aria-hidden', 'true');
@@ -580,8 +590,12 @@
         } catch (err) {
           console.error('[stickers]', err);
         }
-      }, 400 + i * 90);
+      });
     });
+  }
+
+  function drawStickers() {
+    stickerJobs.forEach((job, i) => setTimeout(job, 400 + i * 90));
   }
 
   LR.memes = {
@@ -614,13 +628,15 @@
         });
       }
       renderFields();
+      if (el.wall) buildWall();
+      buildStickers();
       // Draw nothing until the section is close: the fight keeps the page to itself.
       let started = false;
       const start = () => {
         if (started) return;
         started = true;
-        if (el.wall) buildWall();
-        buildStickers();
+        drawWall();
+        drawStickers();
       };
       const section = $('memes') || el.wall;
       if ('IntersectionObserver' in root && section) {

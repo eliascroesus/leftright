@@ -11,6 +11,9 @@
            data-state='{"mouth":1}' data-drip='{"hat":"crown"}'></span>
      data-view: full (head to toe) | bust (to mid-coat) | head
    Decorative by default; add data-alt="…" to describe one.
+   Once a side is picked (js/side.js), a slot can change: data-you='{…}'
+   and data-rival='{…}' hold the {pose, state} for when that slot's fighter
+   is yours or the other side's.
 
    Stickers: the same art with a die-cut white border and an optional speech
    bubble, drawn on a canvas, saved as a transparent PNG.
@@ -64,24 +67,50 @@
     }
   };
 
+  const teamOf = (slot) => (slot.dataset.art === 'right' ? 'right' : 'left');
+
+  /** What a slot should show right now (its role, if any, overrides). */
+  function spec(slot) {
+    const role = slot.dataset.role;
+    const o = (role === 'you' && parse(slot.dataset.you)) || (role === 'rival' && parse(slot.dataset.rival)) || {};
+    return {
+      pose: o.pose || slot.dataset.pose || 'idle',
+      view: slot.dataset.view || 'full',
+      state: o.state || parse(slot.dataset.state),
+      drip: parse(slot.dataset.drip),
+      width: Number(slot.dataset.width) || 600,
+    };
+  }
+
   /** Fill one slot with its picture. */
   function render(slot) {
     if (!slot || slot.dataset.rendered) return;
     slot.dataset.rendered = '1';
-    const team = slot.dataset.art === 'right' ? 'right' : 'left';
     const img = new Image();
     img.decoding = 'async';
     img.draggable = false;
     img.alt = slot.dataset.alt || '';
     if (!slot.dataset.alt) img.setAttribute('aria-hidden', 'true');
-    img.src = url(team, {
-      pose: slot.dataset.pose || 'idle',
-      view: slot.dataset.view || 'full',
-      state: parse(slot.dataset.state),
-      drip: parse(slot.dataset.drip),
-      width: Number(slot.dataset.width) || 600,
-    });
+    img.src = url(teamOf(slot), spec(slot));
     slot.appendChild(img);
+  }
+
+  const reducedMotion = () => !!(root.matchMedia && root.matchMedia('(prefers-reduced-motion: reduce)').matches);
+
+  /** 'you' | 'rival' | null: redraw the slot if it's already on the page. */
+  function role(slot, r) {
+    const next = r || '';
+    if ((slot.dataset.role || '') === next) return;
+    if (next) slot.dataset.role = next;
+    else delete slot.dataset.role;
+    const img = slot.querySelector('img');
+    if (!img) return; // it draws with its role when it comes near the screen
+    const src = url(teamOf(slot), spec(slot));
+    if (img.src === src) return;
+    img.src = src;
+    if (!reducedMotion() && typeof img.animate === 'function') {
+      img.animate([{ transform: 'scale(0.84) rotate(-5deg)' }, { transform: 'none' }], { duration: 450, easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)' });
+    }
   }
 
   /* ---- stickers -------------------------------------------------------- */
@@ -233,6 +262,7 @@
     svg,
     url,
     render,
+    role,
     sticker,
     saveSticker,
     /** Render every [data-art] slot as it nears the screen. */

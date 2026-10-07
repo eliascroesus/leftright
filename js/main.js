@@ -13,17 +13,29 @@
   const $ = (id) => document.getElementById(id);
   const reducedQuery = root.matchMedia ? root.matchMedia('(prefers-reduced-motion: reduce)') : { matches: false };
 
-  /* GSAP comes from cdnjs; if that's blocked (or its SRI check fails), load
-     the identical local copy instead. */
-  function ensureGsap() {
-    if (root.gsap) return Promise.resolve(root.gsap);
+  /* GSAP and ScrollTrigger come from cdnjs; if that's blocked (or an SRI
+     check fails), load the identical local copies instead. */
+  function loadScript(src, ok) {
     return new Promise((resolve, reject) => {
       const s = document.createElement('script');
-      s.src = 'js/vendor/gsap.min.js';
-      s.onload = () => (root.gsap ? resolve(root.gsap) : reject(new Error('GSAP missing')));
+      s.src = src;
+      s.onload = () => (ok() ? resolve() : reject(new Error(`${src} loaded nothing`)));
       s.onerror = reject;
       document.head.appendChild(s);
     });
+  }
+
+  async function ensureGsap() {
+    if (!root.gsap) await loadScript('js/vendor/gsap.min.js', () => root.gsap);
+    if (!root.ScrollTrigger) {
+      // no scroll animations is fine; no fight is not
+      try {
+        await loadScript('js/vendor/ScrollTrigger.min.js', () => root.ScrollTrigger);
+      } catch (err) {
+        console.warn('[LEFT RIGHT] ScrollTrigger missing; no scroll animations.', err);
+      }
+    }
+    return root.gsap;
   }
 
   /* Dev aid: list any {{PLACEHOLDERS}} still in the page. */
@@ -123,16 +135,24 @@
     const star = `<svg class="marquee__star" viewBox="0 0 60 60"><path d="${m ? m[1] : ''}" fill="var(--star)" stroke="var(--ink)" stroke-width="5" stroke-linejoin="round"/></svg>`;
     const esc = (t) => t.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
     const ticker = esc(((document.querySelector('.ticker') || {}).textContent || '').trim());
+    // your side, once you've picked one (the same lines for both sides)
+    const us = LR.side && LR.side.get();
+    const N = us && LR.side.NAMES[us];
+    const T = us && LR.side.NAMES[LR.side.other(us)];
+    const usClass = us === 'left' ? 'c-left' : 'c-right';
     // group-chat slang only: nothing about prices or gains
     const WORDS = {
       hero: [
+        ...(us ? [[`Team ${N.team}`, usClass]] : []),
         [ticker, 'c-star'], ['Left', 'c-left'], ['Right', 'c-right'], ['gm', ''], ['Pick a side', ''],
         ['ser, this is a group chat', ''], ['Airdrops: cosmetic', 'c-star'], ['Memes inside', ''], ['Not financial advice', ''],
       ],
-      tape: [
-        ['There is no fence', ''], ['Left', ''], ['Right', ''], ['Actually', ''], ['Source?', ''], [ticker, ''],
-        ['Typical', ''], ['Never log off', ''], ['gm', ''],
-      ],
+      tape: us
+        ? [[`Team ${N.team}`, ''], [`${N.team} side best side`, ''], [ticker, ''], [`${T.name} is typing…`, ''], ['Source?', ''], ['Typical', ''], ['Never log off', ''], ['gm', '']]
+        : [['There is no fence', ''], ['Left', ''], ['Right', ''], ['Actually', ''], ['Source?', ''], [ticker, ''], ['Typical', ''], ['Never log off', ''], ['gm', '']],
+      alt: us
+        ? [[`${T.name} is typing…`, ''], ['Hot take', ''], [ticker, ''], [`Team ${N.team}`, ''], ['Ratio', ''], ['Not financial advice', '']]
+        : [['Pick a side', ''], ['gm', ''], ['Hot take', ''], [ticker, ''], ['Ratio', ''], ['Touch grass', ''], ['Not financial advice', '']],
     };
     document.querySelectorAll('.marquee__track').forEach((track) => {
       const groups = track.querySelectorAll('[data-marquee]');
@@ -264,6 +284,10 @@
     warnPlaceholders();
     trackLegalHeight();
     trackHeader();
+    if (LR.side) {
+      LR.side.init(); // a remembered pick themes the page before anything draws
+      LR.side.on(buildMarquees);
+    }
     bindCopy();
     bindSound();
     buildMarquees();
@@ -299,6 +323,7 @@
     LR.milestones.init({ reduced, onUnlock: () => LR.fight.bothSwing() });
     if (LR.memes) LR.memes.init();
     if (LR.coin) LR.coin.init();
+    if (LR.scroll && root.ScrollTrigger) LR.scroll.init({ reduced });
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);

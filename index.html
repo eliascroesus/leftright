@@ -3,17 +3,17 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <title>LEFT RIGHT (${{TICKER}}) · The internet's oldest argument.</title>
+    <title>LEFT RIGHT (${{TICKER}}) · Pick a side.</title>
     <meta name="description" content="Two cartoon kids. One comment section. Zero agreements. ${{TICKER}} is the internet's oldest argument, now with a coin. Pick a side. No utility and no expectation of profit." />
     <meta name="theme-color" content="#1b1412" />
     <link rel="canonical" href="{{SITE_URL}}/" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="LEFT RIGHT (${{TICKER}}) · The internet's oldest argument." />
+    <meta property="og:title" content="LEFT RIGHT (${{TICKER}}) · Pick a side." />
     <meta property="og:description" content="Pick a side. There is no fence." />
     <meta property="og:image" content="{{SITE_URL}}/assets/og-image.png" />
     <meta property="og:url" content="{{SITE_URL}}/" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="LEFT RIGHT (${{TICKER}}) · The internet's oldest argument." />
+    <meta name="twitter:title" content="LEFT RIGHT (${{TICKER}}) · Pick a side." />
     <meta name="twitter:description" content="Pick a side. There is no fence." />
     <meta name="twitter:image" content="{{SITE_URL}}/assets/og-image.png" />
     <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
@@ -31,7 +31,7 @@
         <span class="ticker">${{TICKER}}</span>
       </div>
       <nav class="topnav" id="topnav" aria-label="Site">
-        <a href="#lore">Lore</a>
+        <a href="#sides">Teams</a>
         <a href="#how-to-buy">How to buy</a>
         <a href="#tokenomics">Tokenomics</a>
         <a href="#roadmap">Roadmap</a>
@@ -55,6 +55,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
         </button>
       </div>
+      <span class="scroll-bar" aria-hidden="true"></span>
     </header>
 
     <!-- ===================== HERO: the poster, and the fight ===================== -->
@@ -78,7 +79,7 @@
 
       <div class="arena" id="arena">
         <!-- fight-poster type behind the two of them (fades out once you play) -->
-        <div class="poster" aria-hidden="true"><span class="poster__word poster__word--left">Left</span><span class="poster__word poster__word--right">Right</span></div>
+        <div class="poster" aria-hidden="true"><span class="poster__word poster__word--left"><span class="poster__in">Left</span></span><span class="poster__word poster__word--right"><span class="poster__in">Right</span></span></div>
         <div class="duel" id="duel" role="img" aria-label="LEFTY and RIGHTY yelling at each other">
           <div class="fighter fighter--left" id="fighter-left"></div>
           <div class="fighter fighter--right" id="fighter-right"></div>
@@ -100,8 +101,7 @@
           </button>
           <div class="pick-title">
             <p class="eyebrow">Which side are you on?</p>
-            <h1 class="display sticker-text hero__title" id="hero-title"><span class="visually-hidden">LEFT RIGHT (${{TICKER}}): </span>The internet's oldest argument.</h1>
-            <p class="hero__sub">Now it has a coin. Pick a side.</p>
+            <h1 class="display sticker-text hero__title" id="hero-title"><span class="visually-hidden">LEFT RIGHT (${{TICKER}}): </span><span class="hero__words">Pick a side.</span></h1>
           </div>
           <button class="btn btn--right btn--xl btn--ballot" type="button" data-pick="right">
             Right
@@ -236,93 +236,40 @@
     <p class="visually-hidden" id="live" aria-live="polite"></p>
 
     <main>
-      <!-- ================================ LORE ================================ -->
-      <section class="section section--lore" id="lore" aria-labelledby="lore-title">
-        <div class="wrap">
-          <header class="sec-head">
-            <p class="kicker">The story so far</p>
-            <h2 class="display mega" id="lore-title">The lore</h2>
-          </header>
-          <ol class="comic">
-            <li class="comic__panel comic__panel--1">
-              <div class="comic__stage">
-                <span class="art comic__l" data-art="left" data-pose="idle" data-view="bust" data-state='{"mouth":0.3,"lookX":1,"lookY":0.1,"rage":0,"armL":30,"armR":10}'></span>
-                <span class="art comic__r" data-art="right" data-pose="idle" data-view="bust" data-state='{"mouth":0.3,"lookX":1,"lookY":0.1,"rage":0,"armL":30,"armR":10}'></span>
-                <span class="bubble comic__say comic__say--l" aria-hidden="true">gm</span>
-                <span class="bubble comic__say comic__say--r" aria-hidden="true">gm</span>
-              </div>
-              <p class="comic__cap"><b>1.</b> In the beginning, there was a post.</p>
-            </li>
-            <li class="comic__panel comic__panel--2">
-              <div class="comic__stage">
-                <span class="art comic__l" data-art="left" data-pose="yell" data-view="bust" data-state='{"mouth":1,"spit":0.5,"rage":0.45}'></span>
-                <span class="art comic__r" data-art="right" data-pose="yell" data-view="bust" data-state='{"mouth":1,"spit":0.5,"rage":0.45}'></span>
-                <span class="bubble comic__say comic__say--l" aria-hidden="true">ACTUALLY</span>
-                <span class="bubble comic__say comic__say--r" aria-hidden="true">WELL ACTUALLY</span>
-              </div>
-              <p class="comic__cap"><b>2.</b> Then someone replied.</p>
-            </li>
-            <li class="comic__panel comic__panel--3">
-              <div class="comic__stage">
-                <span class="art comic__l" data-art="left" data-pose="steam" data-view="bust" data-state='{"rage":1,"throb":1,"steam":0.62,"mouth":0.95}'></span>
-                <span class="art comic__r" data-art="right" data-pose="steam" data-view="bust" data-state='{"rage":1,"throb":1,"steam":0.62,"mouth":0.95}'></span>
-                <span class="bubble comic__say comic__say--l" aria-hidden="true">SOURCE?</span>
-                <span class="bubble comic__say comic__say--r" aria-hidden="true">TYPICAL</span>
-              </div>
-              <p class="comic__cap"><b>3.</b> Nobody remembers what it was about.</p>
-            </li>
-            <li class="comic__panel comic__panel--4">
-              <div class="comic__stage">
-                <span class="art comic__l" data-art="left" data-pose="camera" data-view="bust" data-state='{"rage":0}'></span>
-                <span class="art comic__r" data-art="right" data-pose="camera" data-view="bust" data-state='{"rage":0}'></span>
-              </div>
-              <p class="comic__cap"><b>4.</b> Nobody is backing down. So now there is a coin.</p>
-            </li>
-          </ol>
-          <div class="manifesto">
-            <p class="manifesto__lead">Lefty and Righty have been arguing since the first comment section.</p>
-            <p>Pineapple on pizza. Tabs or spaces. GIF or JIF. Every thread, every group chat, every family dinner. They have never agreed on anything.</p>
-            <p>Except one thing:</p>
-            <p class="manifesto__stamp">There is no fence.</p>
-            <p>${{TICKER}} is for everyone who has ever typed &ldquo;actually&rdquo;. Pick a side. Join the argument. The fight never ends.</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- ============================ PICK YOUR SIDE ============================ -->
+      <!-- ================================ TEAMS ================================ -->
       <section class="section section--sides split" id="sides" data-split aria-labelledby="sides-title">
         <div class="wrap">
           <header class="sec-head">
-            <p class="kicker">No fence-sitting</p>
-            <h2 class="display mega sticker-text" id="sides-title">Pick your side</h2>
+            <p class="kicker" data-picked="You picked {US}">No fence-sitting</p>
+            <h2 class="display mega sticker-text" id="sides-title" data-picked="Team {US}">Pick your side</h2>
           </header>
           <div class="teams">
-            <article class="team team--left" aria-labelledby="team-left-name">
-              <span class="art team__art art--bob" data-art="left" data-pose="victory" data-view="full" data-state='{"rage":0.2}'></span>
+            <article class="team team--left" data-team-card="left" aria-labelledby="team-left-name">
+              <span class="team__you" aria-hidden="true">You</span>
+              <span class="art team__art art--bob" data-art="left" data-pose="victory" data-view="full" data-state='{"rage":0.2}' data-rival='{"pose":"steam","state":{"rage":1,"throb":1,"steam":0.62,"mouth":0.9}}'></span>
               <h3 class="display team__name" id="team-left-name">Team Left</h3>
-              <p class="team__who"><b>Lefty.</b> Blonde bob. Has never once lowered her voice.</p>
               <ul class="team__traits">
                 <li>Loudest in the chat</li>
                 <li>Never logs off</li>
                 <li>Hates fences</li>
               </ul>
               <div class="team__actions">
-                <button class="btn btn--left" type="button" data-pick="left" data-jump>Join Team Left</button>
+                <button class="btn btn--left" type="button" data-pick="left" data-jump data-label-yours="Back to the fight" data-label-rival="Switch to Team Left">Join Team Left</button>
                 <button class="link-btn" type="button" data-pfp="left">Get the PFP</button>
               </div>
             </article>
             <span class="teams__vs" aria-hidden="true">VS</span>
-            <article class="team team--right" aria-labelledby="team-right-name">
-              <span class="art team__art art--bob art--late" data-art="right" data-pose="victory" data-view="full" data-state='{"rage":0.2}'></span>
+            <article class="team team--right" data-team-card="right" aria-labelledby="team-right-name">
+              <span class="team__you" aria-hidden="true">You</span>
+              <span class="art team__art art--bob art--late" data-art="right" data-pose="victory" data-view="full" data-state='{"rage":0.2}' data-rival='{"pose":"steam","state":{"rage":1,"throb":1,"steam":0.62,"mouth":0.9}}'></span>
               <h3 class="display team__name" id="team-right-name">Team Right</h3>
-              <p class="team__who"><b>Righty.</b> Glasses. Has a source for everything (it's him).</p>
               <ul class="team__traits">
                 <li>Replies in 0.2 seconds</li>
                 <li>Never logs off</li>
                 <li>Hates fences</li>
               </ul>
               <div class="team__actions">
-                <button class="btn btn--right" type="button" data-pick="right" data-jump>Join Team Right</button>
+                <button class="btn btn--right" type="button" data-pick="right" data-jump data-label-yours="Back to the fight" data-label-rival="Switch to Team Right">Join Team Right</button>
                 <button class="link-btn" type="button" data-pfp="right">Get the PFP</button>
               </div>
             </article>
@@ -351,12 +298,12 @@
       <section class="section section--buy" id="how-to-buy" aria-labelledby="buy-title">
         <div class="wrap">
           <header class="sec-head sec-head--flank">
-            <span class="art sec-head__l" data-art="left" data-pose="yell" data-view="head" data-state='{"rage":0.3}'></span>
+            <span class="art sec-head__l" data-art="left" data-pose="yell" data-view="head" data-state='{"rage":0.3}' data-you='{"pose":"yell","state":{"rage":0,"mouth":1}}' data-rival='{"pose":"steam","state":{"rage":1,"throb":1,"steam":0.62,"mouth":0.9}}'></span>
             <div>
               <p class="kicker">Easier than winning an argument</p>
               <h2 class="display mega" id="buy-title">How to buy</h2>
             </div>
-            <span class="art sec-head__r" data-art="right" data-pose="yell" data-view="head" data-state='{"rage":0.3}'></span>
+            <span class="art sec-head__r" data-art="right" data-pose="yell" data-view="head" data-state='{"rage":0.3}' data-you='{"pose":"yell","state":{"rage":0,"mouth":1}}' data-rival='{"pose":"steam","state":{"rage":1,"throb":1,"steam":0.62,"mouth":0.9}}'></span>
           </header>
           <ol class="steps">
             <li class="step">
@@ -376,8 +323,8 @@
             </li>
             <li class="step">
               <svg class="step__icon" viewBox="0 0 48 48" aria-hidden="true"><rect x="9" y="9" width="30" height="30" rx="5" class="step__fill" /><path d="M16 16l16 16M32 16 16 32" /></svg>
-              <h3>Pick a side</h3>
-              <p>LEFT or RIGHT. It changes nothing. That's the joke.</p>
+              <h3 data-picked="Picked: {US}">Pick a side</h3>
+              <p data-picked="Done. You're Team {US}. It changes nothing. That's the joke.">LEFT or RIGHT. It changes nothing. That's the joke.</p>
             </li>
           </ol>
           <div class="buy-row">
@@ -445,23 +392,35 @@
           <ol class="phases" id="phases"></ol>
           <p class="phases__note">Phases, not promises. No price talk, ever.</p>
         </div>
-        <span class="art roadmap__peek roadmap__peek--l" data-art="left" data-pose="flail" data-view="full" data-state='{"rage":0.3}'></span>
-        <span class="art roadmap__peek roadmap__peek--r" data-art="right" data-pose="flail" data-view="full" data-state='{"rage":0.3}'></span>
+        <span class="art roadmap__peek roadmap__peek--l" data-art="left" data-pose="flail" data-view="full" data-state='{"rage":0.3}' data-rival='{"pose":"flinch","state":{"rage":0.6}}'></span>
+        <span class="art roadmap__peek roadmap__peek--r" data-art="right" data-pose="flail" data-view="full" data-state='{"rage":0.3}' data-rival='{"pose":"flinch","state":{"rage":0.6}}'></span>
       </section>
+
+      <div class="tape tape--alt" aria-hidden="true">
+        <div class="marquee__track">
+          <div class="marquee__group" data-marquee="alt"></div>
+          <div class="marquee__group" data-marquee="alt"></div>
+        </div>
+      </div>
 
       <!-- ================================ MEMES ================================ -->
       <section class="section section--memes" id="memes" aria-labelledby="memes-title">
         <div class="wrap">
-          <header class="sec-head">
-            <p class="kicker">The good stuff</p>
-            <h2 class="display mega sticker-text" id="memes-title">Memes</h2>
-            <p class="sec-lede">Post them. Tag ${{TICKER}}. Keep it about nothing.</p>
-          </header>
+          <!-- On desktop this pins while the wall slides sideways (js/scroll.js). -->
+          <div class="meme-stage">
+            <header class="sec-head">
+              <p class="kicker">The good stuff</p>
+              <h2 class="display mega sticker-text" id="memes-title">Memes</h2>
+              <p class="sec-lede" data-picked="Make {THEM_NAME} look silly. Tag ${{TICKER}}.">Post them. Tag ${{TICKER}}. Keep it about nothing.</p>
+            </header>
+            <div class="meme-rail">
+              <div class="meme-wall" id="meme-wall"></div>
+            </div>
+          </div>
           <div class="meme-ctas">
             <button class="btn btn--xl btn--buy" type="button" id="meme-open" aria-haspopup="dialog">Make a meme</button>
             <button class="btn btn--xl" type="button" data-pfp-mine>Get your PFP</button>
           </div>
-          <div class="meme-wall" id="meme-wall"></div>
           <h3 class="subhead subhead--center">Sticker pack <span class="subhead__note">tap one to save it</span></h3>
           <ul class="stickers" id="stickers"></ul>
         </div>
@@ -473,7 +432,7 @@
           <header class="sec-head">
             <p class="kicker">Free drip</p>
             <h2 class="display mega sticker-text" id="airdrop-title">Airdrops</h2>
-            <p class="sec-lede">Win fights. Crates fall from the sky. Whatever's inside, your fighter wears.</p>
+            <p class="sec-lede" data-picked="Win fights as {US_NAME}. Crates fall from the sky, and {US_NAME} wears whatever's inside.">Win fights. Crates fall from the sky. Whatever's inside, your fighter wears.</p>
           </header>
           <div class="drops-head">
             <span class="count-chip" id="drop-count">0/6</span>
@@ -539,12 +498,12 @@
       <!-- ============================ JOIN THE ARGUMENT ============================ -->
       <section class="join split" id="join" data-split aria-labelledby="join-title">
         <div class="join__peek" aria-hidden="true">
-          <span class="art join__head join__head--l" data-art="left" data-pose="flail" data-view="bust" data-state='{"mouth":1,"rage":0.4}'></span>
-          <span class="art join__head join__head--r" data-art="right" data-pose="flail" data-view="bust" data-state='{"mouth":1,"rage":0.4}'></span>
+          <span class="art join__head join__head--l" data-art="left" data-pose="flail" data-view="bust" data-state='{"mouth":1,"rage":0.4}' data-you='{"pose":"yell","state":{"mouth":1,"rage":0}}' data-rival='{"pose":"steam","state":{"rage":1,"throb":1,"steam":0.62,"mouth":0.9}}'></span>
+          <span class="art join__head join__head--r" data-art="right" data-pose="flail" data-view="bust" data-state='{"mouth":1,"rage":0.4}' data-you='{"pose":"yell","state":{"mouth":1,"rage":0}}' data-rival='{"pose":"steam","state":{"rage":1,"throb":1,"steam":0.62,"mouth":0.9}}'></span>
         </div>
         <div class="wrap join__inner">
-          <h2 class="display mega sticker-text" id="join-title">Join the argument</h2>
-          <p class="sec-lede">The group chat is open. Bring your side.</p>
+          <h2 class="display mega sticker-text" id="join-title" data-picked="Join Team {US}">Join the argument</h2>
+          <p class="sec-lede" data-picked="{THEM_NAME} is already in the chat. Get in there.">The group chat is open. Bring your side.</p>
           <div class="join__btns">
             <a class="btn btn--xl" href="{{X_URL}}" target="_blank" rel="noopener"><span class="btn__icon btn__icon--x"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" aria-hidden="true"><path d="m5.5 5 13 14m0-14-13 14" /></svg></span>Follow on X</a>
             <a class="btn btn--xl" href="{{TELEGRAM_URL}}" target="_blank" rel="noopener"><span class="btn__icon btn__icon--tg"><svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><path d="M21.5 3.8 2.8 11.2l5.7 2 1.4 5.8 3.3-3.4 4.6 3.5z" /><path d="m8.5 13.2 9.4-6.6-7.2 7.9" fill="none" stroke="var(--paper)" stroke-width="1.6" /></svg></span>Join the Telegram</a>
@@ -555,7 +514,7 @@
 
     <footer class="footer">
       <div class="wrap">
-        <p class="footer__word" aria-hidden="true"><span class="c-left">Left</span><span class="c-right">Right</span></p>
+        <p class="footer__word" aria-hidden="true"><span class="c-left"><span class="footer__in">Left</span></span><span class="c-right"><span class="footer__in">Right</span></span></p>
         <div class="footer__row">
           <span class="ticker">${{TICKER}}</span>
           <nav class="footer__links" aria-label="Footer">
@@ -574,15 +533,23 @@
     <!-- Always on screen. -->
     <p class="legal" id="legal">${{TICKER}} is a meme coin with no utility and no expectation of profit. Nothing on this site is financial advice. You can lose everything you put in. This site is not affiliated with any political party, politician or government agency.</p>
 
+    <!-- Your fighter rides along the bottom corner once you've picked (js/scroll.js). -->
+    <div class="buddy" id="buddy" aria-hidden="true">
+      <span class="bubble buddy__say" id="buddy-say"></span>
+      <img class="buddy__img" id="buddy-img" alt="" decoding="async" />
+    </div>
+
     <div class="flash" id="flash" aria-hidden="true"></div>
     <p class="toast" id="toast" role="status" aria-live="polite"></p>
 
     <noscript><p class="legal" style="bottom: auto; top: 0">Turn on JavaScript to see the fight.</p></noscript>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js" integrity="sha512-NcZdtrT77bJr4STcmsGAESr06BYGE8woZdSdEgqnpyqac7sugNO+Tr4bGwGF3MsnEkGKhU2KL2xh6Ec+BqsaHA==" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js" integrity="sha512-P2IDYZfqSwjcSjX0BKeNhwRUH8zRPGlgcWl5n6gBLzdi4Y5/0O4zaXrtO4K9TZK6Hn1BenYpKowuCavNandERg==" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
     <script src="js/rig.js" defer></script>
     <script src="js/fx.js" defer></script>
     <script src="js/art.js" defer></script>
+    <script src="js/side.js" defer></script>
     <script src="js/sound.js" defer></script>
     <script src="js/idle.js" defer></script>
     <script src="js/milestones.js" defer></script>
@@ -591,6 +558,7 @@
     <script src="js/pfp.js" defer></script>
     <script src="js/memes.js" defer></script>
     <script src="js/coin.js" defer></script>
+    <script src="js/scroll.js" defer></script>
     <script src="js/main.js" defer></script>
   </body>
 </html>
